@@ -12,13 +12,13 @@ function Login() {
      </Row>
         <Row style={{height: "40%"}}>
             <Col span={6} style={{backgroundColor: "green"}}>
-                test1
+                test11
             </Col>
             <Col span={12} style={{backgroundColor: "blue"}}>
-                test2
+                test21
             </Col>
             <Col span={6} style={{backgroundColor: "yellow"}}>
-            test3
+            test31
             </Col>
 
         </Row>
