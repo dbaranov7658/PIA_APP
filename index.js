@@ -7,9 +7,6 @@ const path = require('path')
 const  reactBuild = path.join(__dirname, 'front', 'build')
 
 app.use(express.static(reactBuild))
-app.get('/', async(req, res) => {
-    res.send({message: 'test'})
-})
 
 app.get('*', async(req, res) => {
         res.sendFile(path.join(reactBuild, 'index.html'))
