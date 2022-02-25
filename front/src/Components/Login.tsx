@@ -12,7 +12,7 @@ function Login() {
      </Row>
         <Row style={{height: "40%"}}>
             <Col span={6} style={{backgroundColor: "green"}}>
-                test11
+                test11: Changed by Misha
             </Col>
             <Col span={12} style={{backgroundColor: "blue"}}>
                 test21
