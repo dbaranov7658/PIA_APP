@@ -1,6 +1,6 @@
 
 import '../CSS/App.css';
-import {Button, Col, Row} from "antd";
+import {Button, Col, DatePicker, Row} from "antd";
 
 function Login() {
   return (
@@ -10,6 +10,7 @@ function Login() {
             test
         </Button>
      </Row>
+        <DatePicker/>
         <Row style={{height: "40%"}}>
             <Col span={6} style={{backgroundColor: "green"}}>
                 test11: Changed by Misha
