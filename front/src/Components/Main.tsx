@@ -5,7 +5,26 @@ import '../CSS/App.css';
 import Login from '../Components/Login.tsx'
 import * as React from "react";
 
-class Main extends React.Component {
+interface State {
+    isLogged: boolean;
+}
+
+export default  class Main extends React.Component<any, any> {
+
+
+    constructor(props: any) {
+        super(props);
+        this.state = {
+            isLogged: false,
+        }
+    }
+
+    componentDidMount() {
+    }
+
+    componentDidUpdate(prevProps: Readonly<any>, prevState: Readonly<any>, snapshot?: any) {
+
+    }
 
     render() {
         console.log("test")
@@ -18,4 +37,3 @@ class Main extends React.Component {
 
 }
 
-export default Main;
