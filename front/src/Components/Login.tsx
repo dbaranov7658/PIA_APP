@@ -7,7 +7,7 @@ function Login() {
     <div style={{height: '100vh', width: '100vw'}}>
      <Row style={{height: "30%", backgroundColor: "red"}} >
         <Button>
-            testttttt
+            test
         </Button>
      </Row>
         <Row style={{height: "40%"}}>
@@ -15,10 +15,10 @@ function Login() {
                 test11: Changed by Misha
             </Col>
             <Col span={12} style={{backgroundColor: "blue"}}>
-                test21
+                test2
             </Col>
             <Col span={6} style={{backgroundColor: "yellow"}}>
-            test31
+            test3
             </Col>
 
         </Row>
