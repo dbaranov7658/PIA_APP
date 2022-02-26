@@ -15,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "eslint-config-react-app": "^7.0.0",
     "express": "^4.17.3",
     "react-scripts": "^5.0.0"
   }
