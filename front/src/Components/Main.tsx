@@ -3,6 +3,8 @@
 import '../CSS/App.css';
 // @ts-ignore
 import Login from '../Components/Login.tsx'
+// @ts-ignore
+import PTable from './PTable.tsx';
 import * as React from "react";
 
 interface State {
@@ -29,7 +31,7 @@ export default  class Main extends React.Component<any, any> {
     render() {
         console.log("test")
        return (
-           <Login/>
+           <PTable/>
        )
     }
 
