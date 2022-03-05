@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
 import '../CSS/App.css';
-import { Row, Col, Table } from 'antd';
+import '../CSS/PTable.css';
+import { Row, Col, Table, Button } from 'antd';
 // @ts-ignore
 import { dataSource, columns } from './TableSetup.tsx';
 
 class PTable extends React.Component {
     render() {
         return (
-            <Col>
+            <div class='page-body'>
                 <h1>View PIAs</h1>
                 <Table dataSource={dataSource} columns={columns} />
-            </Col>
+                <Row>
+                    <Button type="primary">New PIA</Button>
+                </Row>
+            </div>
         );
     }
 }
