@@ -29,7 +29,13 @@ const columns = [
         key: 'name',
         render: name => {
             return <a>{ name }</a>
-        }
+        },
+        sorter: (a, b) => {
+            if (a.name > b.name) {
+                return 1;
+            } else return -1;
+        },
+        sortDirections: ['ascend', 'descend'],
     },
     {
         title: 'Status',
@@ -53,12 +59,29 @@ const columns = [
                   {status}
                 </Tag>
               );
-        }
+        },
+        filters: [
+            {
+                text: 'APPROVED',
+                value: 'APPROVED'
+            },
+            {
+                text: 'REJECTED',
+                value: 'REJECTED'
+            },
+            {
+                text: 'PENDING',
+                value: 'PENDING'
+            }
+        ],
+        onFilter: (value, record) => record.status.indexOf(value) === 0,
     },
     {
         title: 'Date Submitted',
         dataIndex: 'submission_date',
         key: 'submission_date',
+        sorter: (a, b) => new Date(a.submission_date) - new Date(b.submission_date),
+        sortDirections: ['ascend', 'descend'],
     },
 ];
 
