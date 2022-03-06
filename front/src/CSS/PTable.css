@@ -1,0 +1,9 @@
+.page-body {
+  margin: 10rem;
+}
+
+.ant-btn-primary {
+  background-color: #ffc82c;
+  color: #173a64;
+  border: none;
+}
