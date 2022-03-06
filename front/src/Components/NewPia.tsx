@@ -89,10 +89,27 @@ export default class NewPia extends React.Component<any, any>  {
           </Select>
           </FormItem>
           <br />
-          <FormItem>
-          <label>Which <q>purpouse</q> of the project in S2.3 of the FortisBC privacy applies to this project? </label><br />
-          <Input type="text" value={this.state.value} />
-          </FormItem>
+          <Form.Item label="Which “purpose” in S2.3 of the FortisBC Privacy Policy applies to this project? "> 
+          <br />
+          <Cascader
+            options={[
+              {
+                value: 'Demo1',
+                label: 'Demo1',
+
+              },
+              {
+                value: 'Demo2',
+                label: 'Demo2',
+              },
+              {
+                value: 'Demo3',
+                label: 'Demo3',
+              },
+            ]}
+
+          />
+        </Form.Item>
           <br />
           <FormItem>
           <label>is any information being disclosed or stored outside of Canada as part of this project? </label><br />
