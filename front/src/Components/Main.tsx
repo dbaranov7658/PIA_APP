@@ -31,7 +31,7 @@ export default  class Main extends React.Component<any, any> {
         console.log("test")
        return (
        <>
-       <Login/>
+        {/* <Login/> */}
         <NewPia/>
         </>
        )
