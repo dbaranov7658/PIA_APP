@@ -4,7 +4,6 @@ import '../CSS/App.css';
 // @ts-ignore
 import Login from '../Components/Login.tsx'
 import * as React from "react";
-import NewPia from '../Components/NewPia.tsx'
 
 interface State {
     isLogged: boolean;
@@ -30,10 +29,9 @@ export default  class Main extends React.Component<any, any> {
     render() {
         console.log("test")
        return (
-       <>
-       <Login/>
-        <NewPia/>
-        </>
+  
+         <Login/>
+    
        )
     }
 
