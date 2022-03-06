@@ -15,46 +15,31 @@ export default class NewPia extends React.Component<any, any>  {
       projDescription:'',
       
     };
-
+    this.handleChange=this.handleChange.bind(this)
+    this.handleSubmit=this.handleSubmit.bind(this)
     
   }
-
-  handleprojectNamechange=(event: { target: { value: any; }; }) =>{
+  handleChange=(event) =>{
     this.setState({
-    projectName:event.target.value
-    })
-    
-  }
-  handleSponsoringGroupChange=(event: { target: { value: any; }; }) => {
-    this.setState({
-    sponsoringGroup:event.target.value
-    })
-    
-  }
-  handleDescriptionChanges=(event: { target: { value: any; }; }) =>{
-  this.setState({
-    handleDescriptionChange:event.target.value
-  })}
- 
-
-  handleSubmit(event: { preventDefault: () => void; }) {
+    [event.target.name] :event.target.value
+    })}
+  handleSubmit(event) {
     alert('A name was submitted: ' + this.state.value);
     event.preventDefault();
   }
-
   render() {
     return (
     <div className='newpiaContainer'>
-      <Form >
+      <Form onSubmitCapture={this.handleSubmit}>
       <FormItem>
         <label>ProjectName</label><br />
-          <Input type="text" name="projName" value={this.state.ProjectName} onChange={this.handleprojectNamechange}></Input>
+          <Input type="text" name="projectName" value={this.state.ProjectName} onChange={this.handleChange}></Input>
           <br />
           </FormItem>
           
           <FormItem>
           <label>sponsoringGroup</label><br />
-          <Select value={this.state.sponsoringGroup} onChange={this.handleSponsoringGroupChange}>
+          <Select value={this.state.sponsoringGroup} onChange={this.handleChange}>
           <Select.Option value="default">Default</Select.Option>
           <Select.Option value="addNew">Add new</Select.Option>
           </Select>
@@ -64,7 +49,7 @@ export default class NewPia extends React.Component<any, any>  {
           
           <FormItem>
           <label>Description</label><br />
-          <TextArea name="projDescription" value={this.state.Description} onChange={this.handleDescriptionChanges}/>
+          <TextArea name="projDescription" value={this.state.Description} onChange={this.handleChange}/>
           </FormItem>
           <br />
           
@@ -120,7 +105,7 @@ export default class NewPia extends React.Component<any, any>  {
           </FormItem>
     <br />
     <FormItem>
-        <Button type="primary" name="submit">Submit</Button>
+        <button type="submit" name="submit">Submit</button>
         </FormItem>
       </Form>
       </div>

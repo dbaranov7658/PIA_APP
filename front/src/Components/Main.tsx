@@ -30,7 +30,7 @@ export default  class Main extends React.Component<any, any> {
     render() {
         console.log("test")
        return (
-         <Login/>
+         <NewPia/>
        )
     }
 
