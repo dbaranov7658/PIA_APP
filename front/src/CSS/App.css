@@ -4,3 +4,12 @@ display: flex;
 justify-content: center;
 align-items: center;
 }
+
+.text{
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 14px;
+    color: #000000;
+}

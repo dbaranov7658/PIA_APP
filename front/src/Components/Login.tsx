@@ -1,4 +1,4 @@
-import {Button, Col, DatePicker, Row} from "antd";
+import {Button} from "antd";
 import * as React from "react";
 import {config } from '../azure/Config';
 import {PublicClientApplication} from '@azure/msal-browser';
@@ -14,7 +14,12 @@ interface State {
     pcl: PublicClientApplication
 }
 
-class Login extends React.Component<any, State>  {
+interface Props {
+    setId?: (value:string) => void,
+    setEmail?: (value:string) => void,
+}
+
+class Login extends React.Component<Props, State>  {
     //https://www.youtube.com/watch?v=4pH5spE2Yss
 
     constructor(props: any){
@@ -26,7 +31,7 @@ class Login extends React.Component<any, State>  {
             username: undefined,
             name: undefined,
             clientId: undefined,
-            pcl: undefined
+            pcl: undefined,
         };
     }
 
@@ -41,6 +46,8 @@ class Login extends React.Component<any, State>  {
                 //this.setState({clientId : this.state.pcl.getConfiguration().auth.clientId})
                 this.setState({clientId: this.state.pcl.getAllAccounts()[0].localAccountId});
                 this.setState({username: this.state.pcl.getAllAccounts()[0].username});
+                this.props.setEmail(this.state.pcl.getAllAccounts()[0].username)
+                this.props.setId(this.state.pcl.getAllAccounts()[0].localAccountId)
                 this.setState({name: this.state.pcl.getAllAccounts()[0].name});
             }
         catch(err){

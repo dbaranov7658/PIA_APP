@@ -1,10 +1,13 @@
 import '../CSS/App.css';
-import React from 'react';
+import * as React from "react";
 import FormItem from 'antd/lib/form/FormItem';
 import {
     Form,Input,Button,Radio,Select,Cascader,
   } from 'antd';
-  const { TextArea } = Input;
+
+
+
+const { TextArea } = Input;
 export default class NewPia extends React.Component<any, any>  {
   constructor(props:any) {
     super(props);

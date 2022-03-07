@@ -80,7 +80,7 @@ const columns = [
         title: 'Date Submitted',
         dataIndex: 'submission_date',
         key: 'submission_date',
-        sorter: (a, b) => new Date(a.submission_date) - new Date(b.submission_date),
+        sorter: (a, b) => Date.parse(a.submission_date) - Date.parse(b.submission_date),
         sortDirections: ['ascend', 'descend'],
     },
 ];
