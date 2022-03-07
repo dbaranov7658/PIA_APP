@@ -1,7 +1,29 @@
+<<<<<<< HEAD
 import React, { useState } from "react";
 import {
   Form,Button,Radio,Cascader, Input, Select,
 } from 'antd';
+=======
+import '../CSS/App.css';
+import * as React from "react";
+import FormItem from 'antd/lib/form/FormItem';
+import {
+    Form,Input,Button,Radio,Select,Cascader,
+  } from 'antd';
+
+
+
+const { TextArea } = Input;
+export default class NewPia extends React.Component<any, any>  {
+  constructor(props:any) {
+    super(props);
+    this.state = {
+      ProjectName: '',
+      sponsoringGroup:'',
+      projDescription:'',
+      
+    };
+>>>>>>> e1501deee0cf641586be90ae42466941993dcc97
 
 const {TextArea}=Input
 
