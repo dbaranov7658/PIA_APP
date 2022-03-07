@@ -1,6 +1,9 @@
 @import '~antd/dist/antd.css';
+
 .newpiaContainer{
-display: flex;
+display:flex;
 justify-content: center;
 align-items: center;
+
 }
+
