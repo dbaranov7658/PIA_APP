@@ -86,7 +86,7 @@ class Login extends React.Component<Props, State>  {
     render(){
         return (
         <div className="login">
-        test
+        test 2
             <div id="login-section">
                 {this.state.isAuthenticated ?
                 <p id="success">
@@ -99,7 +99,7 @@ class Login extends React.Component<Props, State>  {
                 <div style={{width: "100vw"}}>
                     <img src="https://upload.wikimedia.org/wikipedia/en/thumb/9/97/FortisBC_logo.svg/1280px-FortisBC_logo.svg.png" id="logo-login" style={{width: "100vw"}}/>
                     <Button size="large" style={{ background: " #173a64", borderColor: "#173a64", marginLeft:"50vw",}} type="primary" value="large" onClick={() => this.login()}  >Login</Button>
-                </div>                
+                </div>
                 }
             </div>
         </div>
