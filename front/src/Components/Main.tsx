@@ -73,6 +73,7 @@ export default  class Main extends React.Component<any, State> {
 
     render() {
        return (
+
            this.state.id === undefined ?
          <Login setId={this.setId} setEmail={this.setEmail}/>
                :
