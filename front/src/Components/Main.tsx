@@ -60,6 +60,7 @@ export default  class Main extends React.Component<any, State> {
                         </Row>
                     </Col>
                 </Row>
+                {/*testdfdfdfdfd*/}
                 <Routes>
                     <Route path="/addNew" element={<NewPia/>}/>
                     <Route path="/" element={<PTable/>}/>
@@ -73,9 +74,12 @@ export default  class Main extends React.Component<any, State> {
     render() {
        return (
            this.state.id === undefined ?
+               /*testdfdfdfdfd*/
          <Login setId={this.setId} setEmail={this.setEmail}/>
+               /*testdfdfdfdfd*/
                :
          this.renderMenu()
+           /*testdfdfdfdfd*/
 
        )
     }
