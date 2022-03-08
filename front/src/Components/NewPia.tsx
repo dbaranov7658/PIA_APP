@@ -65,6 +65,7 @@ export default class NewPia extends React.Component<any, State>{
                   <div className="newpiaContainer">
                       <Form
                       >
+                      test2
 
                           <Form.Item htmlFor="ProjName" label="Project Name">
 
