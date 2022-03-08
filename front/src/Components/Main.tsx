@@ -72,16 +72,11 @@ export default  class Main extends React.Component<any, State> {
 
     render() {
        return (
-<<<<<<< HEAD
-         <NewPia/>
-=======
            this.state.id === undefined ?
          <Login setId={this.setId} setEmail={this.setEmail}/>
                :
          this.renderMenu()
 
-    
->>>>>>> e1501deee0cf641586be90ae42466941993dcc97
        )
     }
 
