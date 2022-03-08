@@ -38,7 +38,7 @@ app.get('/getAllUsers', (req, res) => {
 })
 
 app.get('/deleteUser', (req, res) => {
-    User.deleteOne({ _id: '621eb64ca9dd8e8b5c2b8746'}).then((result) => {
+    User.deleteOne({ _id: '6226bd72fdfcc70fe0bd604e'}).then((result) => {
             res.send(result)
         }
     ).catch((err) => {
