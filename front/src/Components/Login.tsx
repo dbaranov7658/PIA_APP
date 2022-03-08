@@ -86,9 +86,9 @@ class Login extends React.Component<Props, State>  {
     render(){
         return (
         <div className="login">
+        test
             <div id="login-section">
-                {this.state.isAuthenticated ? 
-                
+                {this.state.isAuthenticated ?
                 <p id="success">
                     Successfully logged in, clientId: {this.state.clientId}
                     <br></br>
