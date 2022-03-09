@@ -16,7 +16,6 @@ import {config } from '../azure/Config';
 
 
 interface State {
-    isLogged: boolean;
     id: string;
     email: string
     pcl: PublicClientApplication
@@ -28,7 +27,6 @@ export default  class Main extends React.Component<any, State> {
     constructor(props: any) {
         super(props);
         this.state = {
-            isLogged: false,
             email: undefined,
             id: undefined,
             pcl: undefined
@@ -54,7 +52,9 @@ export default  class Main extends React.Component<any, State> {
     }
 
     componentDidUpdate(prevProps: Readonly<any>, prevState: Readonly<any>, snapshot?: any) {
-
+        if (this.state.email === undefined && localStorage.getItem("email") !== null){
+            this.setState({email: localStorage.getItem("email") })
+        }
     }
 
     setEmail = (newEmail: string) => {
@@ -66,7 +66,20 @@ export default  class Main extends React.Component<any, State> {
     }
 
     logOut = () => {
-        this.state.pcl.logoutPopup();
+        sessionStorage.clear();
+        localStorage.clear()
+        this.setState({email: undefined})
+    }
+
+    async isAuth()  {
+        await fetch('/isUserAuth', {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
+        }).then((response) => {
+            response.json().then((res) => {
+                alert(res)
+            })
+        })
     }
 
     renderMenu = () => {
@@ -97,7 +110,7 @@ export default  class Main extends React.Component<any, State> {
     render() {
        return (
 
-           this.state.id === undefined ?
+          this.state.email === undefined ?
          <Login setId={this.setId} setEmail={this.setEmail} pcl={this.state.pcl}/>
                :
          this.renderMenu()
