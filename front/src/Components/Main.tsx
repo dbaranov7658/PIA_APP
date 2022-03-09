@@ -87,7 +87,7 @@ export default  class Main extends React.Component<any, State> {
             <div>
                 <Row style={{height: "60px"}}>
                     <Col span={12} style={{paddingTop: "20px", paddingLeft: "25px"}}>
-                        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/9/97/FortisBC_logo.svg/1280px-FortisBC_logo.svg.png" id="logo-login" style={{width: "20vw", height: "40px"}}/>
+                        <img alt="Fortis_logo" src="https://upload.wikimedia.org/wikipedia/en/thumb/9/97/FortisBC_logo.svg/1280px-FortisBC_logo.svg.png" id="logo-login" style={{width: "20vw", height: "40px"}}/>
                     </Col>
                     <Col span={12}>
                         <Row style={{paddingRight: "25px", justifyContent: "end", alignItems: "center", height: "60px"}}>
