@@ -3,6 +3,7 @@ import * as React from "react";
 import {PublicClientApplication} from '@azure/msal-browser';
 import {config } from '../azure/Config';
 import '../CSS/App.css';
+import Axios from "axios"
 
 interface State {
 }
@@ -29,8 +30,24 @@ class Login extends React.Component<Props, State>  {
                     scopes: config.scopes,
                     prompt: "select_account"
                 });
-                this.props.setEmail(this.props.pcl.getAllAccounts()[0].username)
-                this.props.setId(this.props.pcl.getAllAccounts()[0].localAccountId)
+            let email = this.props.pcl.getAllAccounts()[0].username
+            let id = this.props.pcl.getAllAccounts()[0].localAccountId
+                this.props.setEmail(email)
+                this.props.setId(id)
+           /* const data = {email: "test", id: "test"}
+                fetch(window.location.origin.toString() + '/login', {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(data)
+                }).then((response) => {
+                    alert(response)
+                })*/
+               /* await Axios.post(window.location.origin.toString() + '/login', {
+                    email: "test",
+                    id: "test"
+                }).then((response) => {
+                    alert(response)
+                })*/
             }
         catch(err){
             console.log(err)

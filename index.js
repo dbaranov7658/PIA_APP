@@ -9,6 +9,7 @@ const path = require('path')
 
 const  reactBuild = path.join(__dirname, 'front', 'build')
 
+const jwt = require('jsonwebtoken')
 
 
 
@@ -46,6 +47,18 @@ app.get('/deleteUser', (req, res) => {
     })
 })
 
+app.post('/login', (req, res) => {
+    const email = req.body.email
+    const id = req.body.id
+
+    res.send({message: id + email})
+
+})
+
+/*app.get('/isUserAuth', verifyJWT, (req, res) => {
+    res.send("You are")
+})*/
+
 
 
 mongoose.connect(dbURI, {useNewUrlParser: true, useUnifiedTopology: true}).then((result) => {
@@ -55,3 +68,17 @@ mongoose.connect(dbURI, {useNewUrlParser: true, useUnifiedTopology: true}).then(
 ).catch((err) => {
         console.log(err)
 })
+
+
+/*
+const verifyJWT = (req, res, next) => {
+    const token = req.headers["x-access-token"]
+
+    if (!token) {
+        res.send('need token')
+    } else{
+        jwt.verify(token, "jwtSecret", (err, decoded) => {
+
+        })
+    }
+}*/
