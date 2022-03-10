@@ -72,7 +72,7 @@ class Login extends React.Component<Props, State>  {
              <div className="login-section" style={{width: "60vh"}}>
                <Row className="fortisLogo">{fortisLogo}</Row>
                 <Row>
-                <Button className="loginBtn" size="large" type="primary" value="large" onClick={() => this.login()}  >Login</Button>
+                <Button className="loginBtn" size="large" type="primary" value="large" onClick={() => this.login()}>Login</Button>
                 </Row>
              </div>
         </div>
