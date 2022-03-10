@@ -1,7 +1,7 @@
 import * as React from "react";
 import '../CSS/App.css';
 import '../CSS/PTable.css';
-import { Row, Col, Table, Button } from 'antd';
+import { Row, Table, Button } from 'antd';
 // @ts-ignore
 import { dataSource, columns } from '../consts/TableSetup.tsx';
 import {Link} from "react-router-dom";

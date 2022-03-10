@@ -29,8 +29,28 @@ class Login extends React.Component<Props, State>  {
                     scopes: config.scopes,
                     prompt: "select_account"
                 });
-                this.props.setEmail(this.props.pcl.getAllAccounts()[0].username)
-                this.props.setId(this.props.pcl.getAllAccounts()[0].localAccountId)
+            let email = this.props.pcl.getAllAccounts()[0].username
+            let id = this.props.pcl.getAllAccounts()[0].localAccountId
+
+                await fetch('/login', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({email: email})
+                }).then((response) => {
+                    response.json().then((response) => {
+                        if (response.auth){
+                            this.props.setEmail(email)
+                            this.props.setId(id)
+                            localStorage.setItem("token", response.token)
+                            localStorage.setItem("email", email)
+                            localStorage.setItem("isOfficer", response.isOfficer)
+                        }
+                        else {
+                            alert(response.message)
+                        }
+
+                    })
+                })
             }
         catch(err){
             console.log(err)
@@ -46,7 +66,7 @@ class Login extends React.Component<Props, State>  {
         <div className="login">
             <div id="login-section">
                 <div style={{width: "100vw"}}>
-                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/9/97/FortisBC_logo.svg/1280px-FortisBC_logo.svg.png" id="logo-login" style={{width: "100vw"}}/>
+                    <img alt="Fortis_logo" src="https://upload.wikimedia.org/wikipedia/en/thumb/9/97/FortisBC_logo.svg/1280px-FortisBC_logo.svg.png" id="logo-login" style={{width: "50vw"}}/>
                     <Button size="large" style={{ background: " #173a64", borderColor: "#173a64", marginLeft:"50vw",}} type="primary" value="large" onClick={() => this.login()}  >Login</Button>
                 </div>
             </div>
