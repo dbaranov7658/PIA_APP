@@ -3,15 +3,39 @@ import '../CSS/App.css';
 import '../CSS/PTable.css';
 import { Row, Table, Button } from 'antd';
 // @ts-ignore
-import { dataSource, columns } from '../consts/TableSetup.tsx';
+import {dataSource, columns, columnsForOfficer} from '../consts/TableSetup.tsx';
 import {Link} from "react-router-dom";
 
-class PTable extends React.Component {
+
+
+interface State{
+    isOfficer: boolean
+}
+
+class PTable extends React.Component<any, State> {
+    constructor(props: any){
+        super(props);
+        this.state ={
+            isOfficer: undefined
+        };
+    }
+
+
+    componentDidMount() {
+        this.setState({isOfficer: localStorage.getItem('isOfficer') === "true"})
+    }
+
+
+
     render() {
         return (
             <div className='page-body'>
-                <h1>View PIAs</h1>
-                <Table dataSource={dataSource} columns={columns} />
+                {this.state.isOfficer ?
+                    <h1>All PIAs</h1>
+                    :
+                    <h1>Your PIAs</h1>
+                }
+                <Table dataSource={dataSource} columns={this.state.isOfficer ? columnsForOfficer : columns} />
                 <Row>
                     <Link to="/addNew">
                     <Button type="primary">New PIA</Button>

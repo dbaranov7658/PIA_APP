@@ -1,9 +1,10 @@
 
 import {
-  Form,Button,Radio,Cascader, Input, Select,
+    Form, Button, Radio, Cascader, Input, Select, Row,
 } from 'antd';
 import '../CSS/App.css';
 import * as React from "react";
+import {Link} from "react-router-dom";
 const {TextArea} = Input
 
 
@@ -130,13 +131,19 @@ export default class NewPia extends React.Component<any, State>{
 
 
                           </Form.Item>
+                        <Row>
+                            <div className="btn">
+                                <Button type="default" onClick={() => {}}
+                                        style={{background: "#FFC82C", color: "black"}}>Submit</Button>
+                            </div>
+                            <div className="btn" style={{paddingLeft: "15px"}}>
+                                <Link to="/">
+                                    <Button type="default" onClick={() => {}}
+                                            style={{background: "#ffffff", color: "black"}}>Back</Button>
+                                </Link>
+                            </div>
+                        </Row>
 
-                          <div className="btn">
-                              <Button type="default" onClick={() => {
-                                  alert(this.state.isCollected)
-                              }}
-                                      style={{background: "#FFC82C", color: "black"}}>Submit</Button>
-                          </div>
 
                       </Form>
                   </div>
