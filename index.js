@@ -69,6 +69,7 @@ app.get('/deleteUser', (req, res) => {
 })
 
 app.post('/login', (req, res) => {
+    console.log(req.body.email)
     const mail = req.body.email
     User.findOne({email: mail}).then((result) => {
         if (result !== null){
