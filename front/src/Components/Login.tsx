@@ -67,11 +67,10 @@ class Login extends React.Component<Props, State>  {
 
     render(){
         return (
-
         <div className="container">
              <div className="login-section" style={{width: "60vh"}}>
                <Row className="fortisLogo">{fortisLogo}</Row>
-                <Row>
+                <Row style={{paddingRight: "10px"}}>
                 <Button className="loginBtn" size="large" type="primary" value="large" onClick={() => this.login()}>Login</Button>
                 </Row>
              </div>

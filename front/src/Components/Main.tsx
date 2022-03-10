@@ -1,6 +1,7 @@
 
 import { LoginOutlined } from '@ant-design/icons';
 import '../CSS/App.css';
+import '../CSS/Main.css';
 // @ts-ignore
 import Login from '../Components/Login.tsx'
 import * as React from "react";
@@ -13,6 +14,8 @@ import {Routes, Route} from 'react-router-dom'
 import NewPia from "../Components/NewPia.tsx";
 import {PublicClientApplication} from "@azure/msal-browser";
 import {config } from '../azure/Config';
+// @ts-ignore
+import {fortisLogoForMain} from "../consts/Photos.tsx";
 
 
 interface State {
@@ -85,12 +88,12 @@ export default  class Main extends React.Component<any, State> {
     renderMenu = () => {
         return (
             <div>
-                <Row style={{height: "60px"}}>
-                    <Col span={12} style={{paddingTop: "20px", paddingLeft: "25px"}}>
-                        <img alt="Fortis_logo" src="https://upload.wikimedia.org/wikipedia/en/thumb/9/97/FortisBC_logo.svg/1280px-FortisBC_logo.svg.png" id="logo-login" style={{width: "20vw", height: "40px"}}/>
+                <Row style={{height: "80px"}}>
+                    <Col span={12} style={{paddingTop: "20px", paddingLeft: "25px", height: "80px"}}>
+                       {fortisLogoForMain}
                     </Col>
                     <Col span={12}>
-                        <Row style={{paddingRight: "25px", justifyContent: "end", alignItems: "center", height: "60px"}}>
+                        <Row style={{paddingRight: "25px", justifyContent: "end", alignItems: "center", height: "80px", paddingTop: "10px"}}>
                             <div className={'text'} style={{paddingRight: "20px"}}>{this.state.email}</div>
                             <Tooltip placement="bottom" title={"Log out"}>
                             <Button ghost={true} type="link" onClick={this.logOut} shape="circle"><LoginOutlined  style={{color: "#000000"}} /></Button>
