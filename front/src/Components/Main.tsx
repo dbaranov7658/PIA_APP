@@ -6,17 +6,20 @@ import Login from '../Components/Login.tsx'
 import * as React from "react";
 // @ts-ignore
 import PTable from "../Components/PTable.tsx";
-import {Button, Col, Layout, Row} from "antd";
+import {Button, Col, Row} from "antd";
 import {Routes, Route} from 'react-router-dom'
 
 // @ts-ignore
 import NewPia from "../Components/NewPia.tsx";
+import {PublicClientApplication} from "@azure/msal-browser";
+import {config } from '../azure/Config';
 
 
 interface State {
     isLogged: boolean;
     id: string;
     email: string
+    pcl: PublicClientApplication
 }
 
 export default  class Main extends React.Component<any, State> {
@@ -27,11 +30,27 @@ export default  class Main extends React.Component<any, State> {
         this.state = {
             isLogged: false,
             email: undefined,
-            id: undefined
+            id: undefined,
+            pcl: undefined
         }
     }
 
+    getPublicClientApplication = () => {
+        this.setState({pcl: new PublicClientApplication({
+                auth: {
+                    clientId: config.appId,
+                    redirectUri: config.redirectUri,
+                    authority: config.authority
+                },
+                cache: {
+                    cacheLocation: "sessionStorage",
+                    storeAuthStateInCookie: true
+                }
+            })})
+    }
+
     componentDidMount() {
+        this.getPublicClientApplication()
     }
 
     componentDidUpdate(prevProps: Readonly<any>, prevState: Readonly<any>, snapshot?: any) {
@@ -46,6 +65,10 @@ export default  class Main extends React.Component<any, State> {
         this.setState({id: newId})
     }
 
+    logOut = () => {
+        this.state.pcl.logoutPopup();
+    }
+
     renderMenu = () => {
         return (
             <div>
@@ -56,7 +79,7 @@ export default  class Main extends React.Component<any, State> {
                     <Col span={12}>
                         <Row style={{paddingRight: "25px", justifyContent: "end", alignItems: "center", height: "60px"}}>
                             <div className={'text'} style={{paddingRight: "20px"}}>{this.state.email}</div>
-                            <Button ghost={true} type="link" shape="circle"><LoginOutlined  style={{color: "#000000"}} /></Button>
+                            <Button ghost={true} type="link" onClick={this.logOut} shape="circle"><LoginOutlined  style={{color: "#000000"}} /></Button>
                         </Row>
                     </Col>
                 </Row>
@@ -73,8 +96,9 @@ export default  class Main extends React.Component<any, State> {
 
     render() {
        return (
+
            this.state.id === undefined ?
-         <Login setId={this.setId} setEmail={this.setEmail}/>
+         <Login setId={this.setId} setEmail={this.setEmail} pcl={this.state.pcl}/>
                :
          this.renderMenu()
 

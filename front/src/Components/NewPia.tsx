@@ -4,12 +4,7 @@ import {
 } from 'antd';
 import '../CSS/App.css';
 import * as React from "react";
-import {useState} from "react";
-import { Checkbox} from 'antd';
-
-const CheckboxGroup = Checkbox.Group;
-
-      const {TextArea} = Input
+const {TextArea} = Input
 
 
 interface State{
