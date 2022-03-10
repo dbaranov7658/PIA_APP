@@ -41,13 +41,15 @@ class Login extends React.Component<Props, State>  {
                 }).then((response) => {
                     response.json().then((response) => {
                         if (response.auth){
-                            this.props.setEmail(email)
-                            this.props.setId(id)
                             localStorage.setItem("token", response.token)
                             localStorage.setItem("email", email)
                             localStorage.setItem("isOfficer", response.isOfficer)
+                            this.props.setEmail(email)
+                            this.props.setId(id)
                         }
                         else {
+                            sessionStorage.clear();
+                            localStorage.clear()
                             alert(response.message)
                         }
 

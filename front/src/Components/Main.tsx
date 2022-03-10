@@ -6,7 +6,7 @@ import Login from '../Components/Login.tsx'
 import * as React from "react";
 // @ts-ignore
 import PTable from "../Components/PTable.tsx";
-import {Button, Col, Row} from "antd";
+import {Button, Col, Row, Tooltip} from "antd";
 import {Routes, Route} from 'react-router-dom'
 
 // @ts-ignore
@@ -92,7 +92,9 @@ export default  class Main extends React.Component<any, State> {
                     <Col span={12}>
                         <Row style={{paddingRight: "25px", justifyContent: "end", alignItems: "center", height: "60px"}}>
                             <div className={'text'} style={{paddingRight: "20px"}}>{this.state.email}</div>
+                            <Tooltip placement="bottom" title={"Log out"}>
                             <Button ghost={true} type="link" onClick={this.logOut} shape="circle"><LoginOutlined  style={{color: "#000000"}} /></Button>
+                            </Tooltip>
                         </Row>
                     </Col>
                 </Row>
