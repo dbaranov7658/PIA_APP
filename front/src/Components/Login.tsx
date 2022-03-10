@@ -1,8 +1,10 @@
-import {Button} from "antd";
+import {Button, Row} from "antd";
 import * as React from "react";
 import {PublicClientApplication} from '@azure/msal-browser';
 import {config } from '../azure/Config';
 import '../CSS/App.css';
+// @ts-ignore
+import {fortisLogo} from '../consts/Photos.tsx'
 
 interface State {
 }
@@ -63,13 +65,14 @@ class Login extends React.Component<Props, State>  {
 
     render(){
         return (
-        <div className="login">
-            <div id="login-section">
-                <div style={{width: "100vw"}}>
-                    <img alt="Fortis_logo" src="https://upload.wikimedia.org/wikipedia/en/thumb/9/97/FortisBC_logo.svg/1280px-FortisBC_logo.svg.png" id="logo-login" style={{width: "50vw"}}/>
-                    <Button size="large" style={{ background: " #173a64", borderColor: "#173a64", marginLeft:"50vw",}} type="primary" value="large" onClick={() => this.login()}  >Login</Button>
-                </div>
-            </div>
+
+        <div className="container">
+             <div className="login-section" style={{width: "60vh"}}>
+               <Row className="fortisLogo">{fortisLogo}</Row>
+                <Row>
+                <Button className="loginBtn" size="large" type="primary" value="large" onClick={() => this.login()}  >Login</Button>
+                </Row>
+             </div>
         </div>
         );
     }
