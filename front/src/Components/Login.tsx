@@ -31,17 +31,24 @@ class Login extends React.Component<Props, State>  {
                 });
             let email = this.props.pcl.getAllAccounts()[0].username
             let id = this.props.pcl.getAllAccounts()[0].localAccountId
-                this.props.setEmail(email)
-                this.props.setId(id)
+
                 await fetch('/login', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({email: email})
                 }).then((response) => {
                     response.json().then((response) => {
-                        localStorage.setItem("token", response.token)
-                        localStorage.setItem("email", email)
-                        localStorage.setItem("isOfficer", response.isOfficer)
+                        if (response.auth){
+                            this.props.setEmail(email)
+                            this.props.setId(id)
+                            localStorage.setItem("token", response.token)
+                            localStorage.setItem("email", email)
+                            localStorage.setItem("isOfficer", response.isOfficer)
+                        }
+                        else {
+                            alert(response.message)
+                        }
+
                     })
                 })
             }

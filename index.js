@@ -69,15 +69,24 @@ app.get('/deleteUser', (req, res) => {
 app.post('/login', (req, res) => {
     const mail = req.body.email
     User.findOne({email: mail}).then((result) => {
-        const id = result._id
-        const token = jwt.sign({id}, process.env.JWT_VAR, {
+        if (result !== null){
+            const id = result._id
+            const token = jwt.sign({id}, process.env.JWT_VAR, {
                 expiresIn: 2000
             })
-        res.json({
-            auth: true,
-            token: token,
-            isOfficer: result.isOfficer
-        })
+            res.json({
+                auth: true,
+                token: token,
+                isOfficer: result.isOfficer
+            })
+        }
+        else {
+            res.json({
+                auth: false,
+                message: "You are not in database"
+            })
+        }
+
     })
 
 
