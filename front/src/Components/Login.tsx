@@ -68,7 +68,7 @@ class Login extends React.Component<Props, State>  {
         <div className="login">
             <div id="login-section">
                 <div style={{width: "100vw"}}>
-                    <img alt="Fortis_logo" src="https://upload.wikimedia.org/wikipedia/en/thumb/9/97/FortisBC_logo.svg/1280px-FortisBC_logo.svg.png" id="logo-login" style={{width: "50vw"}}/>
+                    <img alt="Fortisbc_logo" src="https://upload.wikimedia.org/wikipedia/en/thumb/9/97/FortisBC_logo.svg/1280px-FortisBC_logo.svg.png" id="logo-login" style={{width: "50vw"}}/>
                     <Button size="large" style={{ background: " #173a64", borderColor: "#173a64", marginLeft:"50vw",}} type="primary" value="large" onClick={() => this.login()}  >Login</Button>
                 </div>
             </div>
