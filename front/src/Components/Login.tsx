@@ -1,4 +1,4 @@
-import {Button, Row} from "antd";
+import {Button, message, Row} from "antd";
 import * as React from "react";
 import {PublicClientApplication} from '@azure/msal-browser';
 import {config } from '../azure/Config';
@@ -18,7 +18,6 @@ interface Props {
 }
 
 class Login extends React.Component<Props, State>  {
-    //https://www.youtube.com/watch?v=4pH5spE2Yss
 
     constructor(props: any){
         super(props);
@@ -52,7 +51,7 @@ class Login extends React.Component<Props, State>  {
                         else {
                             sessionStorage.clear();
                             localStorage.clear()
-                            alert(response.message)
+                            message.error("Your account have no permission to access")
                         }
 
                     })
