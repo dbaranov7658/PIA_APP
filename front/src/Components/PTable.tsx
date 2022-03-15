@@ -8,34 +8,34 @@ import {Link} from "react-router-dom";
 
 
 
-interface State{
+interface Props{
     isOfficer: boolean
 }
 
-class PTable extends React.Component<any, State> {
+interface State{
+}
+
+class PTable extends React.Component<Props, State> {
     constructor(props: any){
         super(props);
         this.state ={
-            isOfficer: undefined
+
         };
     }
 
 
-    componentDidMount() {
-        this.setState({isOfficer: localStorage.getItem('isOfficer') === "true"})
-    }
 
 
 
     render() {
         return (
             <div className='page-body'>
-                {this.state.isOfficer ?
+                {this.props.isOfficer ?
                     <h1>All PIAs</h1>
                     :
                     <h1>Your PIAs</h1>
                 }
-                <Table dataSource={dataSource} columns={this.state.isOfficer ? columnsForOfficer : columns} />
+                <Table dataSource={dataSource} columns={this.props.isOfficer ? columnsForOfficer : columns} />
                 <Row>
                     <Link to="/addNew">
                     <Button type="primary">New PIA</Button>

@@ -11,7 +11,7 @@ const newPiaSchema = new Schema({
         required: true
     },
     body: {
-        type: String
+        type: String,
         required: true
     },
 }, {timestamps: true}); //auto assign to created at and updated at properties in mongo

@@ -18,7 +18,7 @@ const verifyJWT = (req, res, next) => {
     if (!token) {
         res.send('need token')
     } else{
-        jwt.verify(token, "jwtSecret", (err, decoded) => {
+        jwt.verify(token, process.env.JWT_VAR, (err, decoded) => {
             if (err){
                 res.json({
                     auth: false,
@@ -37,35 +37,8 @@ require("dotenv").config()
 app.use(express.static(reactBuild))
 app.use(express.json())
 
-app.get('/', async(req, res) => {
+app.get('/*', async(req, res) => {
         res.sendFile(path.join(reactBuild, 'index.html'))
-})
-
-app.get('/getUser', (req, res) => {
-
-    User.findById('621eb64ca9dd8e8b5c2b8746').then((result) => {
-        res.send(result)
-    }).catch((err) => {
-        console.log(err)
-    })
-})
-
-app.get('/getAllUsers', (req, res) => {
-    User.find().then((result) => {
-        res.send(result)
-        }
-    ).catch((err) => {
-        console.log(err)
-    })
-})
-
-app.get('/deleteUser', (req, res) => {
-    User.deleteOne({ _id: '6226bd72fdfcc70fe0bd604e'}).then((result) => {
-            res.send(result)
-        }
-    ).catch((err) => {
-        console.log(err)
-    })
 })
 
 app.post('/login', (req, res) => {
@@ -94,6 +67,49 @@ app.post('/login', (req, res) => {
 
 })
 
+app.post('/isUserAuth', (req, res) => {
+    const token = req.headers["x-access-token"]
+    if (!token) {
+        res.json({
+            auth: false,
+            status: "Token not provided",
+        })
+    } else {
+       jwt.verify(token, process.env.JWT_VAR, (err, decoded) => {
+            if (err){
+                res.json({
+                    auth: false,
+                    status: "error during verifying token",
+                })
+            } else {
+                User.findById(decoded.id , (error, result) => {
+                    if (result === null){
+                        res.json({
+                            auth: false,
+                            status: "error during verifying token",
+                        })
+                    } else if (error){
+                        console.log(error)
+                        res.json({
+                            auth: false,
+                            status: "error during verifying token",
+                        })
+                    }
+                    else{
+                        res.json({
+                            auth: true,
+                            status: "success auth",
+                            isOfficer: result.isOfficer,
+                            email: result.email
+                        })
+                    }
+                })
+            }
+        })
+    }
+
+})
+
 mongoose.connect(process.env.DB_URI, {useNewUrlParser: true, useUnifiedTopology: true}).then((result) => {
             console.log('connected to db')
             app.listen(PORT, ()=>{console.log('server is running on ' + PORT)})
@@ -102,11 +118,4 @@ mongoose.connect(process.env.DB_URI, {useNewUrlParser: true, useUnifiedTopology:
         console.log(err)
 })
 
-
-app.get('/isUserAuth', verifyJWT, (req, res) => {
-    res.json({
-        auth: true,
-        status: "you are auth",
-    })
-})
 

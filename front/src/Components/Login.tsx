@@ -10,7 +10,7 @@ interface State {
 }
 
 interface Props {
-    setId?: (value:string) => void,
+    setIsOfficer?: (value:boolean) => void,
     setEmail?: (value:string) => void,
     pcl: PublicClientApplication,
 }
@@ -32,7 +32,6 @@ class Login extends React.Component<Props, State>  {
                     prompt: "select_account"
                 });
             let email = this.props.pcl.getAllAccounts()[0].username
-            let id = this.props.pcl.getAllAccounts()[0].localAccountId
 
                 await fetch('/login', {
                     method: 'POST',
@@ -42,10 +41,8 @@ class Login extends React.Component<Props, State>  {
                     response.json().then((response) => {
                         if (response.auth){
                             localStorage.setItem("token", response.token)
-                            localStorage.setItem("email", email)
-                            localStorage.setItem("isOfficer", response.isOfficer)
                             this.props.setEmail(email)
-                            this.props.setId(id)
+                            this.props.setIsOfficer(response.isOfficer === "true")
                         }
                         else {
                             sessionStorage.clear();
@@ -59,10 +56,6 @@ class Login extends React.Component<Props, State>  {
         catch(err){
             console.log(err)
         }
-    }
-
-
-    componentDidMount() {
     }
 
     render(){

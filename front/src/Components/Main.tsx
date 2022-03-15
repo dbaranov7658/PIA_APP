@@ -19,7 +19,7 @@ import {fortisLogoForMain} from "../consts/Photos.tsx";
 
 
 interface State {
-    id: string;
+    isOfficer: boolean;
     email: string
     pcl: PublicClientApplication
 }
@@ -31,7 +31,7 @@ export default  class Main extends React.Component<any, State> {
         super(props);
         this.state = {
             email: undefined,
-            id: undefined,
+            isOfficer: undefined,
             pcl: undefined
         }
     }
@@ -50,22 +50,39 @@ export default  class Main extends React.Component<any, State> {
             })})
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         this.getPublicClientApplication()
     }
 
     componentDidUpdate(prevProps: Readonly<any>, prevState: Readonly<any>, snapshot?: any) {
-        if (this.state.email === undefined && localStorage.getItem("email") !== null){
-            this.setState({email: localStorage.getItem("email") })
+        if ((this.state.email === undefined || this.state.isOfficer === undefined) && localStorage.getItem("token") !== null ){
+            this.isAuth()
         }
+    }
+
+    async isAuth() {
+        await fetch('/isUserAuth', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
+        }).then((response) => {
+            response.json().then((res) => {
+                if (!res.auth){
+                    console.log(res.status)
+                    this.logOut()
+                }
+                else{
+                    this.setState({email: res.email, isOfficer: res.isOfficer})
+                }
+            })
+        })
     }
 
     setEmail = (newEmail: string) => {
         this.setState({email: newEmail})
     }
 
-    setId = (newId: string) => {
-        this.setState({id: newId})
+    setIsOfficer = (newId: boolean) => {
+        this.setState({isOfficer: newId})
     }
 
     logOut = () => {
@@ -74,16 +91,6 @@ export default  class Main extends React.Component<any, State> {
         this.setState({email: undefined})
     }
 
-    async isAuth()  {
-        await fetch('/isUserAuth', {
-            method: 'GET',
-            headers: {'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
-        }).then((response) => {
-            response.json().then((res) => {
-                alert(res)
-            })
-        })
-    }
 
     renderMenu = () => {
         return (
@@ -104,7 +111,7 @@ export default  class Main extends React.Component<any, State> {
 
                 <Routes>
                     <Route path="/addNew" element={<NewPia/>}/>
-                    <Route path="/" element={<PTable/>}/>
+                    <Route path="/" element={<PTable isOfficer={this.state.isOfficer}/>}/>
                 </Routes>
             </div>
         )
@@ -115,8 +122,8 @@ export default  class Main extends React.Component<any, State> {
     render() {
        return (
 
-          this.state.email === undefined ?
-         <Login setId={this.setId} setEmail={this.setEmail} pcl={this.state.pcl}/>
+          localStorage.getItem("token") === null ?
+         <Login setIsOfficer={this.setIsOfficer} setEmail={this.setEmail} pcl={this.state.pcl}/>
                :
          this.renderMenu()
 
