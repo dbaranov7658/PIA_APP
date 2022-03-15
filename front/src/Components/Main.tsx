@@ -24,6 +24,17 @@ interface State {
     pcl: PublicClientApplication
 }
 
+export function deleteAllCookies() {
+    var cookies = document.cookie.split(";");
+
+    for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i];
+        var eqPos = cookie.indexOf("=");
+        var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    }
+}
+
 export default  class Main extends React.Component<any, State> {
 
 
@@ -86,6 +97,7 @@ export default  class Main extends React.Component<any, State> {
     }
 
     logOut = () => {
+        deleteAllCookies()
         sessionStorage.clear();
         localStorage.clear()
         this.setState({email: undefined})

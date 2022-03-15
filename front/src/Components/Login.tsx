@@ -5,6 +5,8 @@ import {config } from '../azure/Config';
 import '../CSS/App.css';
 // @ts-ignore
 import {fortisLogo} from '../consts/Photos.tsx'
+// @ts-ignore
+import {deleteAllCookies} from "./Main.tsx";
 
 interface State {
 }
@@ -25,6 +27,9 @@ class Login extends React.Component<Props, State>  {
     }
 
     async login() {
+        deleteAllCookies()
+        sessionStorage.clear();
+        localStorage.clear()
         try{
             await this.props.pcl.loginPopup(
                 {
