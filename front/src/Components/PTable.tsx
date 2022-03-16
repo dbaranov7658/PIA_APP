@@ -23,9 +23,9 @@ class PTable extends React.Component<Props, State> {
         };
     }
 
-     async email() {
+    async emailNewPia() {
         try {
-            await fetch('/email', {
+            await fetch('/emailNewPia', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
             })
@@ -50,8 +50,9 @@ class PTable extends React.Component<Props, State> {
                     <Button type="primary">New PIA</Button>
                     </Link>
                 </Row>
-                <Row style={{paddingTop: "2rem"}}>
-                    <Button type="primary" onClick={this.email}>Email</Button>
+                <p style={{ paddingTop: "2rem" }}>Email test buttons: </p>
+                <Row>
+                    <Button type="primary" onClick={this.emailNewPia}>Submit new PIA</Button>
                 </Row>
             </div>
         );

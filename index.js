@@ -51,12 +51,12 @@ app.get('/*', async(req, res) => {
         res.sendFile(path.join(reactBuild, 'index.html'))
 })
 
-app.post('/email', async (req, res) => {
+app.post('/emailNewPia', async (req, res) => {
     const options = {
         from: process.env.NOTIF_EMAIL_USER,
         to: "POFORTIS@outlook.com",
-        subject: "Test email",
-        text: "Check out this link: http://localhost:3000"
+        subject: "New PIA",
+        text: "A new Privacy Impact Assessment has been submitted. Click to view: http://localhost:3000"
     }
     console.log(options);
 
