@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body style="font-family: Arial, Helvetica, sans-serif;">
+    <div id="email" style="width:600px; margin: 0 auto;">
+        <!-- Header --> 
+        <table role="presentation" border="0" cellspacing="0" width="100%">
+            <tr>
+                <td bgcolor="#173a64" align="center">
+                    <img alt="fortis logo" src="../public/images/email_header.png" width="600px"/>
+                </td>
+            </tr>
+        </table>
+        
+        <!-- Body --> 
+        <table role="presentation" border="0" cellspacing="0" width="100%">
+            <tr>
+                <td style="padding: 30px 30px 30px 60px;">
+                    <p>Hi Adam,</p>
+                    <p><%= event_msg %></p>
+                    <div style="text-align: center;">
+                        <a href="<%=pia_url%>" style="color: #173a64">
+                            <button style="background-color: #ffc82c; padding: 10px;">Click to view</button>
+                        </a>
+                    </div>
+                </td> 
+            </tr>
+        </table>
+        
+        <!-- Footer -->
+        <table role="presentation" border="0" cellspacing="0" width="100%">
+            <tr>
+                <td bgcolor="#173a64" align="center"> 
+                    <img alt="email footer" src="../public/images/email_footer.png" width="600px"/>
+                </td>
+            </tr>
+        </table> 
+    </div>
+</body>
+</html>

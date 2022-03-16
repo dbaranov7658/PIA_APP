@@ -45,8 +45,20 @@ const transporter = nodemailer.createTransport({
     }
 })
 
+// verify connection configuration
+transporter.verify(function (error, success) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Server is ready to take our messages");
+    }
+});
+
 app.use(express.static(reactBuild))
 app.use(express.json())
+app.use(express.static(path.join(__dirname, 'public')))
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'ejs')
 
 app.get('/*', async(req, res) => {
         res.sendFile(path.join(reactBuild, 'index.html'))
@@ -57,7 +69,7 @@ app.post('/emailNewPia', async (req, res) => {
     const pia_url = "http://localhost:3000"
 
     try {
-        let data = await ejs.renderFile(__dirname + "/email_template.ejs", { event_msg: event_msg, pia_url: pia_url });
+        let data = await ejs.renderFile(__dirname + "/views/email_template2.ejs", { event_msg: event_msg, pia_url: pia_url });
 
         const options = {
             from: process.env.NOTIF_EMAIL_USER,
@@ -66,7 +78,6 @@ app.post('/emailNewPia', async (req, res) => {
             text: "A new Privacy Impact Assessment has been submitted. Click to view: http://localhost:3000",
             html: data
         }
-        console.log(options);
 
         let result = await transporter.sendMail(options);    
         console.log(result);
