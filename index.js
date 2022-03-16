@@ -1,6 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const User = require('./models/user')
+const nodemailer = require('nodemailer')
 //const NewPia = require('./models/newPIA')
 
 
@@ -33,12 +34,38 @@ const verifyJWT = (req, res, next) => {
 
 require("dotenv").config()
 
+// Set up email transporter
+const transporter = nodemailer.createTransport({
+    host: "smtp-mail.outlook.com",
+    port: 587,
+    auth: {
+        user: process.env.NOTIF_EMAIL_USER,
+        pass: process.env.NOTIF_EMAIL_PWD
+    }
+})
 
 app.use(express.static(reactBuild))
 app.use(express.json())
 
 app.get('/*', async(req, res) => {
         res.sendFile(path.join(reactBuild, 'index.html'))
+})
+
+app.post('/email', async (req, res) => {
+    const options = {
+        from: process.env.NOTIF_EMAIL_USER,
+        to: "POFORTIS@outlook.com",
+        subject: "Test email",
+        text: "Check out this link: http://localhost:3000"
+    }
+    console.log(options);
+
+    try {
+        let result = await transporter.sendMail(options);    
+        console.log(result);
+    } catch(err) {
+        console.log(err);
+    }
 })
 
 app.post('/login', (req, res) => {
@@ -63,8 +90,6 @@ app.post('/login', (req, res) => {
         }
 
     })
-
-
 })
 
 app.post('/isUserAuth', (req, res) => {

@@ -23,9 +23,18 @@ class PTable extends React.Component<Props, State> {
         };
     }
 
-
-
-
+     async email() {
+        try {
+            await fetch('/email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            })
+                .then(response => response.json())
+                .then(data => console.log(data));
+        } catch(err) {
+            console.log(err);
+        }
+    }
 
     render() {
         return (
@@ -40,6 +49,9 @@ class PTable extends React.Component<Props, State> {
                     <Link to="/addNew">
                     <Button type="primary">New PIA</Button>
                     </Link>
+                </Row>
+                <Row style={{paddingTop: "2rem"}}>
+                    <Button type="primary" onClick={this.email}>Email</Button>
                 </Row>
             </div>
         );
