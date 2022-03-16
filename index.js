@@ -2,6 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const User = require('./models/user')
 const nodemailer = require('nodemailer')
+const ejs = require('ejs')
 //const NewPia = require('./models/newPIA')
 
 
@@ -52,15 +53,21 @@ app.get('/*', async(req, res) => {
 })
 
 app.post('/emailNewPia', async (req, res) => {
-    const options = {
-        from: process.env.NOTIF_EMAIL_USER,
-        to: "POFORTIS@outlook.com",
-        subject: "New PIA",
-        text: "A new Privacy Impact Assessment has been submitted. Click to view: http://localhost:3000"
-    }
-    console.log(options);
+    const event_msg = "A new Privacy Impact Assessment has been submitted."
+    const pia_url = "http://localhost:3000"
 
     try {
+        let data = await ejs.renderFile(__dirname + "/email_template.ejs", { event_msg: event_msg, pia_url: pia_url });
+
+        const options = {
+            from: process.env.NOTIF_EMAIL_USER,
+            to: "POFORTIS@outlook.com",
+            subject: "New PIA",
+            text: "A new Privacy Impact Assessment has been submitted. Click to view: http://localhost:3000",
+            html: data
+        }
+        console.log(options);
+
         let result = await transporter.sendMail(options);    
         console.log(result);
     } catch(err) {
