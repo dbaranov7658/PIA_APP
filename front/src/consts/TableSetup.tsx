@@ -89,13 +89,19 @@ const columns = [
         title: 'Action',
         key: 'action',
         width: '100px',
-        render: () => (
-            <div style={{display: "flex", flexDirection: "row"}}>
-            <Tooltip placement="bottom" title={"Print"}>
-                <Button type={"link"} style={{flex: "1"}} onClick={() => {alert("Sorry, we are still working on functionality of that button")}}><PrinterOutlined /></Button>
-            </Tooltip>
-            </div>
-        ),
+        dataIndex: 'status',
+
+        render: status => {
+            if(status === "APPROVED"){
+                return (
+                    <div style={{display: "flex", flexDirection: "row"}}>
+                        <Tooltip placement="bottom" title={"Print"}>
+                            <Button type={"link"} style={{flex: "1"}} onClick={() => {alert("Download PIA Function")}}><PrinterOutlined /></Button>
+                        </Tooltip>
+                    </div>
+                );
+            }
+        },
     },
 ];
 
@@ -163,17 +169,30 @@ const columnsForOfficer = [
     {
         title: 'Action',
         key: 'action',
-        width: '100px',
-        render: () => (
-            <div style={{display: "flex", flexDirection: "row", justifyContent: "space-around"}}>
-            <Tooltip placement="bottom" title={"Delete"} style={{flex: "1"}} > 
-                <Button type={"link"}  onClick={() => {alert("Sorry, we are still working on functionality of that button")}}><DeleteOutlined /></Button>
+        width: '100p',
+        dataIndex: 'status',
+
+        render: status => {
+        return (
+            <div style={{display: "flex", flexDirection: "row", height: "100%", width: "100%", justifyContent:"left"}}>
+
+            <Tooltip placement="bottom" title={"Delete"} style={{flex: "1", marginRight:"5px"}}> 
+                <Button type={"link"} style={{}} onClick={() => {alert("Sorry, we are still working on functionality of that button")}}><DeleteOutlined /></Button>
             </Tooltip>
-            <Tooltip placement="bottom" title={"Print"} style={{flex: "1"}}>
-                <Button type={"link"}  onClick={() => {alert("Sorry, we are still working on functionality of that button")}}><PrinterOutlined /></Button>
-            </Tooltip>
+
+            {status === 'APPROVED' ?
+                <Tooltip placement="bottom" title={"Print"} style={{flex: "1"}}>
+                    <Button type={"link"}  onClick={() => {alert("Download PIA Function")}}><PrinterOutlined /></Button>
+                </Tooltip>
+                :
+                <h1></h1>
+            }
             </div>
-        ),
+
+            
+        );
+        
+        },
     },
 ];
 
