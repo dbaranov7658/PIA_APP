@@ -13,18 +13,28 @@ interface Props{
 }
 
 interface State{
+    isOfficer: boolean
 }
 
 class PTable extends React.Component<Props, State> {
     constructor(props: any){
         super(props);
         this.state ={
-
+            isOfficer: this.props.isOfficer
         };
     }
 
 
+    componentDidMount() {
+        this.setState({})
+    }
 
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.isOfficer !== this.state.isOfficer){
+            this.setState({isOfficer: this.props.isOfficer})
+        }
+    }
 
 
     render() {
@@ -35,10 +45,10 @@ class PTable extends React.Component<Props, State> {
                     :
                     <h1>Your PIAs</h1>
                 }
-                <Table dataSource={dataSource} columns={this.props.isOfficer ? columnsForOfficer : columns} />
+                <Table dataSource={dataSource} columns={this.state.isOfficer ? columnsForOfficer : columns} />
                 <Row>
                     <Link to="/addNew">
-                    <Button type="primary">New PIA</Button>
+                    <Button style={{backgroundColor: "#ffc82c", color: "#173a64", border: "none"}} type="primary">New PIA</Button>
                     </Link>
                 </Row>
             </div>

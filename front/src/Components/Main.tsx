@@ -63,6 +63,7 @@ export default  class Main extends React.Component<any, State> {
 
     async componentDidMount() {
         this.getPublicClientApplication()
+        this.isAuth()
     }
 
     componentDidUpdate(prevProps: Readonly<any>, prevState: Readonly<any>, snapshot?: any) {
