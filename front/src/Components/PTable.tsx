@@ -9,7 +9,8 @@ import {Link} from "react-router-dom";
 
 
 interface Props{
-    isOfficer: boolean
+    isOfficer: boolean,
+    email: string
 }
 
 interface State{
@@ -18,14 +19,15 @@ interface State{
 class PTable extends React.Component<Props, State> {
     constructor(props: any){
         super(props);
-        this.state ={
-
+        this.emailNewPia = this.emailNewPia.bind(this);
+        this.state = {
         };
     }
 
     async emailNewPia() {
         try {
-            await fetch('/emailNewPia', {
+            console.log(this.props.email);
+            await fetch(`/emailNewPia/:${this.props.email}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
             })
@@ -39,6 +41,7 @@ class PTable extends React.Component<Props, State> {
     render() {
         return (
             <div className='page-body'>
+                {console.log(this.props.email)}
                 {this.props.isOfficer ?
                     <h1>All PIAs</h1>
                     :

@@ -123,7 +123,7 @@ export default  class Main extends React.Component<any, State> {
 
                 <Routes>
                     <Route path="/addNew" element={<NewPia/>}/>
-                    <Route path="/" element={<PTable isOfficer={this.state.isOfficer}/>}/>
+                    <Route path="/" element={<PTable isOfficer={this.state.isOfficer} email={this.state.email} />}/>
                 </Routes>
             </div>
         )

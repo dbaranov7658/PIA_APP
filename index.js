@@ -64,18 +64,19 @@ app.get('/*', async(req, res) => {
         res.sendFile(path.join(reactBuild, 'index.html'))
 })
 
-app.post('/emailNewPia', async (req, res) => {
-    const event_msg = "A new Privacy Impact Assessment has been submitted."
+app.post('/emailNewPia/:user_email', async (req, res) => {
+    const user_email = req.params.user_email.substring(1);
     const pia_url = "http://localhost:3000"
+    const event_msg = `A new Privacy Impact Assessment has been submitted by ${user_email}.`
 
     try {
-        let data = await ejs.renderFile(__dirname + "/views/email_template2.ejs", { event_msg: event_msg, pia_url: pia_url });
+        let data = await ejs.renderFile(__dirname + "/views/email_template.ejs", { event_msg: event_msg, pia_url: pia_url });
 
         const options = {
             from: process.env.NOTIF_EMAIL_USER,
             to: "POFORTIS@outlook.com",
             subject: "New PIA",
-            text: "A new Privacy Impact Assessment has been submitted. Click to view: http://localhost:3000",
+            text: `A new Privacy Impact Assessment has been submitted by ${user_email}. Click to view: http://localhost:3000`,
             html: data
         }
 
