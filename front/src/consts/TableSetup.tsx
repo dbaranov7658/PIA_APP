@@ -1,4 +1,4 @@
-import {Button, Tag, Tooltip} from "antd";
+import {Button, Popconfirm, Tag, Tooltip} from "antd";
 import { DeleteOutlined } from '@ant-design/icons';
 
 const dataSource = [
@@ -153,7 +153,15 @@ const columnsForOfficer = [
         width: '100px',
         render: () => (
             <Tooltip placement="bottom" title={"Delete"}>
-            <Button type={"link"} onClick={() => {alert("Sorry, we are still working on functionality of that button")}}><DeleteOutlined /></Button>
+                <Popconfirm
+                    title="Are you sure to delete this PIA?"
+                    onConfirm={() => {alert("Sorry, we are still working on functionality of that button")}}
+                    onCancel={() => {}}
+                    okText="Yes"
+                    cancelText="No"
+                >
+            <Button type={"link"} onClick={() => {}}><DeleteOutlined /></Button>
+                </Popconfirm>
             </Tooltip>
 
         ),
