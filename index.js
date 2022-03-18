@@ -35,56 +35,19 @@ const verifyJWT = (req, res, next) => {
 
 require("dotenv").config()
 
-// Set up email transporter
-const transporter = nodemailer.createTransport({
-    host: "smtp-mail.outlook.com",
-    port: 587,
-    auth: {
-        user: process.env.NOTIF_EMAIL_USER,
-        pass: process.env.NOTIF_EMAIL_PWD
-    }
-})
-
-// verify connection configuration
-transporter.verify(function (error, success) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Server is ready to take our messages");
-    }
-});
-
 app.use(express.static(reactBuild))
 app.use(express.json())
-app.use(express.static(path.join(__dirname, 'public')))
+
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 
-app.get('/*', async(req, res) => {
-        res.sendFile(path.join(reactBuild, 'index.html'))
-})
 
-app.post('/emailNewPia/:user_email', async (req, res) => {
-    const user_email = req.params.user_email.substring(1);
-    const pia_url = "http://localhost:3000"
-    const event_msg = `A new Privacy Impact Assessment has been submitted by ${user_email}.`
+app.use('/v1/email', require('./routes/email_route'))
 
-    try {
-        let data = await ejs.renderFile(__dirname + "/views/email_template.ejs", { event_msg: event_msg, pia_url: pia_url });
-
-        const options = {
-            from: process.env.NOTIF_EMAIL_USER,
-            to: "POFORTIS@outlook.com",
-            subject: "New PIA",
-            text: `A new Privacy Impact Assessment has been submitted by ${user_email}. Click to view: http://localhost:3000`,
-            html: data
-        }
-
-        let result = await transporter.sendMail(options);    
-        console.log(result);
-    } catch(err) {
-        console.log(err);
-    }
+app.get('/test', (req,res)=>{
+    res.json({
+        status: true,
+    })
 })
 
 app.post('/login', (req, res) => {
@@ -153,6 +116,12 @@ app.post('/isUserAuth', (req, res) => {
     }
 
 })
+
+
+app.get('/*', async(req, res) => {
+    res.sendFile(path.join(reactBuild, 'index.html'))
+})
+
 
 mongoose.connect(process.env.DB_URI, {useNewUrlParser: true, useUnifiedTopology: true}).then((result) => {
             console.log('connected to db')

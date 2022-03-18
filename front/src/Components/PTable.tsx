@@ -27,7 +27,7 @@ class PTable extends React.Component<Props, State> {
     async emailNewPia() {
         try {
             console.log(this.props.email);
-            await fetch(`/emailNewPia/:${this.props.email}`, {
+            await fetch(`v1/email/emailNewPia/:${this.props.email}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
             })
