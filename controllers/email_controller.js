@@ -1,19 +1,32 @@
 const nodemailer = require('nodemailer')
 const ejs = require('ejs')
 
-
-
 // Set up email transporter
-const transporter = nodemailer.createTransport({
-    // host: "smtp-relay.sendinblue.com ",
-    // port: 587,
-    // service: 'SendinBlue',
-    service: "Gmail",
-    auth: {
-        user: process.env.NOTIF_EMAIL_USER,
-        pass: process.env.NOTIF_EMAIL_PWD
-    }
-})
+var mailConfig;
+if (process.env.NODE_ENV === 'production' ){
+    // all emails are delivered to destination
+    mailConfig = {
+        // host: "smtp-relay.sendinblue.com ",
+        // port: 587,
+        // service: 'SendinBlue',
+        service: "Gmail",
+        auth: {
+            user: process.env.NOTIF_EMAIL_USER,
+            pass: process.env.NOTIF_EMAIL_PWD
+        }
+    };
+} else {
+    // all emails are catched by ethereal.email
+    mailConfig = {
+        host: 'smtp.ethereal.email',
+        port: 587,
+        auth: {
+            user: process.env.ETHEREAL_EMAIL,
+            pass: process.env.ETHEREAL_PWD
+        }
+    };
+}
+let transporter = nodemailer.createTransport(mailConfig);
 
 // verify connection configuration
 transporter.verify(function (error, success) {
@@ -38,6 +51,12 @@ async function sendEmail(req, res, recipient_name, pia_url, event_msg, options) 
 
         // send email
         let result = await transporter.sendMail(options);
+
+        // get preview link of test email
+        if (process.env.NODE_ENV === 'development') {
+            console.log('Preview URL: ' + nodemailer.getTestMessageUrl(result));
+        }
+            
         console.log(result);
         res.json({
             status: true,
