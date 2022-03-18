@@ -186,7 +186,7 @@ const columnsForOfficer = [
                         </Popconfirm>
                     </Tooltip>
 
-            {status === 'APPROVED' ?
+            {status.status === 'APPROVED' ?
                 <Tooltip placement="bottom" title={"Print"} style={{flex: "1"}}>
                     <Button type={"link"}  onClick={() => {alert("Download PIA Function")}}><PrinterOutlined /></Button>
                 </Tooltip>
