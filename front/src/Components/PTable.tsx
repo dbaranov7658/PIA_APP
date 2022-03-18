@@ -22,6 +22,7 @@ class PTable extends React.Component<Props, State> {
         super(props);
         this.emailNewPia = this.emailNewPia.bind(this);
         this.emailCommentPia = this.emailCommentPia.bind(this);
+        this.emailEditPia = this.emailEditPia.bind(this);
         this.state = {
             isOfficer: this.props.isOfficer
         };
@@ -45,6 +46,20 @@ class PTable extends React.Component<Props, State> {
         try {
             console.log(this.props.email);
             await fetch(`v1/email/emailCommentPia/:${this.props.email}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            })
+                .then(response => response.json())
+                .then(data => console.log(data));
+        } catch(err) {
+            console.log(err);
+        }
+    }  
+    
+    async emailEditPia() {
+        try {
+            console.log(this.props.email);
+            await fetch(`v1/email/emailEditPia/:${this.props.email}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
             })
@@ -83,7 +98,8 @@ class PTable extends React.Component<Props, State> {
                 <p style={{ paddingTop: "2rem" }}>Email test buttons: </p>
                 <Row>
                     <Button type="primary" onClick={this.emailNewPia} style={{marginRight: "40px"}}>Submit new PIA</Button>
-                    <Button type="primary" onClick={this.emailCommentPia} style={{marginRight: "40px"}}>Comment on PIA</Button>
+                    <Button type="primary" onClick={this.emailCommentPia} style={{ marginRight: "40px" }}>Comment on PIA</Button>
+                    <Button type="primary" onClick={this.emailEditPia} style={{marginRight: "40px"}}>Edit PIA</Button>
                 </Row>
             </div>
         );

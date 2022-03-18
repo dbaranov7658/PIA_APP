@@ -24,7 +24,7 @@ transporter.verify(function (error, success) {
     }
 });
 
-async function sendEmail(req, res, recipient, pia_url, event_msg, options) {
+async function sendEmail(req, res, recipient_name, pia_url, event_msg, options) {
     try {
         // remove controllers from __dirname
         let _dirnames_arr = __dirname.split("/")
@@ -33,7 +33,7 @@ async function sendEmail(req, res, recipient, pia_url, event_msg, options) {
         const _abs_dir = _dirnames_arr.join("/")
 
         // render email template
-        let data = await ejs.renderFile(_abs_dir + "/views/email_template.ejs", { recipient: recipient, event_msg: event_msg, pia_url: pia_url });
+        let data = await ejs.renderFile(_abs_dir + "/views/email_template.ejs", { recipient: recipient_name, event_msg: event_msg, pia_url: pia_url });
         options.html = data;
 
         // send email
@@ -94,14 +94,41 @@ exports.emailCommentPia = (req,res) => {
     // get pia users from db
     const general_user = "userfortisbc@outlook.com";
     const privacy_officer = process.env.PO_EMAIL;
-    const recipient = user_email === privacy_officer ? general_user : privacy_officer; // set recipient name
+    const recipient_email = user_email === privacy_officer ? general_user : privacy_officer; 
+    const recipient_name = user_email === privacy_officer ? "General User" : "Privacy Officer"; 
 
     const event_msg = `${user_email} has left a comment on ${pia_name}`;
     const options = {
         from: process.env.NOTIF_EMAIL_USER,
-        to: recipient,
-        subject: `New Comment on ${pia_name}`,
+        to: recipient_email,
+        subject: `New comment on ${pia_name}`,
         text: `${event_msg} Click to view: ${pia_url}`, // Fallback message
     }
-    sendEmail(req, res, recipient, pia_url, event_msg, options);
+    sendEmail(req, res, recipient_name, pia_url, event_msg, options);
+}
+
+/* 
+ * @route  v1/email/emailEditPia/:user_email
+ * @type   POST 
+ * @access public
+ */
+exports.emailEditPia = (req,res) => {
+    const user_email = req.params.user_email.substring(1);
+
+    // get url from db
+    const pia_url = "http://localhost:3000";
+
+    // get name of pia from db
+    const pia_name = "PIA #1";
+
+    const recipient_email = process.env.PO_EMAIL;
+    const event_msg = `${user_email} has made an edit to ${pia_name}.`;
+    
+    const options = {
+        from: process.env.NOTIF_EMAIL_USER,
+        to: recipient_email,
+        subject: `New Edit Made to ${pia_name}`,
+        text: `${event_msg} Click to view: ${pia_url}`, // Fallback message
+    }
+    sendEmail(req, res, "Privacy Officer", pia_url, event_msg, options);
 }
