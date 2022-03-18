@@ -24,6 +24,7 @@ class PTable extends React.Component<Props, State> {
         this.emailCommentPia = this.emailCommentPia.bind(this);
         this.emailEditPia = this.emailEditPia.bind(this);
         this.emailApprovePia = this.emailApprovePia.bind(this);
+        this.emailRejectPia = this.emailRejectPia.bind(this);
         this.state = {
             isOfficer: this.props.isOfficer
         };
@@ -84,6 +85,20 @@ class PTable extends React.Component<Props, State> {
             console.log(err);
         }
     }    
+
+    async emailRejectPia() {
+        try {
+            console.log(this.props.email);
+            await fetch(`v1/email/emailRejectPia`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            })
+                .then(response => response.json())
+                .then(data => console.log(data));
+        } catch(err) {
+            console.log(err);
+        }
+    }    
     
     componentDidMount() {
         this.setState({})
@@ -115,7 +130,8 @@ class PTable extends React.Component<Props, State> {
                     <Button type="primary" onClick={this.emailNewPia} style={{marginRight: "40px"}}>Submit new PIA</Button>
                     <Button type="primary" onClick={this.emailCommentPia} style={{ marginRight: "40px" }}>Comment on PIA</Button>
                     <Button type="primary" onClick={this.emailEditPia} style={{ marginRight: "40px" }}>Edit PIA</Button>
-                    <Button type="primary" onClick={this.emailApprovePia} style={{marginRight: "40px"}}>Approve PIA</Button>
+                    <Button type="primary" onClick={this.emailApprovePia} style={{ marginRight: "40px" }}>Approve PIA</Button>
+                    <Button type="primary" onClick={this.emailRejectPia} style={{marginRight: "40px"}}>Reject PIA</Button>
                 </Row>
             </div>
         );

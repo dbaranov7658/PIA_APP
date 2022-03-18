@@ -132,3 +132,58 @@ exports.emailEditPia = (req,res) => {
     }
     sendEmail(req, res, "Privacy Officer", pia_url, event_msg, options);
 }
+
+/* 
+ * @route  v1/email/emailEditPia
+ * @type   POST 
+ * @access public
+ */
+exports.emailApprovePia = (req,res) => {
+    // get url from db
+    const pia_url = "http://localhost:3000";
+
+    // get name of pia from db
+    const pia_name = "PIA #1";
+
+    // get pia user from db
+    const recipient_email = "userfortisbc@outlook.com";
+    const recipient_name = "General User"
+
+    const event_msg = `${pia_name} has been approved.`;
+    
+    const options = {
+        from: process.env.NOTIF_EMAIL_USER,
+        to: recipient_email,
+        subject: `APPROVED: ${pia_name}`,
+        text: `${event_msg} Click to view: ${pia_url}`, // Fallback message
+    }
+    sendEmail(req, res, recipient_name, pia_url, event_msg, options);
+}
+
+/* 
+ * @route  v1/email/emailRejectPia
+ * @type   POST 
+ * @access public
+ */
+exports.emailRejectPia = (req,res) => {
+    // get url from db
+    const pia_url = "http://localhost:3000";
+
+    // get name of pia from db
+    const pia_name = "PIA #1";
+
+    // get pia user from db
+    const recipient_email = "userfortisbc@outlook.com";
+    const recipient_name = "General User"
+
+    const event_msg = `${pia_name} has been rejected.`;
+    
+    const options = {
+        from: process.env.NOTIF_EMAIL_USER,
+        to: recipient_email,
+        subject: `REJECTED: ${pia_name}`,
+        text: `${event_msg} Click to view: ${pia_url}`, // Fallback message
+    }
+    sendEmail(req, res, recipient_name, pia_url, event_msg, options);
+}
+
