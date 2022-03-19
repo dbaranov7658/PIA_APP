@@ -3,19 +3,18 @@ const ejs = require('ejs')
 const User = require('../models/user')
 
 const EventEmitter = require('events');
-const app = require('../index')
+// const app = require('../index')
 
 // const myEmitter = new EventEmitter();
+// console.log(app);
 
 // Set up email transporter
 const mailConfig1 = {
-        // host: "smtp-relay.sendinblue.com ",
-        // port: 587,
-        // service: 'SendinBlue',
-        service: "Gmail",
+        host: "smtp-relay.sendinblue.com",
+        port: 587,
         auth: {
             user: process.env.NOTIF_EMAIL_USER,
-            pass: process.env.NOTIF_EMAIL_PWD
+            pass: process.env.SMTP_KEY
         }
 };
 // all emails are catched by ethereal.email

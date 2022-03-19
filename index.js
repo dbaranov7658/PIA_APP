@@ -133,6 +133,9 @@ mongoose.connect(process.env.DB_URI, {useNewUrlParser: true, useUnifiedTopology:
     app.listen(PORT, () => {
         console.log('server is running on ' + PORT)
         app.emit("app_started")
+        setTimeout(() => {
+            app.emit("messages_ready")
+          }, 1500);
         // myEmitter.on("messages_ready", () => {
         //     console.log("messages ready");
         //     app.emit("messages_ready")
