@@ -136,7 +136,8 @@ export default  class Main extends React.Component<any, State> {
        return (
 
           localStorage.getItem("token") === null ?
-         <Login setIsOfficer={this.setIsOfficer} setEmail={this.setEmail} pcl={this.state.pcl}/>
+         // <Login setIsOfficer={this.setIsOfficer} setEmail={this.setEmail} pcl={this.state.pcl}/>
+              <NewPia/>
                :
          this.renderMenu()
 
