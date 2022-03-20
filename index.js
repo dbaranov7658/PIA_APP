@@ -2,7 +2,8 @@ const express = require('express')
 const mongoose = require('mongoose')
 const dbURI = 'mongodb+srv://admin:Cc5YUp6CyQNrb2X@fortisdb.pj07g.mongodb.net/FortisPIA?retryWrites=true&w=majority'
 const User = require('./models/user')
-//const NewPia = require('./models/newPIA')
+const NewPia = require('./models/newPIA')
+
 
 
 const app = express()
@@ -10,8 +11,6 @@ const PORT = process.env.PORT || 3000
 const path = require('path')
 
 const  reactBuild = path.join(__dirname, 'front', 'build')
-
-
 
 
 
@@ -47,7 +46,6 @@ app.get('/deleteUser', (req, res) => {
         console.log(err)
     })
 })
-
 
 
 mongoose.connect(dbURI, {useNewUrlParser: true, useUnifiedTopology: true}).then((result) => {

@@ -60,6 +60,7 @@ class Login extends React.Component<Props, State>  {
     }
 
     getPublicClientApplication = () => {
+        // @ts-ignore
         this.state.pcl = new PublicClientApplication({
             auth: {
                 clientId: config.appId,
