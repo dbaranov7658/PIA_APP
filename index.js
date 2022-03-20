@@ -1,13 +1,18 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const User = require('./models/user')
-const NewPia = require('./models/newPIA')
-
+const nodemailer = require('nodemailer')
+const ejs = require('ejs')
+var cors = require('cors');
+//const NewPia = require('./models/newPIA')
+const EventEmitter = require('events');
 
 
 const app = express()
 const PORT = process.env.PORT || 3000
 const path = require('path')
+
+const myEmitter = new EventEmitter();
 
 const  reactBuild = path.join(__dirname, 'front', 'build')
 
@@ -19,7 +24,7 @@ const verifyJWT = (req, res, next) => {
     if (!token) {
         res.send('need token')
     } else{
-        jwt.verify(token, "jwtSecret", (err, decoded) => {
+        jwt.verify(token, process.env.JWT_VAR, (err, decoded) => {
             if (err){
                 res.json({
                     auth: false,
@@ -34,38 +39,19 @@ const verifyJWT = (req, res, next) => {
 
 require("dotenv").config()
 
-
 app.use(express.static(reactBuild))
 app.use(express.json())
 
-app.get('/', async(req, res) => {
-        res.sendFile(path.join(reactBuild, 'index.html'))
-})
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'ejs')
 
-app.get('/getUser', (req, res) => {
+app.use('/', cors());
 
-    User.findById('621eb64ca9dd8e8b5c2b8746').then((result) => {
-        res.send(result)
-    }).catch((err) => {
-        console.log(err)
-    })
-})
+app.use('/v1/email', require('./routes/email_route'))
 
-app.get('/getAllUsers', (req, res) => {
-    User.find().then((result) => {
-        res.send(result)
-        }
-    ).catch((err) => {
-        console.log(err)
-    })
-})
-
-app.get('/deleteUser', (req, res) => {
-    User.deleteOne({ _id: '6226bd72fdfcc70fe0bd604e'}).then((result) => {
-            res.send(result)
-        }
-    ).catch((err) => {
-        console.log(err)
+app.get('/test', (req,res)=>{
+    res.json({
+        status: true,
     })
 })
 
@@ -91,23 +77,71 @@ app.post('/login', (req, res) => {
         }
 
     })
+})
 
+app.post('/isUserAuth', (req, res) => {
+    const token = req.headers["x-access-token"]
+    if (!token) {
+        res.json({
+            auth: false,
+            status: "Token not provided",
+        })
+    } else {
+       jwt.verify(token, process.env.JWT_VAR, (err, decoded) => {
+            if (err){
+                res.json({
+                    auth: false,
+                    status: "error during verifying token",
+                })
+            } else {
+                User.findById(decoded.id , (error, result) => {
+                    if (result === null){
+                        res.json({
+                            auth: false,
+                            status: "error during verifying token",
+                        })
+                    } else if (error){
+                        console.log(error)
+                        res.json({
+                            auth: false,
+                            status: "error during verifying token",
+                        })
+                    }
+                    else{
+                        res.json({
+                            auth: true,
+                            status: "success auth",
+                            isOfficer: result.isOfficer,
+                            email: result.email
+                        })
+                    }
+                })
+            }
+        })
+    }
 
 })
 
+
+app.get('/*', async(req, res) => {
+    res.sendFile(path.join(reactBuild, 'index.html'))
+})
+
+
 mongoose.connect(process.env.DB_URI, {useNewUrlParser: true, useUnifiedTopology: true}).then((result) => {
-            console.log('connected to db')
-            app.listen(PORT, ()=>{console.log('server is running on ' + PORT)})
+    console.log('connected to db')
+    app.listen(PORT, () => {
+        console.log('server is running on ' + PORT)
+        app.emit("app_started")
+        // myEmitter.on("messages_ready", () => {
+        //     console.log("messages ready");
+        //     app.emit("messages_ready")
+        // })
+    })
     }
 ).catch((err) => {
         console.log(err)
 })
 
-
-app.get('/isUserAuth', verifyJWT, (req, res) => {
-    res.json({
-        auth: true,
-        status: "you are auth",
-    })
-})
+module.exports = app;
 

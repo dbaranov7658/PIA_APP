@@ -1,5 +1,6 @@
-import {Button, Tag, Tooltip} from "antd";
+import {Button, Tag, Tooltip, Popconfirm} from "antd";
 import { DeleteOutlined } from '@ant-design/icons';
+import {PrinterOutlined} from '@ant-design/icons';
 
 const dataSource = [
     {
@@ -84,6 +85,24 @@ const columns = [
         sorter: (a, b) => Date.parse(a.submission_date) - Date.parse(b.submission_date),
         sortDirections: ['ascend', 'descend'],
     },
+    {
+        title: 'Action',
+        key: 'action',
+        width: '100px',
+        dataIndex: 'status',
+
+        render: status => {
+            if(status === "APPROVED"){
+                return (
+                    <div style={{display: "flex", flexDirection: "row"}}>
+                        <Tooltip placement="bottom" title={"Print"}>
+                            <Button type={"link"} style={{flex: "1"}} onClick={() => {alert("Download PIA Function")}}><PrinterOutlined /></Button>
+                        </Tooltip>
+                    </div>
+                );
+            }
+        },
+    },
 ];
 
 const columnsForOfficer = [
@@ -151,12 +170,35 @@ const columnsForOfficer = [
         title: 'Action',
         key: 'action',
         width: '100px',
-        render: () => (
-            <Tooltip placement="bottom" title={"Delete"}>
-            <Button type={"link"} onClick={() => {alert("Sorry, we are still working on functionality of that button")}}><DeleteOutlined /></Button>
-            </Tooltip>
+        render: status => {
+            return (
+                <div style={{display: "flex", flexDirection: "row", height: "100%", width: "100%", justifyContent:"left"}}>
 
-        ),
+                    <Tooltip placement="bottom" title={"Delete"}>
+                        <Popconfirm
+                            title="Are you sure to delete this PIA?"
+                            onConfirm={() => {alert("Sorry, we are still working on functionality of that button")}}
+                            onCancel={() => {}}
+                            okText="Yes"
+                            cancelText="No"
+                        >
+                            <Button type={"link"} onClick={() => {}}><DeleteOutlined /></Button>
+                        </Popconfirm>
+                    </Tooltip>
+
+            {status.status === 'APPROVED' ?
+                <Tooltip placement="bottom" title={"Print"} style={{flex: "1"}}>
+                    <Button type={"link"}  onClick={() => {alert("Download PIA Function")}}><PrinterOutlined /></Button>
+                </Tooltip>
+                :
+                <h1></h1>
+            }
+            </div>
+
+
+        );
+
+        },
     },
 ];
 
