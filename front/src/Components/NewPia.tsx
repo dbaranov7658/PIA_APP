@@ -17,7 +17,6 @@ interface State{
     individualsInfo: string
     isDisclosed: boolean
     disclosedInfo: string
-    data:string
 }
 
 
@@ -26,25 +25,17 @@ export default class  NewPia extends React.Component<any, State>{
     constructor(props: any){
         super(props);
         this.state = {
-            disclosedInfo: "",
-            personalInfo: "",
+            disclosedInfo: undefined,
+            personalInfo: undefined,
             projectName: "",
             sponsoringBusinessUnit: "",
-            projectDescription: "",
+            projectDescription: undefined,
             isCollected: null,
             purpose: "",
-            individualsInfo: "",
+            individualsInfo: undefined,
             isDisclosed: null,
-            data: "",
 
         }
-
-    }
-
-
-    handleDescriptionDataChange
-    (data, editor) {
-        this.setState({ data });
 
     }
 
@@ -52,20 +43,15 @@ export default class  NewPia extends React.Component<any, State>{
     onSubmit = (e) => {
         e.preventDefault();
         if (e){
+            this.formRef.current.validateFields().then(() => {
 
+            })
         }
-        console.log(this.state.purpose)
-        console.log(this.state.projectName)
-        console.log(this.state.projectDescription)
-        console.log(this.state.sponsoringBusinessUnit)
-        console.log(this.state.individualsInfo)
-        console.log(this.state.isDisclosed)
-        console.log(this.state.isCollected)
     }
 
     render(){
         return (
-            <div className="newpiaContainer">
+            <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
 
                 <Form onSubmitCapture={this.onSubmit}
                       layout="vertical"
@@ -94,29 +80,41 @@ export default class  NewPia extends React.Component<any, State>{
                         </Select>
                     </Form.Item>
 
-                    <Form.Item label="Project description"  rules={[{ required: true, message: 'Please enter the project description!' }]}  name="projectDescription" >
 
-                    <CKEditor
-                        config={{
-                            toolbar: ['heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList']
-                        }}
-                        editor={classicEditor}
-                        data={this.state.data}
-                        value={this.state.data}
-                        init={{
-                            height: 200,
-                            menubar: false
-                        }}
-                        onChange={ ( event, editor ) => {
-                            this.setState({projectDescription: editor.getData()})
-                        }
-                        }
 
-                    />
+                        <Form.Item label="Project description" style={{marginBottom: this.state.projectDescription === "" ? "0px" : "24px"}}
+                                   rules={[{ required: true, message: 'Please enter the project description' }]}  name="projectDescription" >
 
-                    </Form.Item >
+                            <CKEditor
+                                data={this.state.projectDescription}
+                                config={{
+                                    toolbar: ['heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList']
+                                }}
+                                editor={classicEditor}
+                                init={{
+                                    height: 200,
+                                    menubar: false
+                                }}
 
-                    <Form.Item label="Is it necessary for the purpose of the project that personal information be collected, used or disclosed?" rules={[{required:true, message:"Please select an option!"}]}>
+                                value={this.state.projectDescription}
+                                onChange={ ( event, editor ) => {
+                                    this.setState({projectDescription: editor.getData()})
+                                }
+                                }
+
+                            />
+
+                        </Form.Item >
+
+                    {this.state.projectDescription === "" ?
+                    <div style={{color: "red", marginBottom: "24px"}}>Please enter the project description</div>
+                        :
+                        null
+                    }
+
+
+                    <Form.Item label="Is it necessary for the purpose of the project that personal information be collected, used or disclosed?" rules={[{required:true, message:"Please select an option"}]}
+                               name="isCollected">
 
                         <Radio.Group onChange={(e) => {
                             this.setState({isCollected: e.target.value === "1"})
@@ -130,15 +128,14 @@ export default class  NewPia extends React.Component<any, State>{
                     </Form.Item>
 
                     {this.state.isCollected ?
-                            <Form.Item label="What personal information will be collected, used or disclosed?"  rules={[{ required: true, message: 'Please enter the project description!' }]}  name="personalInformation" >
+                            <Form.Item label="What personal information will be collected, used or disclosed?"  style={{marginBottom: this.state.personalInfo === "" ? "0px" : "24px"}}
+                                       rules={[{ required: true, message: 'Please enter the personal information' }]}  name="personalInformation" >
 
                                 <CKEditor
                                     config={{
                                         toolbar: ['heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList']
                                     }}
                                     editor={classicEditor}
-                                    data={this.state.data}
-                                    value={this.state.data}
                                     init={{
                                         height: 200,
                                         menubar: false
@@ -152,10 +149,21 @@ export default class  NewPia extends React.Component<any, State>{
                             </Form.Item>
                            :
                             null
+
+
                     }
+
+                    {this.state.personalInfo === "" && this.state.isCollected ?
+                        <div style={{color: "red", marginBottom: "24px"}}>Please enter the personal information</div>
+                        :
+                        null
+                    }
+
+
 
                     <Form.Item label="Which “purpose” in S2.3 of the FortisBC Privacy Policy applies to this project?"
                                name="purpose"
+                               rules={[{ required: true, message: 'Please select an option' }]}
                                hasFeedback validateFirst={true}
                     >
                         <Select allowClear id="purpose" value={this.state.purpose} onChange={(e) => { this.setState({purpose: e})}} >
@@ -163,7 +171,9 @@ export default class  NewPia extends React.Component<any, State>{
                             <Select.Option value="Demo2">Demo2</Select.Option>
                         </Select>
                     </Form.Item>
-                    <Form.Item label="List the individuals accountable for the personal information" name="individualsAccountable">
+                    <Form.Item label="List the individuals accountable for the personal information"
+                               style={{marginBottom: this.state.individualsInfo === "" ? "0px" : "24px"}}
+                               name="individualsAccountable" rules={[{ required: true, message: 'Please list individuals' }]}>
 
                     <CKEditor
                         config={{
@@ -181,7 +191,14 @@ export default class  NewPia extends React.Component<any, State>{
                     />
                     </Form.Item>
 
-                    <Form.Item label="Is any information being disclosed or stored outside of Canada as part of this project?" name="isDisclosed">
+                    {this.state.individualsInfo === "" ?
+                        <div style={{color: "red", marginBottom: "24px"}}>Please list individuals</div>
+                        :
+                        null
+                    }
+
+                    <Form.Item label="Is any information being disclosed or stored outside of Canada as part of this project?" name="isDisclosed"
+                               rules={[{ required: true, message: 'Please select an option' }]}>
                         <Radio.Group onChange={(e) => { this.setState({isDisclosed: e.target.value === '1'})} }>
                             <Radio value={'1'}>Yes</Radio>
                             <Radio value={'2'}>No</Radio>
@@ -191,15 +208,16 @@ export default class  NewPia extends React.Component<any, State>{
                     </Form.Item>
 
                     {this.state.isDisclosed ?
-                        <Form.Item label="What information being disclosed or stored outside of Canada as part of this project??"  rules={[{ required: true, message: 'Please enter the project description!' }]}  name="disclosedInformation" >
+                        <Form.Item label="What information being disclosed or stored outside of Canada as part of this project??"
+                                   style={{marginBottom: this.state.disclosedInfo === "" ? "0px" : "24px"}}
+                                   rules={[{ required: true, message: 'Please enter the disclosed information' }]}  name="disclosedInformation" >
 
                             <CKEditor
                                 config={{
                                     toolbar: ['heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList']
                                 }}
                                 editor={classicEditor}
-                                data={this.state.data}
-                                value={this.state.data}
+                                value={this.state.disclosedInfo}
                                 init={{
                                     height: 200,
                                     menubar: false
@@ -210,6 +228,12 @@ export default class  NewPia extends React.Component<any, State>{
 
                             />
                         </Form.Item>
+                        :
+                        null
+                    }
+
+                    {this.state.disclosedInfo === "" && this.state.isDisclosed ?
+                        <div style={{color: "red", marginBottom: "24px"}}>Please enter the disclosed information</div>
                         :
                         null
                     }
