@@ -1,7 +1,8 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const User = require('./models/user')
-//const NewPia = require('./models/newPIA')
+const NewPia = require('./models/newPIA')
+
 
 
 const app = express()
