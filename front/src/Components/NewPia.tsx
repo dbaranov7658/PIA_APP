@@ -6,6 +6,18 @@ import * as React from "react";
 import {Link} from "react-router-dom";
 import TextArea from "antd/es/input/TextArea";
 
+export interface PIA{
+    projectName: string
+    sponsoringBusinessUnit: string
+    projectDescription: string
+    isCollected: boolean
+    personalInfo?: string
+    purpose: string
+    individualsInfo: string
+    isDisclosed: boolean
+    disclosedInfo?: string
+}
+
 
 interface State{
     personalInfo: string;
@@ -17,6 +29,7 @@ interface State{
     individualsInfo: string
     isDisclosed: boolean
     disclosedInfo: string
+    Pia: PIA
 }
 
 
@@ -34,6 +47,7 @@ export default class  NewPia extends React.Component<any, State>{
             purpose: "",
             individualsInfo: undefined,
             isDisclosed: null,
+            Pia: undefined
 
         }
 
@@ -44,6 +58,20 @@ export default class  NewPia extends React.Component<any, State>{
         e.preventDefault();
         if (e){
             this.formRef.current.validateFields().then(() => {
+                if (this.state.projectDescription !== "" && !(this.state.personalInfo !== "" && this.state.isCollected) && !(this.state.disclosedInfo === "" && this.state.isDisclosed)){
+                        this.setState({Pia: {
+                                projectName: this.state.projectName,
+                                sponsoringBusinessUnit: this.state.sponsoringBusinessUnit,
+                                projectDescription: this.state.projectDescription,
+                                isCollected: this.state.isCollected,
+                                personalInfo: this.state.personalInfo,
+                                purpose: this.state.purpose,
+                                individualsInfo: this.state.individualsInfo,
+                                isDisclosed: this.state.isDisclosed,
+                                disclosedInfo: this.state.disclosedInfo,
+                            }})
+                    console.log(this.state.Pia)
+                }
 
             })
         }
