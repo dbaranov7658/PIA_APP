@@ -108,7 +108,7 @@ export default  class Main extends React.Component<any, State> {
     renderMenu = () => {
         return (
             <div>
-                <Row style={{height: "80px"}}>
+                <Row style={{height: "100px", width: "100%", position: "fixed", top: 0, boxShadow: "0 2px 8px #f0f1f2",zIndex: 1000, backgroundColor: "white"}}>
                     <Col span={12} style={{paddingTop: "20px", paddingLeft: "25px", height: "80px"}}>
                        {fortisLogoForMain}
                     </Col>
@@ -136,7 +136,8 @@ export default  class Main extends React.Component<any, State> {
        return (
 
           localStorage.getItem("token") === null ?
-          <Login setIsOfficer={this.setIsOfficer} setEmail={this.setEmail} pcl={this.state.pcl}/>
+         /* <Login setIsOfficer={this.setIsOfficer} setEmail={this.setEmail} pcl={this.state.pcl}/>*/
+              <NewPia/>
                :
          this.renderMenu()
 

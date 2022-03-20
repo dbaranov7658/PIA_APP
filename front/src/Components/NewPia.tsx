@@ -1,6 +1,6 @@
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import classicEditor from '@ckeditor/ckeditor5-build-classic'
-import {Form, Button, Radio, Input, Select, Row, FormInstance,} from 'antd';
+import {Form, Button, Radio, Input, Select, Row, FormInstance, message,} from 'antd';
 import '../CSS/App.css';
 import * as React from "react";
 import {Link} from "react-router-dom";
@@ -57,9 +57,10 @@ export default class  NewPia extends React.Component<any, State>{
     onSubmit = (e) => {
         e.preventDefault();
         if (e){
-            this.formRef.current.validateFields().then(() => {
-                if (this.state.projectDescription !== "" && !(this.state.personalInfo !== "" && this.state.isCollected) && !(this.state.disclosedInfo === "" && this.state.isDisclosed)){
-                        this.setState({Pia: {
+            this.formRef.current.validateFields().then((er) => {
+                           if (this.state.projectDescription !== "" && (!this.state.isCollected || (this.state.isCollected && this.state.personalInfo !== "")) && (!this.state.isDisclosed || (this.state.disclosedInfo !== "" && this.state.isDisclosed))) {
+                        this.setState({
+                            Pia: {
                                 projectName: this.state.projectName,
                                 sponsoringBusinessUnit: this.state.sponsoringBusinessUnit,
                                 projectDescription: this.state.projectDescription,
@@ -69,19 +70,22 @@ export default class  NewPia extends React.Component<any, State>{
                                 individualsInfo: this.state.individualsInfo,
                                 isDisclosed: this.state.isDisclosed,
                                 disclosedInfo: this.state.disclosedInfo,
-                            }})
-                    console.log(this.state.Pia)
-                }
-
+                            }
+                        })
+                        console.log(this.state.Pia)
+                    }
+            }).catch((er) => {
+                message.error("Please correct the mistake in form")
             })
         }
     }
 
     render(){
         return (
-            <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+            <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "calc(100% - 100px)", width: "100%", marginTop: "100px", zIndex: 1}}>
 
-                <Form onSubmitCapture={this.onSubmit}
+                <Form style={{paddingTop: "25px", paddingBottom: "40px"}}
+                    onSubmitCapture={this.onSubmit}
                       layout="vertical"
                       scrollToFirstError
                       ref={this.formRef}
