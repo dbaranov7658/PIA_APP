@@ -2,12 +2,6 @@ const nodemailer = require('nodemailer')
 const ejs = require('ejs')
 const User = require('../models/user')
 
-const EventEmitter = require('events');
-// const app = require('../index')
-
-// const myEmitter = new EventEmitter();
-// console.log(app);
-
 // Set up email transporter
 const mailConfig1 = {
         host: "smtp-relay.sendinblue.com",
@@ -27,7 +21,7 @@ const mailConfig2 = {
     }
 };
 
-let transporter = nodemailer.createTransport(mailConfig1);
+let transporter = nodemailer.createTransport(mailConfig2);
 
 // verify connection configuration
 transporter.verify(function (error, success) {
@@ -35,8 +29,7 @@ transporter.verify(function (error, success) {
       console.log(error);
     } else {
         console.log("Server is ready to take our messages");
-        // myEmitter.emit("messages_ready");
-        // app.emit("messages_ready");
+      
     }
 });
 
@@ -61,6 +54,7 @@ async function sendEmail(req, res, recipient_name, pia_url, event_msg, options) 
         // }
             
         console.log(result);
+        return result;
     } catch(err) {
         res.json({
             status: false,
@@ -101,7 +95,7 @@ async function getPrivacyOfficers() {
  */
 exports.emailNewPia = async (req, res) => {
     try {
-        const user_email = req.params.user_email.substring(1);
+        const user_email = req.params.user_email
 
         // get url from db
         const pia_url = "http://localhost:3000";
@@ -116,11 +110,13 @@ exports.emailNewPia = async (req, res) => {
             subject: "New PIA",
             text: `${event_msg}`, // Fallback message
         }
-        await sendEmail(req, res, "Privacy Officer", pia_url, event_msg, options);
+
+        let result = await sendEmail(req, res, "Privacy Officer", pia_url, event_msg, options);
         res.json({
-            trigger_email: user_email,
-            status: "email has been sent",
-        });
+            status: true,
+            message: 'Email sent',
+            result: result
+        })
 
     } catch (err) {
         res.json({
@@ -140,7 +136,7 @@ exports.emailNewPia = async (req, res) => {
  */
 exports.emailCommentPia = async (req, res) => {
     try {
-        const user_email = req.params.user_email.substring(1);
+        const user_email = req.params.user_email;
 
         // get url from db
         const pia_url = "http://localhost:3000";
@@ -170,7 +166,13 @@ exports.emailCommentPia = async (req, res) => {
             subject: `New comment on ${pia_name}`,
             text: `${event_msg}`, // Fallback message
         }
-        await sendEmail(req, res, recipient_name, pia_url, event_msg, options);
+
+        let result = await sendEmail(req, res, recipient_name, pia_url, event_msg, options);
+        res.json({
+            status: true,
+            message: 'Email sent',
+            result: result
+        })
 
     } catch (err) {
         res.json({
@@ -189,7 +191,7 @@ exports.emailCommentPia = async (req, res) => {
  */
 exports.emailEditPia = async (req, res) => {
     try {
-        const user_email = req.params.user_email.substring(1);
+        const user_email = req.params.user_email;
 
         // get url from db
         const pia_url = "http://localhost:3000";
@@ -206,7 +208,13 @@ exports.emailEditPia = async (req, res) => {
             subject: `New Edit Made to ${pia_name}`,
             text: `${event_msg}`, // Fallback message
         }
-        await sendEmail(req, res, "Privacy Officer", pia_url, event_msg, options);
+
+        let result = await sendEmail(req, res, "Privacy Officer", pia_url, event_msg, options);
+        res.json({
+            status: true,
+            message: 'Email sent',
+            result: result
+        })
 
     } catch (err) {
         res.json({
@@ -243,7 +251,13 @@ exports.emailApprovePia = async (req, res) => {
             subject: `APPROVED: ${pia_name}`,
             text: `${event_msg}`, // Fallback message
         }
-        await sendEmail(req, res, recipient_name, pia_url, event_msg, options);
+
+        let result = await sendEmail(req, res, recipient_name, pia_url, event_msg, options);
+        res.json({
+            status: true,
+            message: 'Email sent',
+            result: result
+        })
     } catch (err) {
         res.json({
             status: false,
@@ -279,8 +293,12 @@ exports.emailRejectPia = async (req, res) => {
             subject: `REJECTED: ${pia_name}`,
             text: `${event_msg}`, // Fallback message
         }
-        await sendEmail(req, res, recipient_name, pia_url, event_msg, options);
-
+        let result = await sendEmail(req, res, recipient_name, pia_url, event_msg, options);
+        res.json({
+            status: true,
+            message: 'Email sent',
+            result: result
+        })
     } catch (err) {
         res.json({
             status: false,

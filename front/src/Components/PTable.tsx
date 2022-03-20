@@ -33,7 +33,7 @@ class PTable extends React.Component<Props, State> {
     async emailNewPia() {
         try {
             console.log(this.props.email);
-            await fetch(`v1/email/emailNewPia/:${this.props.email}`, {
+            await fetch(`v1/email/emailNewPia/${this.props.email}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
             })
@@ -47,7 +47,7 @@ class PTable extends React.Component<Props, State> {
     async emailCommentPia() {
         try {
             console.log(this.props.email);
-            await fetch(`v1/email/emailCommentPia/:${this.props.email}`, {
+            await fetch(`v1/email/emailCommentPia/${this.props.email}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
             })
@@ -61,7 +61,7 @@ class PTable extends React.Component<Props, State> {
     async emailEditPia() {
         try {
             console.log(this.props.email);
-            await fetch(`v1/email/emailEditPia/:${this.props.email}`, {
+            await fetch(`v1/email/emailEditPia/${this.props.email}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
             })
