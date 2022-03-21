@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test:mocha": "mocha 'test/**/*.spec.js'",
-    "email_tests": "node ./test/fortis_emails_test.js"
+    "email_tests_dev": "node ./test/emails_test_dev.js"
   },
   "keywords": [],
   "author": "",

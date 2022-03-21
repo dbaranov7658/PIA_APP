@@ -102,6 +102,7 @@ exports.emailNewPia = async (req, res) => {
 
         // get all POs from db
         const recipients = await getPrivacyOfficers();
+        const recipient_role = "Privacy Officer";
         const event_msg = `A new Privacy Impact Assessment has been submitted by ${user_email}.`;
         
         const options = {
@@ -111,10 +112,11 @@ exports.emailNewPia = async (req, res) => {
             text: `${event_msg}`, // Fallback message
         }
 
-        let result = await sendEmail(req, res, "Privacy Officer", pia_url, event_msg, options);
+        let result = await sendEmail(req, res, recipient_role, pia_url, event_msg, options);
         res.json({
             status: true,
             message: 'Email sent',
+            recipient_role: recipient_role,
             result: result
         })
 
@@ -144,18 +146,18 @@ exports.emailCommentPia = async (req, res) => {
         // get name of pia from db
         const pia_name = "PIA #1";
 
-        // get pia users from db and get all POs from db
+        // get pia users from db
         const general_user = "userfortisbc@outlook.com";
         let recipients = []
-        let recipient_name = ""; 
+        let recipient_role = ""; 
 
         if (user_email === general_user) { // later: check if isOfficer
             // get all po's from db
             recipients = await getPrivacyOfficers();
-            recipient_name = "Privacy Officer";
+            recipient_role = "Privacy Officer";
         } else {
             recipients.push(general_user);
-            recipient_name = "General User";
+            recipient_role = "General User";
         }
 
         // configure email params
@@ -167,11 +169,12 @@ exports.emailCommentPia = async (req, res) => {
             text: `${event_msg}`, // Fallback message
         }
 
-        let result = await sendEmail(req, res, recipient_name, pia_url, event_msg, options);
+        let result = await sendEmail(req, res, recipient_role, pia_url, event_msg, options);
         res.json({
             status: true,
             message: 'Email sent',
-            result: result
+            recipient_role: recipient_role,
+            result: result,
         })
 
     } catch (err) {
@@ -200,6 +203,7 @@ exports.emailEditPia = async (req, res) => {
         const pia_name = "PIA #1";
 
         const recipients = await getPrivacyOfficers();
+        const recipient_role = "Privacy Officer";
         const event_msg = `${user_email} has made an edit to ${pia_name}.`;
         
         const options = {
@@ -209,10 +213,11 @@ exports.emailEditPia = async (req, res) => {
             text: `${event_msg}`, // Fallback message
         }
 
-        let result = await sendEmail(req, res, "Privacy Officer", pia_url, event_msg, options);
+        let result = await sendEmail(req, res, recipient_role, pia_url, event_msg, options);
         res.json({
             status: true,
             message: 'Email sent',
+            recipient_role: recipient_role,
             result: result
         })
 
@@ -241,7 +246,7 @@ exports.emailApprovePia = async (req, res) => {
 
         // get pia user from db
         const recipient_email = "userfortisbc@outlook.com";
-        const recipient_name = "General User"
+        const recipient_role = "General User"
 
         const event_msg = `${pia_name} has been approved.`;
         
@@ -252,10 +257,11 @@ exports.emailApprovePia = async (req, res) => {
             text: `${event_msg}`, // Fallback message
         }
 
-        let result = await sendEmail(req, res, recipient_name, pia_url, event_msg, options);
+        let result = await sendEmail(req, res, recipient_role, pia_url, event_msg, options);
         res.json({
             status: true,
             message: 'Email sent',
+            recipient_role: recipient_role,
             result: result
         })
     } catch (err) {
@@ -283,7 +289,7 @@ exports.emailRejectPia = async (req, res) => {
 
         // get pia user from db
         const recipient_email = "userfortisbc@outlook.com";
-        const recipient_name = "General User"
+        const recipient_role = "General User"
 
         const event_msg = `${pia_name} has been rejected.`;
         
@@ -293,10 +299,11 @@ exports.emailRejectPia = async (req, res) => {
             subject: `REJECTED: ${pia_name}`,
             text: `${event_msg}`, // Fallback message
         }
-        let result = await sendEmail(req, res, recipient_name, pia_url, event_msg, options);
+        let result = await sendEmail(req, res, recipient_role, pia_url, event_msg, options);
         res.json({
             status: true,
             message: 'Email sent',
+            recipient_role: recipient_role,
             result: result
         })
     } catch (err) {

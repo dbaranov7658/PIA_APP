@@ -1,0 +1,263 @@
+{
+	"info": {
+		"_postman_id": "0cff4c0d-d139-4328-ac89-1b235ea57046",
+		"name": "fortis_emails_dev",
+		"description": "# Notification email tests\nTests the following endpoints:\n- `/emailNewPia`\n- `/emailCommentPia`\n- `/emailEditPia`\n- `/emailApprovePia`\n- `/emailRejectPia`",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "new pia",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Test new pia email notification\", function() {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.status).to.eql(true);",
+							"    pm.expect(responseJson.result.rejected).to.be.empty;",
+							"    pm.expect(responseJson.recipient_role).to.eql(\"Privacy Officer\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/v1/email/emailNewPia/userfortisbc@outlook.com",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"v1",
+						"email",
+						"emailNewPia",
+						"userfortisbc@outlook.com"
+					],
+					"query": [
+						{
+							"key": "user_email",
+							"value": "pofortis@outlook.com",
+							"disabled": true
+						}
+					]
+				},
+				"description": "`/emailNewPia`"
+			},
+			"response": []
+		},
+		{
+			"name": "comment as privacy officer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Test new pia email notification\", function() {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.status).to.eql(true);",
+							"    pm.expect(responseJson.result.rejected).to.be.empty;",
+							"    pm.expect(responseJson.recipient_role).to.eql(\"General User\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/v1/email/emailCommentPia/pofortis@outlook.com",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"v1",
+						"email",
+						"emailCommentPia",
+						"pofortis@outlook.com"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "comment as general user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Test new pia email notification\", function() {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.status).to.eql(true);",
+							"    pm.expect(responseJson.result.rejected).to.be.empty;",
+							"    pm.expect(responseJson.recipient_role).to.eql(\"Privacy Officer\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/v1/email/emailCommentPia/userfortisbc@outlook.com",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"v1",
+						"email",
+						"emailCommentPia",
+						"userfortisbc@outlook.com"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "edit pia",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Test new pia email notification\", function() {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.status).to.eql(true);",
+							"    pm.expect(responseJson.result.rejected).to.be.empty;",
+							"    pm.expect(responseJson.recipient_role).to.eql(\"Privacy Officer\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/v1/email/emailEditPia/userfortisbc@outlook.com",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"v1",
+						"email",
+						"emailEditPia",
+						"userfortisbc@outlook.com"
+					]
+				},
+				"description": "edit pia"
+			},
+			"response": []
+		},
+		{
+			"name": "approve pia",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Test new pia email notification\", function() {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.status).to.eql(true);",
+							"    pm.expect(responseJson.result.rejected).to.be.empty;",
+							"    pm.expect(responseJson.recipient_role).to.eql(\"General User\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/v1/email/emailApprovePia",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"v1",
+						"email",
+						"emailApprovePia"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "reject pia",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Test new pia email notification\", function() {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.status).to.eql(true);",
+							"    pm.expect(responseJson.result.rejected).to.be.empty;",
+							"    pm.expect(responseJson.recipient_role).to.eql(\"General User\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/v1/email/emailRejectPia",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"v1",
+						"email",
+						"emailRejectPia"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
