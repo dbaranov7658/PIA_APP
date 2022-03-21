@@ -91,7 +91,7 @@ app.post('/addNew', verifyJWT, (req, res, ) => {
             let insertedPia = new existingPia({
                 pia: newPia,
                 creatorId: decoded.id,
-                status: "Pending",
+                status: "PENDING",
                 comments: "",
                 date: new Date()
             })

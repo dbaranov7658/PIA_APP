@@ -127,7 +127,7 @@ class PTable extends React.Component<Props, State> {
                         this.setState({allPia: data.allPia})
                         let newArr: tableData[] = []
                         this.state.allPia.forEach((el: piaInfo, index) => {
-                            newArr.push({key: index.toString(), name: el.pia.projectName, status: el.status, submission_date: el.createdAt})
+                            newArr.push({key: index.toString(), name: el.pia.projectName, status: el.status, submission_date: el.createdAt.substr(0, 10)})
 
                         })
                         this.setState({tableData: newArr})
