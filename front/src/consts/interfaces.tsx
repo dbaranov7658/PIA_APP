@@ -1,4 +1,4 @@
-export interface PIA{
+export default interface PIA{
     projectName: string
     sponsoringBusinessUnit: string
     projectDescription: string

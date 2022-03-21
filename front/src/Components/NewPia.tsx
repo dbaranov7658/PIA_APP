@@ -58,21 +58,19 @@ export default class  NewPia extends React.Component<any, State>{
                             isDisclosed: this.state.isDisclosed,
                             disclosedInfo: this.state.disclosedInfo,
                         }
-                        await fetch('/login', {
+                        await fetch('/addNew', {
                                    method: 'POST',
-                                   headers: {'Content-Type': 'application/json'},
-                                   body: JSON.stringify({email: email})
+                                   headers: {'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
+                                   body: JSON.stringify({Pia: newPia})
                                }).then((response) => {
                                    response.json().then((response) => {
-                                       if (response.auth){
-                                           localStorage.setItem("token", response.token)
-                                           this.props.setEmail(email)
-                                           this.props.setIsOfficer(response.isOfficer === "true")
+                                       if (!response.isSuccess){
+                                           console.log(response.error)
+                                           message.error(response.message)
                                        }
                                        else {
-                                           sessionStorage.clear();
-                                           localStorage.clear()
-                                           message.error("Your account have no permission to access")
+                                           console.log(response.message)
+                                           message.success(response.message)
                                        }
 
                                    })

@@ -1,23 +1,57 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
-const newPia = require('/models/newPIA')
+/*const newPIA = require('/models/newPIA')*/
 
 const existingPiaSchema = new Schema({
-    _id: {
+    pia:{
+        projectName: {
+            type: String,
+            required: true
+        },
+        sponsoringBusinessUnit: {
+            type: String,
+            required: true
+        },
+        projectDescription: {
+            type: String,
+            required: true
+        },
+        isCollected:{
+            type: Boolean,
+            required: true
+        },
+        personalInfo:{
+            type: String
+        },
+        purpose:{
+            type: String,
+            required: true
+        },
+        individualsInfo: {
+            type: String,
+            required: true
+        },
+        isDisclosed:{
+            type: Boolean,
+            required: true
+        },
+        disclosedInfo:{
+            type:String
+        }
+    },
+    creatorId: {
         type: mongoose.Types.ObjectId,
         required: true
     },
-    pia:{
-        type: newPia,
+    status:{
+        type: String,
         required: true
     },
-
-    canEdit: [String],
-    creator:[],
-    status:[],
-    comments:[String]
+    comments:{
+        type: String,
+    }
 
 }, {timestamps: true}); //auto assign to created at and updated at properties in mongo
 
-const NewPia = mongoose.model('existingPia', existingPiaSchema);
-module.exports = NewPia
+const existingPia = mongoose.model('existingPia', existingPiaSchema);
+module.exports = existingPia

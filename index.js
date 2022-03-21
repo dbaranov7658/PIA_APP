@@ -1,12 +1,13 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const User = require('./models/user')
+
 const nodemailer = require('nodemailer')
 const ejs = require('ejs')
 var cors = require('cors');
-//const NewPia = require('./models/newPIA')
 const EventEmitter = require('events');
 
+const existingPia = require('./models/piaSchema')
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -22,7 +23,10 @@ const verifyJWT = (req, res, next) => {
     const token = req.headers["x-access-token"]
 
     if (!token) {
-        res.send('need token')
+        res.json({
+            auth: false,
+            status: "There is not token",
+        })
     } else{
         jwt.verify(token, process.env.JWT_VAR, (err, decoded) => {
             if (err){
@@ -77,6 +81,41 @@ app.post('/login', (req, res) => {
         }
 
     })
+})
+
+app.post('/addNew', verifyJWT, (req, res, ) => {
+    const newPia = req.body.Pia
+    const token = req.headers["x-access-token"]
+    jwt.verify(token, process.env.JWT_VAR, (err, decoded) => {
+        if (decoded.id){
+            let insertedPia = new existingPia({
+                pia: newPia,
+                creatorId: decoded.id,
+                status: "Pending",
+                comments: "",
+                date: new Date()
+            })
+            insertedPia.save((err, user) => {
+                if (err) {
+                    res.json({
+                        isSuccess: false,
+                        error: err,
+                        message: "Can not save it in db",
+                    })
+                }
+                else{
+                    res.json({
+                        isSuccess: true,
+                        message: "Successfully submitted",
+                    })
+                }
+            })
+        }
+
+    })
+
+
+
 })
 
 app.post('/isUserAuth', (req, res) => {
