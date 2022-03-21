@@ -5,18 +5,8 @@ import '../CSS/App.css';
 import * as React from "react";
 import {Link} from "react-router-dom";
 import TextArea from "antd/es/input/TextArea";
-
-export interface PIA{
-    projectName: string
-    sponsoringBusinessUnit: string
-    projectDescription: string
-    isCollected: boolean
-    personalInfo?: string
-    purpose: string
-    individualsInfo: string
-    isDisclosed: boolean
-    disclosedInfo?: string
-}
+// @ts-ignore
+import {PIA} from "../consts/interfaces.tsx";
 
 
 interface State{
@@ -29,7 +19,6 @@ interface State{
     individualsInfo: string
     isDisclosed: boolean
     disclosedInfo: string
-    Pia: PIA
 }
 
 
@@ -47,7 +36,6 @@ export default class  NewPia extends React.Component<any, State>{
             purpose: "",
             individualsInfo: undefined,
             isDisclosed: null,
-            Pia: undefined
 
         }
 
@@ -57,22 +45,38 @@ export default class  NewPia extends React.Component<any, State>{
     onSubmit = (e) => {
         e.preventDefault();
         if (e){
-            this.formRef.current.validateFields().then((er) => {
+            this.formRef.current.validateFields().then(async (er) => {
                            if (this.state.projectDescription !== "" && (!this.state.isCollected || (this.state.isCollected && this.state.personalInfo !== "")) && (!this.state.isDisclosed || (this.state.disclosedInfo !== "" && this.state.isDisclosed))) {
-                        this.setState({
-                            Pia: {
-                                projectName: this.state.projectName,
-                                sponsoringBusinessUnit: this.state.sponsoringBusinessUnit,
-                                projectDescription: this.state.projectDescription,
-                                isCollected: this.state.isCollected,
-                                personalInfo: this.state.personalInfo,
-                                purpose: this.state.purpose,
-                                individualsInfo: this.state.individualsInfo,
-                                isDisclosed: this.state.isDisclosed,
-                                disclosedInfo: this.state.disclosedInfo,
-                            }
-                        })
-                        console.log(this.state.Pia)
+                        var newPia: PIA = {
+                            projectName: this.state.projectName,
+                            sponsoringBusinessUnit: this.state.sponsoringBusinessUnit,
+                            projectDescription: this.state.projectDescription,
+                            isCollected: this.state.isCollected,
+                            personalInfo: this.state.personalInfo,
+                            purpose: this.state.purpose,
+                            individualsInfo: this.state.individualsInfo,
+                            isDisclosed: this.state.isDisclosed,
+                            disclosedInfo: this.state.disclosedInfo,
+                        }
+                        await fetch('/login', {
+                                   method: 'POST',
+                                   headers: {'Content-Type': 'application/json'},
+                                   body: JSON.stringify({email: email})
+                               }).then((response) => {
+                                   response.json().then((response) => {
+                                       if (response.auth){
+                                           localStorage.setItem("token", response.token)
+                                           this.props.setEmail(email)
+                                           this.props.setIsOfficer(response.isOfficer === "true")
+                                       }
+                                       else {
+                                           sessionStorage.clear();
+                                           localStorage.clear()
+                                           message.error("Your account have no permission to access")
+                                       }
+
+                                   })
+                               })
                     }
             }).catch((er) => {
                 message.error("Please correct the mistake in form")
@@ -85,7 +89,7 @@ export default class  NewPia extends React.Component<any, State>{
             <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "calc(100% - 100px)", width: "100%", marginTop: "100px", zIndex: 1}}>
 
                 <Form style={{paddingTop: "25px", paddingBottom: "40px"}}
-                    onSubmitCapture={this.onSubmit}
+                    onSubmitCapture={(e) => {this.onSubmit(e)} }
                       layout="vertical"
                       scrollToFirstError
                       ref={this.formRef}
