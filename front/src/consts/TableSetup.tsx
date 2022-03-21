@@ -2,27 +2,6 @@ import {Button, Tag, Tooltip, Popconfirm} from "antd";
 import { DeleteOutlined } from '@ant-design/icons';
 import {PrinterOutlined} from '@ant-design/icons';
 
-const dataSource = [
-    {
-        key: '1',
-        name: 'PIA #1',
-        status: 'APPROVED',
-        submission_date: '2022-02-01',
-    },
-    {
-        key: '2',
-        name: 'PIA #2',
-        status: 'PENDING',
-        submission_date: '2022-01-06',
-    },
-    {
-        key: '3',
-        name: 'PIA #3',
-        status: 'REJECTED',
-        submission_date: '2021-11-08',
-    }
-      
-];
 
 const columns = [
     {
@@ -204,7 +183,6 @@ const columnsForOfficer = [
 
 
 export {
-  dataSource,
   columns,
   columnsForOfficer
 };

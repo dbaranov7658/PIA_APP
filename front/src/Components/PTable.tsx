@@ -3,8 +3,10 @@ import '../CSS/App.css';
 import '../CSS/PTable.css';
 import { Row, Table, Button } from 'antd';
 // @ts-ignore
-import {dataSource, columns, columnsForOfficer} from '../consts/TableSetup.tsx';
+import {columns, columnsForOfficer} from '../consts/TableSetup.tsx';
 import {Link} from "react-router-dom";
+import {piaInfo} from "../consts/interfaces";
+import {tableData} from "../consts/interfaces";
 
 
 
@@ -15,6 +17,8 @@ interface Props{
 
 interface State{
     isOfficer: boolean
+    allPia: piaInfo[]
+    tableData: tableData[]
 }
 
 class PTable extends React.Component<Props, State> {
@@ -26,7 +30,9 @@ class PTable extends React.Component<Props, State> {
         this.emailApprovePia = this.emailApprovePia.bind(this);
         this.emailRejectPia = this.emailRejectPia.bind(this);
         this.state = {
-            isOfficer: this.props.isOfficer
+            isOfficer: this.props.isOfficer,
+            allPia: [],
+            tableData: []
         };
     }
 
@@ -91,10 +97,10 @@ class PTable extends React.Component<Props, State> {
             console.log(this.props.email);
             await fetch(`v1/email/emailRejectPia`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-            })
-                .then(response => response.json())
-                .then(data => console.log(data));
+                headers: { 'Content-Type': 'application/json'},
+            }).then(response => response.json()).then(
+                data =>
+                    console.log(data));
         } catch(err) {
             console.log(err);
         }
@@ -102,6 +108,35 @@ class PTable extends React.Component<Props, State> {
     
     componentDidMount() {
         this.setState({})
+        this.getAllPia()
+    }
+
+    async getAllPia() {
+        try {
+            console.log(this.props.email);
+            await fetch(`/getAllPia`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
+            })
+                .then(response => response.json())
+                .then((data) => {
+                    if (!data.isSuccess){
+                        console.log(data.error)
+                    }
+                    else{
+                        this.setState({allPia: data.allPia})
+                        let newArr: tableData[] = []
+                        this.state.allPia.forEach((el: piaInfo, index) => {
+                            newArr.push({key: index.toString(), name: el.pia.projectName, status: el.status, submission_date: el.createdAt})
+
+                        })
+                        this.setState({tableData: newArr})
+                    }
+
+                    });
+        } catch(err) {
+            console.log(err);
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -119,7 +154,7 @@ class PTable extends React.Component<Props, State> {
                     :
                     <h1>Your PIAs</h1>
                 }
-                <Table dataSource={dataSource} columns={this.state.isOfficer ? columnsForOfficer : columns} />
+                <Table dataSource={this.state.tableData} columns={this.state.isOfficer ? columnsForOfficer : columns} />
                 <Row>
                     <Link to="/addNew">
                     <Button style={{backgroundColor: "#ffc82c", color: "#173a64", border: "none"}} type="primary">New PIA</Button>

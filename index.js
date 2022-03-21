@@ -118,6 +118,58 @@ app.post('/addNew', verifyJWT, (req, res, ) => {
 
 })
 
+app.post('/getAllPia', verifyJWT, (req, res, ) => {
+    const token = req.headers["x-access-token"]
+    jwt.verify(token, process.env.JWT_VAR, (err, decoded) => {
+        if (decoded.id){
+            User.findById(decoded.id , (error, result) => {
+                if (result === null){
+                    res.json({
+                        isSuccess: false,
+                        error: error,
+                        message: "Can not get user from db",
+                    })
+                } else if (error){
+                    console.log(error)
+                    res.json({
+                        isSuccess: false,
+                        error: error,
+                        message: "Can not get all pia from db",
+                    })
+                }
+                else{
+                    if (result.isOfficer){
+                        existingPia.find({}, (err, result) => {
+                            if (err){
+                                res.json({
+                                    isSuccess: false,
+                                    error: error,
+                                    message: "Can not get all pia from db",
+                                })
+                            }
+                            else{
+                                if (result){
+                                    res.json({
+                                        isSuccess: true,
+                                        allPia: result
+                                    })
+                                }
+                            }
+                        })
+                    }
+                    else{
+
+                    }
+                }
+            })
+        }
+
+    })
+
+
+
+})
+
 app.post('/isUserAuth', (req, res) => {
     const token = req.headers["x-access-token"]
     if (!token) {

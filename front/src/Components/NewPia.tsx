@@ -6,7 +6,7 @@ import * as React from "react";
 import {Link} from "react-router-dom";
 import TextArea from "antd/es/input/TextArea";
 // @ts-ignore
-import {PIA} from "../consts/interfaces.tsx";
+import {pia} from "../consts/interfaces.tsx";
 
 
 interface State{
@@ -47,7 +47,7 @@ export default class  NewPia extends React.Component<any, State>{
         if (e){
             this.formRef.current.validateFields().then(async (er) => {
                            if (this.state.projectDescription !== "" && (!this.state.isCollected || (this.state.isCollected && this.state.personalInfo !== "")) && (!this.state.isDisclosed || (this.state.disclosedInfo !== "" && this.state.isDisclosed))) {
-                        var newPia: PIA = {
+                        var newPia: pia = {
                             projectName: this.state.projectName,
                             sponsoringBusinessUnit: this.state.sponsoringBusinessUnit,
                             projectDescription: this.state.projectDescription,
@@ -71,6 +71,7 @@ export default class  NewPia extends React.Component<any, State>{
                                        else {
                                            console.log(response.message)
                                            message.success(response.message)
+                                           window.location.href = window.location.origin
                                        }
 
                                    })
