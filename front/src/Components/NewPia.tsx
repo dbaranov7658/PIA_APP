@@ -1,13 +1,26 @@
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import classicEditor from '@ckeditor/ckeditor5-build-classic'
-import {Form, Button, Radio,  Input, Select, Row,} from 'antd';
+import {Form, Button, Radio, Input, Select, Row, FormInstance, message,} from 'antd';
 import '../CSS/App.css';
 import * as React from "react";
 import {Link} from "react-router-dom";
 import TextArea from "antd/es/input/TextArea";
 
+export interface PIA{
+    projectName: string
+    sponsoringBusinessUnit: string
+    projectDescription: string
+    isCollected: boolean
+    personalInfo?: string
+    purpose: string
+    individualsInfo: string
+    isDisclosed: boolean
+    disclosedInfo?: string
+}
+
 
 interface State{
+    personalInfo: string;
     projectName: string;
     sponsoringBusinessUnit: string
     projectDescription: string
@@ -15,95 +28,71 @@ interface State{
     purpose: string
     individualsInfo: string
     isDisclosed: boolean
-    data:string
+    disclosedInfo: string
+    Pia: PIA
 }
-const style = {
-    height: 40,
-    width: 40,
-    lineHeight: '40px',
-    borderRadius: 4,
-    backgroundColor: '#1088e9',
-    color: '#fff',
-    textAlign: 'center',
-    fontSize: 14,
-};
 
 
 export default class  NewPia extends React.Component<any, State>{
+    formRef = React.createRef<FormInstance>();
     constructor(props: any){
         super(props);
         this.state = {
+            disclosedInfo: undefined,
+            personalInfo: undefined,
             projectName: "",
             sponsoringBusinessUnit: "",
-            projectDescription: "",
+            projectDescription: undefined,
             isCollected: null,
             purpose: "",
-            individualsInfo: "",
+            individualsInfo: undefined,
             isDisclosed: null,
-            data: "",
+            Pia: undefined
 
         }
 
-
-
-        ;
-        this.onSubmit=this.onSubmit.bind(this)
-
-    }
-
-    // onChangeProjName = (event) => {
-    //       this.setState({projectName: event.target.value})
-    //     alert("Hey")
-    // }
-    onChangeSponsoringBusinessUnit = (event) => {
-        this.setState({sponsoringBusinessUnit: event})
-    }
-    onChangeProjectDescription = (event) => {
-        this.setState({projectDescription: event.target.value})
-    }
-    onChangeIsCollected = (event) => {
-        this.setState({isCollected: event.target.value === '1'})
-    }
-    onChangePurpose = (event) => {
-        this.setState({purpose: event})
-    }
-    onChangeIndividualsInfo (individualsInfo, editor) {
-        this.setState({ individualsInfo });
-
-    }
-    onChangeIsDisclosed = (event) => {
-        this.setState({isDisclosed: event.target.value==='1'})
-    }
-    handleDescriptionDataChange
-    (data, editor) {
-        this.setState({ data });
-
     }
 
 
-    onSubmit=(e)=> {
+    onSubmit = (e) => {
         e.preventDefault();
-        console.log(this.state.purpose)
-        console.log(this.state.projectName)
-        console.log(this.state.projectDescription)
-        console.log(this.state.sponsoringBusinessUnit)
-        console.log(this.state.individualsInfo)
-        console.log(this.state.isDisclosed)
-        console.log(this.state.isCollected)
+        if (e){
+            this.formRef.current.validateFields().then((er) => {
+                           if (this.state.projectDescription !== "" && (!this.state.isCollected || (this.state.isCollected && this.state.personalInfo !== "")) && (!this.state.isDisclosed || (this.state.disclosedInfo !== "" && this.state.isDisclosed))) {
+                        this.setState({
+                            Pia: {
+                                projectName: this.state.projectName,
+                                sponsoringBusinessUnit: this.state.sponsoringBusinessUnit,
+                                projectDescription: this.state.projectDescription,
+                                isCollected: this.state.isCollected,
+                                personalInfo: this.state.personalInfo,
+                                purpose: this.state.purpose,
+                                individualsInfo: this.state.individualsInfo,
+                                isDisclosed: this.state.isDisclosed,
+                                disclosedInfo: this.state.disclosedInfo,
+                            }
+                        })
+                        console.log(this.state.Pia)
+                    }
+            }).catch((er) => {
+                message.error("Please correct the mistake in form")
+            })
+        }
     }
 
     render(){
         return (
-            <div className="newpiaContainer">
+            <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "calc(100% - 100px)", width: "100%", marginTop: "100px", zIndex: 1}}>
 
-                <Form onSubmitCapture={this.onSubmit}
-                      // labelCol={{ span: 4}}
-                      // wrapperCol={{ span: 16, offset: 4}}
-                      layout="vertical">
-                    <br />
+                <Form style={{paddingTop: "25px", paddingBottom: "40px"}}
+                    onSubmitCapture={this.onSubmit}
+                      layout="vertical"
+                      scrollToFirstError
+                      ref={this.formRef}
+                >
                     <Form.Item label="Project Name" rules={[{required: true, message: 'Please enter your Project Name!' }]} name="projectName"   hasFeedback>
                         <Input value={this.state.projectName}
-                               onChange={e=>this.setState({projectName:e.target.value})}
+                               onChange={e=>this.setState({projectName :e.target.value})}
                                type="text" name="ProjName"
                                placeholder="Project Name"
                         />
@@ -111,8 +100,11 @@ export default class  NewPia extends React.Component<any, State>{
                     </Form.Item>
 
 
-                    <Form.Item label="Sponsoring Business Unit" name="sponsors"  hasFeedback >
-                        <Select id="sponsors" value={this.state.sponsoringBusinessUnit} onChange={this.onChangeSponsoringBusinessUnit} placeholder="Select Sponsoring Business Unit">
+                    <Form.Item label="Sponsoring Business Unit" rules={[{required: true, message: 'Please enter Sponsoring Business Unit!' }]} name="sponsors"  hasFeedback >
+                        <Select allowClear={true} id="sponsors" value={this.state.sponsoringBusinessUnit}
+                                onChange={(e) => {this.setState({sponsoringBusinessUnit: e})} }
+
+                                placeholder="Select Sponsoring Business Unit">
                             <Select.Option value="Demo1">Demo1</Select.Option>
                             <Select.Option value="Demo2">Demo2</Select.Option>
                             <Select.Option value="Demo3">Demo3</Select.Option>
@@ -120,86 +112,163 @@ export default class  NewPia extends React.Component<any, State>{
                         </Select>
                     </Form.Item>
 
-                    <label htmlFor="projectDescription"> Project description</label >
-                    <Form.Item  rules={[{ required: true, message: 'Please enter the project description!' }]}  >
-                    {/*<br/>*/}
-                    {/* <TextArea name="Description" onChange={this.onChangeProjectDescription} /> */}
 
-                    <CKEditor
-                        editor={classicEditor}
-                        data={this.state.data}
-                        value={this.state.data}
-                        init={{
-                            height: 200,
-                            menubar: false
-                        }}
-                        onChange={ ( event, editor ) => {
-                            const data = editor.getData();
-                            console.log( { event, editor, data } );
-                        }
-                        }
 
-                    />
+                        <Form.Item label="Project description" style={{marginBottom: this.state.projectDescription === "" ? "0px" : "24px"}}
+                                   rules={[{ required: true, message: 'Please enter the project description' }]}  name="projectDescription" >
 
-                    </Form.Item >
-                    <br />
-                    <label>Is it necessary for the purpose of the project that personal information be collected, used or disclosed?</label>
-                    <Form.Item  htmlFor="necessity"
-                    rules={[{required:true, message:"Please select an option!"}]}>
+                            <CKEditor
+                                data={this.state.projectDescription}
+                                config={{
+                                    toolbar: ['heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList']
+                                }}
+                                editor={classicEditor}
+                                init={{
+                                    height: 200,
+                                    menubar: false
+                                }}
 
-                        <Radio.Group onChange={this.onChangeIsCollected} >
-                            <Radio value={'1'}>Yes (If yes, what personal information will be collected, used or disclosed?)</Radio>
-                            {this.state.isCollected ?
-                                <TextArea placeholder="what personal information will be collected, used or disclosed?"/>
-                                :
-                                null
-                            }
+                                value={this.state.projectDescription}
+                                onChange={ ( event, editor ) => {
+                                    this.setState({projectDescription: editor.getData()})
+                                }
+                                }
+
+                            />
+
+                        </Form.Item >
+
+                    {this.state.projectDescription === "" ?
+                    <div style={{color: "red", marginBottom: "24px"}}>Please enter the project description</div>
+                        :
+                        null
+                    }
+
+
+                    <Form.Item label="Is it necessary for the purpose of the project that personal information be collected, used or disclosed?" rules={[{required:true, message:"Please select an option"}]}
+                               name="isCollected">
+
+                        <Radio.Group onChange={(e) => {
+                            this.setState({isCollected: e.target.value === "1"})
+                        }} >
+                            <Radio value={'1'}>Yes </Radio>
+
                             <Radio value={'2'}>No</Radio>
                         </Radio.Group>
 
 
                     </Form.Item>
-                    <br />
+
+                    {this.state.isCollected ?
+                            <Form.Item label="What personal information will be collected, used or disclosed?"  style={{marginBottom: this.state.personalInfo === "" ? "0px" : "24px"}}
+                                       rules={[{ required: true, message: 'Please enter the personal information' }]}  name="personalInformation" >
+
+                                <CKEditor
+                                    config={{
+                                        toolbar: ['heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList']
+                                    }}
+                                    editor={classicEditor}
+                                    init={{
+                                        height: 200,
+                                        menubar: false
+                                    }}
+                                    onChange={ ( event, editor ) => {
+                                        this.setState({personalInfo: editor.getData()})
+                                    }
+                                    }
+
+                                />
+                            </Form.Item>
+                           :
+                            null
+
+
+                    }
+
+                    {this.state.personalInfo === "" && this.state.isCollected ?
+                        <div style={{color: "red", marginBottom: "24px"}}>Please enter the personal information</div>
+                        :
+                        null
+                    }
+
+
 
                     <Form.Item label="Which “purpose” in S2.3 of the FortisBC Privacy Policy applies to this project?"
                                name="purpose"
-                               htmlFor="purpose"
+                               rules={[{ required: true, message: 'Please select an option' }]}
                                hasFeedback validateFirst={true}
                     >
-                        <Select id="purpose" value={this.state.purpose} onChange={this.onChangePurpose} >
+                        <Select allowClear id="purpose" value={this.state.purpose} onChange={(e) => { this.setState({purpose: e})}} >
                             <Select.Option value="Demo1">Demo1</Select.Option>
                             <Select.Option value="Demo2">Demo2</Select.Option>
                         </Select>
                     </Form.Item>
                     <Form.Item label="List the individuals accountable for the personal information"
-                               required tooltip="Doesnot support images, link,tables and block quotes"
-                    >
-                    {/*<label htmlFor="accountableIndividuals">List the individuals accountable for the personal information</label>*/}
-                    <br />
+                               style={{marginBottom: this.state.individualsInfo === "" ? "0px" : "24px"}}
+                               name="individualsAccountable" rules={[{ required: true, message: 'Please list individuals' }]}>
 
-                    {/* <TextArea id="accountableIndividuals" name="accountableIndividuals" onChange={this.onChangeIndividualsInfo} /> */}
                     <CKEditor
+                        config={{
+                            toolbar: ['heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList']
+                        }}
                         editor={classicEditor}
                         value={this.state.individualsInfo}
                         init={{
                             height: 200,
                             menubar: false
                         }}
-                        onEditorChange={this.onChangeIndividualsInfo
-                        }/>
+                        onChange={(event, editor) => {
+                            this.setState({individualsInfo: editor.getData()})
+                        }}
+                    />
                     </Form.Item>
-                    <br />
 
-                    <label htmlFor="Disclosure" >is any information being disclosed or stored outside of Canada as part of this project? </label>
-                    <Form.Item>
-                        <br/>
-                        <Radio.Group onChange={this.onChangeIsDisclosed }>
+                    {this.state.individualsInfo === "" ?
+                        <div style={{color: "red", marginBottom: "24px"}}>Please list individuals</div>
+                        :
+                        null
+                    }
+
+                    <Form.Item label="Is any information being disclosed or stored outside of Canada as part of this project?" name="isDisclosed"
+                               rules={[{ required: true, message: 'Please select an option' }]}>
+                        <Radio.Group onChange={(e) => { this.setState({isDisclosed: e.target.value === '1'})} }>
                             <Radio value={'1'}>Yes</Radio>
                             <Radio value={'2'}>No</Radio>
                         </Radio.Group>
 
 
                     </Form.Item>
+
+                    {this.state.isDisclosed ?
+                        <Form.Item label="What information being disclosed or stored outside of Canada as part of this project??"
+                                   style={{marginBottom: this.state.disclosedInfo === "" ? "0px" : "24px"}}
+                                   rules={[{ required: true, message: 'Please enter the disclosed information' }]}  name="disclosedInformation" >
+
+                            <CKEditor
+                                config={{
+                                    toolbar: ['heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList']
+                                }}
+                                editor={classicEditor}
+                                value={this.state.disclosedInfo}
+                                init={{
+                                    height: 200,
+                                    menubar: false
+                                }}
+                                onChange={(event, editor) => {
+                                    this.setState({disclosedInfo: editor.getData()})
+                                }}
+
+                            />
+                        </Form.Item>
+                        :
+                        null
+                    }
+
+                    {this.state.disclosedInfo === "" && this.state.isDisclosed ?
+                        <div style={{color: "red", marginBottom: "24px"}}>Please enter the disclosed information</div>
+                        :
+                        null
+                    }
 
 
                     <Row>

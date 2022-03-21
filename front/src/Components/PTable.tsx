@@ -1,6 +1,7 @@
 import * as React from "react";
 import '../CSS/App.css';
 import '../CSS/PTable.css';
+import {Page,Text,Image,Document, StyleSheet} from '@react-pdf/renderer';
 import { Row, Table, Button } from 'antd';
 // @ts-ignore
 import {dataSource, columns, columnsForOfficer} from '../consts/TableSetup.tsx';
