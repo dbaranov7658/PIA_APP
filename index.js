@@ -118,6 +118,33 @@ app.post('/addNew', verifyJWT, (req, res, ) => {
 
 })
 
+app.post('/deletePia', verifyJWT, (req, res, ) => {
+    const token = req.headers["x-access-token"]
+    const id = req.body.id
+    jwt.verify(token, process.env.JWT_VAR, (err, decoded) => {
+        if (decoded.id){
+            existingPia.deleteOne({_id: id}).then((result) => {
+                if (result.deletedCount === 1){
+                    res.json({
+                        isSuccess: true,
+                        message: "Successfully deleting Pia",
+                    })
+                }
+                else{
+                    res.json({
+                        isSuccess: false,
+                        message: "Unable to delete Pia",
+                    })
+                }
+            })
+        }
+
+    })
+
+
+
+})
+
 app.post('/getAllPia', verifyJWT, (req, res, ) => {
     const token = req.headers["x-access-token"]
     jwt.verify(token, process.env.JWT_VAR, (err, decoded) => {
@@ -158,7 +185,21 @@ app.post('/getAllPia', verifyJWT, (req, res, ) => {
                         })
                     }
                     else{
-
+                        existingPia.find({creatorId: decoded.id}, (error, result) => {
+                            if (error){
+                                res.json({
+                                    isSuccess: false,
+                                    error: error,
+                                    message: "Can not get all pia from db",
+                                })
+                            }
+                            else{
+                                res.json({
+                                    isSuccess: true,
+                                    allPia: result
+                                })
+                            }
+                        })
                     }
                 }
             })

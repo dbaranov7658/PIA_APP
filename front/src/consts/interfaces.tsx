@@ -20,7 +20,7 @@ interface piaInfo{
     updatedAt: string,
     creator: string,
     __v: number,
-    id: string
+    _id: string
 }
 
 interface tableData{

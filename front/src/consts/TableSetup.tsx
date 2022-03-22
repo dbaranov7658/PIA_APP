@@ -149,7 +149,7 @@ const columnsForOfficer = [
         title: 'Action',
         key: 'action',
         width: '100px',
-        render: status => {
+        render: (status, key) => {
             return (
                 <div style={{display: "flex", flexDirection: "row", height: "100%", width: "100%", justifyContent:"left"}}>
 
@@ -161,7 +161,9 @@ const columnsForOfficer = [
                             okText="Yes"
                             cancelText="No"
                         >
-                            <Button type={"link"} onClick={() => {}}><DeleteOutlined /></Button>
+                            <Button type={"link"} onClick={() => {
+
+                            }}><DeleteOutlined /></Button>
                         </Popconfirm>
                     </Tooltip>
 
