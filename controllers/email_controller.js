@@ -315,3 +315,45 @@ exports.emailRejectPia = async (req, res) => {
     }
 }
 
+/* 
+ * Sends email to general user
+ * @route  v1/email/emailDeletePia
+ * @type   POST 
+ * @access public
+ */
+exports.emailDeletePia = async (req, res) => {
+    try {
+        // get url from db
+        const pia_url = "http://localhost:3000";
+
+        // get name of pia from db
+        const pia_name = "PIA #1";
+
+        // get pia user from db
+        const recipient_email = "userfortisbc@outlook.com";
+        const recipient_role = "General User"
+
+        const event_msg = `${pia_name} has been deleted.`;
+        
+        const options = {
+            from: process.env.NOTIF_EMAIL_USER,
+            to: recipient_email,
+            subject: `DELETED: ${pia_name}`,
+            text: `${event_msg}`, // Fallback message
+        }
+        let result = await sendEmail(req, res, recipient_role, pia_url, event_msg, options);
+        res.json({
+            status: true,
+            message: 'Email sent',
+            recipient_role: recipient_role,
+            result: result
+        })
+    } catch (err) {
+        res.json({
+            status: false,
+            message: 'Something went wrong'
+        })
+        console.log(err);
+    }
+}
+

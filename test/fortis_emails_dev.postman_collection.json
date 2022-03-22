@@ -258,6 +258,46 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "delete pia",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Test new pia email notification\", function() {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.status).to.eql(true);",
+							"    pm.expect(responseJson.result.rejected).to.be.empty;",
+							"    pm.expect(responseJson.recipient_role).to.eql(\"General User\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/v1/email/emailDeletePia",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"v1",
+						"email",
+						"emailDeletePia"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
