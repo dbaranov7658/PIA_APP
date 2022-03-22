@@ -357,8 +357,9 @@ class PTable extends React.Component<Props, State> {
                     :
                     <h1>Your PIAs</h1>
                 }
-                <Table dataSource={this.state.tableData} columns={this.state.isOfficer ? this.columnsForOfficer : this.columns} />
-                <Row>
+                <Table dataSource={this.state.tableData} columns={this.state.isOfficer ? this.columnsForOfficer : this.columns}
+                />
+                <Row style={{paddingTop: this.state.tableData.length === 0 ? "40px": ""}}  >
                     <Link to="/addNew">
                     <Button style={{backgroundColor: "#ffc82c", color: "#173a64", border: "none"}} type="primary">New PIA</Button>
                     </Link>
