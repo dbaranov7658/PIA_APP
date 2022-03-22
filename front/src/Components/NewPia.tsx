@@ -22,7 +22,7 @@ interface State{
 }
 
 
-export default class  NewPia extends React.Component<any, State>{
+export default class NewPia extends React.Component<any, State>{
     formRef = React.createRef<FormInstance>();
     constructor(props: any){
         super(props);
