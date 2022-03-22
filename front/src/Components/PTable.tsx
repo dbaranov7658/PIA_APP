@@ -32,6 +32,7 @@ class PTable extends React.Component<Props, State> {
         this.emailEditPia = this.emailEditPia.bind(this);
         this.emailApprovePia = this.emailApprovePia.bind(this);
         this.emailRejectPia = this.emailRejectPia.bind(this);
+        this.emailDeletePia = this.emailDeletePia.bind(this);
         this.columns = [
             {
                 title: 'Name',
@@ -220,7 +221,7 @@ class PTable extends React.Component<Props, State> {
     async emailNewPia() {
         try {
             console.log(this.props.email);
-            await fetch(`v1/email/emailNewPia/:${this.props.email}`, {
+            await fetch(`v1/email/emailNewPia/${this.props.email}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
             })
@@ -234,7 +235,7 @@ class PTable extends React.Component<Props, State> {
     async emailCommentPia() {
         try {
             console.log(this.props.email);
-            await fetch(`v1/email/emailCommentPia/:${this.props.email}`, {
+            await fetch(`v1/email/emailCommentPia/${this.props.email}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
             })
@@ -248,7 +249,7 @@ class PTable extends React.Component<Props, State> {
     async emailEditPia() {
         try {
             console.log(this.props.email);
-            await fetch(`v1/email/emailEditPia/:${this.props.email}`, {
+            await fetch(`v1/email/emailEditPia/${this.props.email}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
             })
@@ -282,6 +283,20 @@ class PTable extends React.Component<Props, State> {
             }).then(response => response.json()).then(
                 data =>
                     console.log(data));
+        } catch(err) {
+            console.log(err);
+        }
+    }    
+
+    async emailDeletePia() {
+        try {
+            console.log(this.props.email);
+            await fetch(`v1/email/emailDeletePia`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            })
+                .then(response => response.json())
+                .then(data => console.log(data));
         } catch(err) {
             console.log(err);
         }
@@ -370,7 +385,8 @@ class PTable extends React.Component<Props, State> {
                     <Button type="primary" onClick={this.emailCommentPia} style={{ marginRight: "40px" }}>Comment on PIA</Button>
                     <Button type="primary" onClick={this.emailEditPia} style={{ marginRight: "40px" }}>Edit PIA</Button>
                     <Button type="primary" onClick={this.emailApprovePia} style={{ marginRight: "40px" }}>Approve PIA</Button>
-                    <Button type="primary" onClick={this.emailRejectPia} style={{marginRight: "40px"}}>Reject PIA</Button>
+                    <Button type="primary" onClick={this.emailRejectPia} style={{ marginRight: "40px" }}>Reject PIA</Button>
+                    <Button type="primary" onClick={this.emailDeletePia} style={{marginRight: "40px"}}>Delete PIA</Button>
                 </Row>
             </div>
         );

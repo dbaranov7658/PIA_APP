@@ -5,15 +5,13 @@ const User = require('./models/user')
 const nodemailer = require('nodemailer')
 const ejs = require('ejs')
 var cors = require('cors');
-const EventEmitter = require('events');
+//const NewPia = require('./models/newPIA')
 
 const existingPia = require('./models/piaSchema')
 
 const app = express()
 const PORT = process.env.PORT || 3000
 const path = require('path')
-
-const myEmitter = new EventEmitter();
 
 const  reactBuild = path.join(__dirname, 'front', 'build')
 
@@ -265,10 +263,9 @@ mongoose.connect(process.env.DB_URI, {useNewUrlParser: true, useUnifiedTopology:
     app.listen(PORT, () => {
         console.log('server is running on ' + PORT)
         app.emit("app_started")
-        // myEmitter.on("messages_ready", () => {
-        //     console.log("messages ready");
-        //     app.emit("messages_ready")
-        // })
+        setTimeout(() => {
+            app.emit("messages_ready")
+          }, 1500);
     })
     }
 ).catch((err) => {
