@@ -2,27 +2,6 @@ import {Button, Tag, Tooltip, Popconfirm} from "antd";
 import { DeleteOutlined } from '@ant-design/icons';
 import {PrinterOutlined} from '@ant-design/icons';
 
-const dataSource = [
-    {
-        key: '1',
-        name: 'PIA #1',
-        status: 'APPROVED',
-        submission_date: '2022-02-01',
-    },
-    {
-        key: '2',
-        name: 'PIA #2',
-        status: 'PENDING',
-        submission_date: '2022-01-06',
-    },
-    {
-        key: '3',
-        name: 'PIA #3',
-        status: 'REJECTED',
-        submission_date: '2021-11-08',
-    }
-      
-];
 
 const columns = [
     {
@@ -170,7 +149,7 @@ const columnsForOfficer = [
         title: 'Action',
         key: 'action',
         width: '100px',
-        render: status => {
+        render: (status, key) => {
             return (
                 <div style={{display: "flex", flexDirection: "row", height: "100%", width: "100%", justifyContent:"left"}}>
 
@@ -182,7 +161,9 @@ const columnsForOfficer = [
                             okText="Yes"
                             cancelText="No"
                         >
-                            <Button type={"link"} onClick={() => {}}><DeleteOutlined /></Button>
+                            <Button type={"link"} onClick={() => {
+
+                            }}><DeleteOutlined /></Button>
                         </Popconfirm>
                     </Tooltip>
 
@@ -204,7 +185,6 @@ const columnsForOfficer = [
 
 
 export {
-  dataSource,
   columns,
   columnsForOfficer
 };
