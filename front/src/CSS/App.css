@@ -1,11 +1,5 @@
 @import '~antd/dist/antd.css';
 
-.newpiaContainer{
-display:flex;
-justify-content: center;
-align-items: center;
-
-}
 .text{
     font-family: Roboto;
     font-style: normal;
@@ -36,3 +30,9 @@ align-items: center;
   height: 450px;
   background-repeat: no-repeat;
 }
+
+
+.ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before{
+    display: none!important;
+}
+

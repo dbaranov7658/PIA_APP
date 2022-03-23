@@ -19,9 +19,19 @@ import {fortisLogoForMain} from "../consts/Photos.tsx";
 
 
 interface State {
-    id: string;
     email: string
     pcl: PublicClientApplication
+}
+
+export function deleteAllCookies() {
+    var cookies = document.cookie.split(";");
+
+    for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i];
+        var eqPos = cookie.indexOf("=");
+        var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    }
 }
 
 export default  class Main extends React.Component<any, State> {
@@ -31,7 +41,6 @@ export default  class Main extends React.Component<any, State> {
         super(props);
         this.state = {
             email: undefined,
-            id: undefined,
             pcl: undefined
         }
     }
@@ -50,45 +59,51 @@ export default  class Main extends React.Component<any, State> {
             })})
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         this.getPublicClientApplication()
+        this.isAuth()
     }
 
     componentDidUpdate(prevProps: Readonly<any>, prevState: Readonly<any>, snapshot?: any) {
-        if (this.state.email === undefined && localStorage.getItem("email") !== null){
-            this.setState({email: localStorage.getItem("email") })
+        if ((this.state.email === undefined) && localStorage.getItem("token") !== null ){
+            this.isAuth()
         }
+    }
+
+    async isAuth() {
+        await fetch('/isUserAuth', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
+        }).then((response) => {
+            response.json().then((res) => {
+                if (!res.auth){
+                    console.log(res.status)
+                    this.logOut()
+                }
+                else{
+                    this.setState({email: res.email})
+                }
+            })
+        })
     }
 
     setEmail = (newEmail: string) => {
         this.setState({email: newEmail})
     }
 
-    setId = (newId: string) => {
-        this.setState({id: newId})
-    }
 
     logOut = () => {
+        deleteAllCookies()
         sessionStorage.clear();
         localStorage.clear()
         this.setState({email: undefined})
     }
 
-    async isAuth()  {
-        await fetch('/isUserAuth', {
-            method: 'GET',
-            headers: {'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
-        }).then((response) => {
-            response.json().then((res) => {
-                alert(res)
-            })
-        })
-    }
 
     renderMenu = () => {
         return (
             <div>
-                <Row style={{height: "80px"}}>
+                <Row style={{height: "100px", width: "100%", position: "fixed", top: 0, boxShadow: "0 2px 8px #f0f1f2",zIndex: 1000, backgroundColor: "white"}}>
                     <Col span={12} style={{paddingTop: "20px", paddingLeft: "25px", height: "80px"}}>
                        {fortisLogoForMain}
                     </Col>
@@ -104,7 +119,8 @@ export default  class Main extends React.Component<any, State> {
 
                 <Routes>
                     <Route path="/addNew" element={<NewPia/>}/>
-                    <Route path="/" element={<PTable/>}/>
+                    <Route path="/" element={<PTable email={this.state.email} />}/>
+                    <Route path="/editPia:id" element={<PTable email={this.state.email} />}/>
                 </Routes>
             </div>
         )
@@ -115,8 +131,8 @@ export default  class Main extends React.Component<any, State> {
     render() {
        return (
 
-          this.state.email === undefined ?
-         <Login setId={this.setId} setEmail={this.setEmail} pcl={this.state.pcl}/>
+          localStorage.getItem("token") === null ?
+         <Login setEmail={this.setEmail} pcl={this.state.pcl}/>
                :
          this.renderMenu()
 
