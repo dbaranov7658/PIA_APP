@@ -9,7 +9,9 @@
   "scripts": {
     "test": "node index.js",
     "test:mocha": "mocha 'test/**/*.spec.js'",
-    "email_tests_dev": "node ./test/emails_test_dev.js"
+    "email_tests_dev": "node ./test/emails_test_dev.js",
+    "start": "node index.js",
+    "heroku-postbuild": "npm install --prefix front && npm run build --prefix front"
   },
   "keywords": [],
   "author": "",
