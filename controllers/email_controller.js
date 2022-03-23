@@ -33,36 +33,6 @@ transporter.verify(function (error, success) {
     }
 });
 
-async function sendEmail(req, res, recipient_name, pia_url, event_msg, options) {
-    try {
-        // remove controllers from __dirname
-        let _dirnames_arr = __dirname.split("/")
-        let c_index = _dirnames_arr.indexOf("controllers")
-        _dirnames_arr.splice(c_index, 1);
-        const _abs_dir = _dirnames_arr.join("/")
-
-        // render email template
-        let data = await ejs.renderFile(_abs_dir + "/views/email_template.ejs", { recipient: recipient_name, event_msg: event_msg, pia_url: pia_url });
-        options.html = data;
-
-        // send email
-        let result = await transporter.sendMail(options);
-
-        // get preview link of test email
-        // if (process.env.NODE_ENV === 'development') {
-        //     console.log('Preview URL: ' + nodemailer.getTestMessageUrl(result));
-        // }
-            
-        console.log(result);
-        return result;
-    } catch(err) {
-        res.json({
-            status: false,
-            message: 'Something went wrong'
-        })
-        console.log(err);
-    }
-}
 
 /**
  * Gets all privacy officers from the database

@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test": "node index.js",
     "test:mocha": "mocha 'test/**/*.spec.js'",
     "email_tests_dev": "node ./test/emails_test_dev.js"
   },
