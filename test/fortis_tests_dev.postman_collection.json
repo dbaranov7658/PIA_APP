@@ -107,6 +107,116 @@
 			"response": []
 		},
 		{
+			"name": "user authentication (fake token)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"User authentication (fake token)\", function() {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.auth).to.eql(false);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.request.headers.add({ key: \"x-access-token\", value: \"f4k3t0k3n\"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"pofortis@outlook.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/isUserAuth",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"isUserAuth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user authentication (real token)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"User authentication (fake token)\", function() {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.auth).to.eql(true);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Add token to headers",
+							"let token = pm.globals.get(\"response_token\");",
+							"pm.request.headers.add({ key: \"x-access-token\", value: token});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"pofortis@outlook.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/isUserAuth",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"isUserAuth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "get all pias (authorized user)",
 			"event": [
 				{
