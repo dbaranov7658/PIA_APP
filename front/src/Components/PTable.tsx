@@ -11,12 +11,10 @@ import {DeleteOutlined, PrinterOutlined} from "@ant-design/icons";
 
 
 interface Props{
-    isOfficer: boolean,
     email: string
 }
 
 interface State{
-    isOfficer: boolean
     allPia: piaInfo[]
     tableData: tableData[]
 }
@@ -93,7 +91,7 @@ class PTable extends React.Component<Props, State> {
                 key: 'submission_date',
                 sorter: (a, b) => Date.parse(a.submission_date) - Date.parse(b.submission_date),
                 sortDirections: ['ascend', 'descend'],
-            },
+            }/*,
             {
                 title: 'Action',
                 key: 'action',
@@ -111,7 +109,7 @@ class PTable extends React.Component<Props, State> {
                         );
                     }
                 },
-            },
+            },*/
         ];
         this.columnsForOfficer = [
             {
@@ -212,7 +210,6 @@ class PTable extends React.Component<Props, State> {
             },
         ];
         this.state = {
-            isOfficer: this.props.isOfficer,
             allPia: [],
             tableData: []
         };
@@ -357,29 +354,22 @@ class PTable extends React.Component<Props, State> {
         }
     }
 
-
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.isOfficer !== this.state.isOfficer){
-            this.setState({isOfficer: this.props.isOfficer})
-        }
-    }
-
     render() {
         return (
             <div className='page-body'>
-                {this.props.isOfficer ?
+                {localStorage.getItem("isOfficer") === "true" ?
                     <h1>All PIAs</h1>
                     :
                     <h1>Your PIAs</h1>
                 }
-                <Table dataSource={this.state.tableData} columns={this.state.isOfficer ? this.columnsForOfficer : this.columns}
+                <Table dataSource={this.state.tableData} columns={localStorage.getItem("isOfficer") === "true" ? this.columnsForOfficer : this.columns}
                 />
                 <Row style={{paddingTop: this.state.tableData.length === 0 ? "40px": ""}}  >
                     <Link to="/addNew">
                     <Button style={{backgroundColor: "#ffc82c", color: "#173a64", border: "none"}} type="primary">New PIA</Button>
                     </Link>
                 </Row>
-                <p style={{ paddingTop: "2rem" }}>Email test buttons: </p>
+               {/* <p style={{ paddingTop: "2rem" }}>Email test buttons: </p>
                 <Row>
                     <Button type="primary" onClick={this.emailNewPia} style={{marginRight: "40px"}}>Submit new PIA</Button>
                     <Button type="primary" onClick={this.emailCommentPia} style={{ marginRight: "40px" }}>Comment on PIA</Button>
@@ -387,7 +377,7 @@ class PTable extends React.Component<Props, State> {
                     <Button type="primary" onClick={this.emailApprovePia} style={{ marginRight: "40px" }}>Approve PIA</Button>
                     <Button type="primary" onClick={this.emailRejectPia} style={{ marginRight: "40px" }}>Reject PIA</Button>
                     <Button type="primary" onClick={this.emailDeletePia} style={{marginRight: "40px"}}>Delete PIA</Button>
-                </Row>
+                </Row>*/}
             </div>
         );
     }

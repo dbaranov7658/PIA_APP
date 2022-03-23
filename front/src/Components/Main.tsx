@@ -19,7 +19,6 @@ import {fortisLogoForMain} from "../consts/Photos.tsx";
 
 
 interface State {
-    isOfficer: boolean;
     email: string
     pcl: PublicClientApplication
 }
@@ -42,7 +41,6 @@ export default  class Main extends React.Component<any, State> {
         super(props);
         this.state = {
             email: undefined,
-            isOfficer: undefined,
             pcl: undefined
         }
     }
@@ -67,7 +65,7 @@ export default  class Main extends React.Component<any, State> {
     }
 
     componentDidUpdate(prevProps: Readonly<any>, prevState: Readonly<any>, snapshot?: any) {
-        if ((this.state.email === undefined || this.state.isOfficer === undefined) && localStorage.getItem("token") !== null ){
+        if ((this.state.email === undefined) && localStorage.getItem("token") !== null ){
             this.isAuth()
         }
     }
@@ -83,7 +81,7 @@ export default  class Main extends React.Component<any, State> {
                     this.logOut()
                 }
                 else{
-                    this.setState({email: res.email, isOfficer: res.isOfficer})
+                    this.setState({email: res.email})
                 }
             })
         })
@@ -93,9 +91,6 @@ export default  class Main extends React.Component<any, State> {
         this.setState({email: newEmail})
     }
 
-    setIsOfficer = (newId: boolean) => {
-        this.setState({isOfficer: newId})
-    }
 
     logOut = () => {
         deleteAllCookies()
@@ -124,8 +119,8 @@ export default  class Main extends React.Component<any, State> {
 
                 <Routes>
                     <Route path="/addNew" element={<NewPia/>}/>
-                    <Route path="/" element={<PTable isOfficer={this.state.isOfficer} email={this.state.email} />}/>
-                    <Route path="/editPia:id" element={<PTable isOfficer={this.state.isOfficer} email={this.state.email} />}/>
+                    <Route path="/" element={<PTable email={this.state.email} />}/>
+                    <Route path="/editPia:id" element={<PTable email={this.state.email} />}/>
                 </Routes>
             </div>
         )
@@ -137,7 +132,7 @@ export default  class Main extends React.Component<any, State> {
        return (
 
           localStorage.getItem("token") === null ?
-         <Login setIsOfficer={this.setIsOfficer} setEmail={this.setEmail} pcl={this.state.pcl}/>
+         <Login setEmail={this.setEmail} pcl={this.state.pcl}/>
                :
          this.renderMenu()
 
