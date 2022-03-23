@@ -64,7 +64,7 @@
 							"    pm.expect(responseJson).to.be.an(\"object\");",
 							"    pm.expect(responseJson.auth).to.eql(true);",
 							"    pm.expect(responseJson.isOfficer).to.eql(true);",
-							"    pm.globals.set(\"response_token\", responseJson.token);",
+							"    pm.collectionVariables.set(\"response_token\", responseJson.token);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -183,7 +183,7 @@
 					"script": {
 						"exec": [
 							"// Add token to headers",
-							"let token = pm.globals.get(\"response_token\");",
+							"let token = pm.collectionVariables.get(\"response_token\");",
 							"pm.request.headers.add({ key: \"x-access-token\", value: token});"
 						],
 						"type": "text/javascript"
@@ -257,7 +257,7 @@
 							"// })",
 							"",
 							"// Add token to headers",
-							"let token = pm.globals.get(\"response_token\");",
+							"let token = pm.collectionVariables.get(\"response_token\");",
 							"pm.request.headers.add({ key: \"x-access-token\", value: token});"
 						],
 						"type": "text/javascript"
@@ -312,23 +312,6 @@
 					"listen": "prerequest",
 					"script": {
 						"exec": [
-							"// Login as general user",
-							"// pm.sendRequest({",
-							"//     url: \"http://localhost:3000/login\",",
-							"//     method: \"POST\",",
-							"//     body: {  ",
-							"//         mode: \"raw\",",
-							"//         raw: JSON.stringify({\"email\": \"pofortis@outlook.com\"})",
-							"//     }",
-							"// }, function(err, res) {",
-							"//     if (err) {",
-							"//         console.log(err);",
-							"//     } else {",
-							"//         let login_token = res.json().token;",
-							"//         console.log(login_token);",
-							"//         pm.globals.set(\"login_token\", login_token);",
-							"//     }",
-							"// })",
 							"",
 							""
 						],
@@ -369,14 +352,22 @@
 					"listen": "test",
 					"script": {
 						"exec": [
+							"",
 							"pm.test(\"Test new pia\", function () {",
-							"    // let token = pm.globals.get(\"response_token\");",
-							"    // pm.request.headers.add({key: \"x-access-token\", value: token});",
+							"    let postRequest = pm.collectionVariables.get(\"postAllPias\");",
+							"    // add a pia",
 							"    pm.response.to.have.status(200);",
 							"    pm.response.to.be.withBody;",
 							"    const responseJson = pm.response.json();",
 							"    pm.expect(responseJson).to.be.an(\"object\");",
 							"    pm.expect(responseJson.isSuccess).to.eql(true);",
+							"",
+							"    // get all pias, check if count has increased by 1",
+							"    pm.sendRequest(postRequest, (err,res) => {",
+							"        var piaCountBefore = pm.collectionVariables.get(\"piaCount\");",
+							"        var piaCountAfter = res.json().allPia.length;",
+							"        pm.expect(piaCountAfter - piaCountBefore).to.eql(1);",
+							"    })  ",
 							"});"
 						],
 						"type": "text/javascript"
@@ -386,33 +377,28 @@
 					"listen": "prerequest",
 					"script": {
 						"exec": [
-							"// var myHeaders = new fetch.Headers();",
-							"// myHeaders.append(\"Content-Type\", \"application/json\");",
+							"let token = pm.collectionVariables.get(\"response_token\");",
+							"pm.request.headers.add({key: \"x-access-token\", value: token});",
 							"",
-							"// var raw = JSON.stringify({",
-							"//   \"email\": \"pofortis@outlook.com\"",
-							"// });",
+							"const postRequest = {",
+							"        url: 'http://localhost:3000/getAllPia',",
+							"        method: 'POST',",
+							"        header: {",
+							"            'Content-Type': 'application/json',",
+							"            'x-access-token': pm.globals.get(\"response_token\")",
+							"        },",
+							"        body: {",
+							"            mode: 'raw',",
+							"            raw: JSON.stringify({ email: 'pofortis@outlook.com' })",
+							"        }",
+							"};",
+							"pm.collectionVariables.set(\"postAllPias\", postRequest);",
 							"",
-							"// var requestOptions = {",
-							"//   method: 'POST',",
-							"//   headers: myHeaders,",
-							"//   body: raw,",
-							"//   redirect: 'follow'",
-							"// };",
-							"",
-							"// fetch(\"http://localhost:3000/login\", requestOptions)",
-							"//   .then(response => {",
-							"//         // let response_token = response.JSON().token",
-							"//         console.log(response.JSON())",
-							"//         // pm.globals.set(\"resphonse_token\", response_token);",
-							"//         // pm.request.headers.add({key: \"Content-Type\", value: \"application/json\"});",
-							"//         // pm.request.headers.add({key: \"x-access-token\", value: response_token});",
-							"//       })",
-							"//   .then(result => console.log(result))",
-							"//   .catch(error => console.log('error', error));",
-							"",
-							"let token = pm.globals.get(\"response_token\");",
-							"pm.request.headers.add({key: \"x-access-token\", value: token});"
+							"// get all pias and check length",
+							"pm.sendRequest(postRequest, (err,res) => {",
+							"    console.log(res.json().allPia.length)",
+							"    pm.collectionVariables.set(\"piaCount\", res.json().allPia.length);",
+							"})"
 						],
 						"type": "text/javascript"
 					}
@@ -467,13 +453,12 @@
 					"script": {
 						"exec": [
 							"pm.test(\"Test new pia\", function () {",
-							"    // let token = pm.globals.get(\"response_token\");",
-							"    // pm.request.headers.add({key: \"x-access-token\", value: token});",
 							"    pm.response.to.have.status(200);",
 							"    pm.response.to.be.withBody;",
 							"    const responseJson = pm.response.json();",
 							"    pm.expect(responseJson).to.be.an(\"object\");",
-							"    pm.expect(responseJson.isSuccess).to.eql(true);",
+							"    pm.expect(responseJson.isSuccess).to.eql(false);",
+							"    pm.expect(responseJson.error.name).to.eql(\"ValidationError\");",
 							"});"
 						],
 						"type": "text/javascript"
@@ -483,32 +468,7 @@
 					"listen": "prerequest",
 					"script": {
 						"exec": [
-							"// var myHeaders = new fetch.Headers();",
-							"// myHeaders.append(\"Content-Type\", \"application/json\");",
-							"",
-							"// var raw = JSON.stringify({",
-							"//   \"email\": \"pofortis@outlook.com\"",
-							"// });",
-							"",
-							"// var requestOptions = {",
-							"//   method: 'POST',",
-							"//   headers: myHeaders,",
-							"//   body: raw,",
-							"//   redirect: 'follow'",
-							"// };",
-							"",
-							"// fetch(\"http://localhost:3000/login\", requestOptions)",
-							"//   .then(response => {",
-							"//         // let response_token = response.JSON().token",
-							"//         console.log(response.JSON())",
-							"//         // pm.globals.set(\"resphonse_token\", response_token);",
-							"//         // pm.request.headers.add({key: \"Content-Type\", value: \"application/json\"});",
-							"//         // pm.request.headers.add({key: \"x-access-token\", value: response_token});",
-							"//       })",
-							"//   .then(result => console.log(result))",
-							"//   .catch(error => console.log('error', error));",
-							"",
-							"let token = pm.globals.get(\"response_token\");",
+							"let token = pm.collectionVariables.get(\"response_token\");",
 							"pm.request.headers.add({key: \"x-access-token\", value: token});"
 						],
 						"type": "text/javascript"
@@ -527,7 +487,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"Pia\": {\n                \"projectName\": \"Test Project\",\n                \"sponsoringBusinessUnit\": \"Test\",\n                \"projectDescription\": \"Test\",\n                \"isCollected\": true,\n                \"personalInfo\": \"test\",\n                \"purpose\": \"Demo1\",\n                \"individualsInfo\": \"Test\",\n                \"isDisclosed\": false,\n                \"disclosedInfo\": null\n            }\n\n}",
+					"raw": "{\n    \"Pia\": {\n                \n                \"sponsoringBusinessUnit\": \"Test\",\n                \"projectDescription\": \"Test\",\n                \"isCollected\": true,\n                \"personalInfo\": \"test\",\n                \"purpose\": \"Demo1\",\n                \"individualsInfo\": \"Test\",\n                \"isDisclosed\": false,\n                \"disclosedInfo\": null\n            }\n\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -555,6 +515,20 @@
 				"description": "`/emailNewPia`"
 			},
 			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "piaCount",
+			"value": ""
+		},
+		{
+			"key": "postAllPias",
+			"value": ""
+		},
+		{
+			"key": "response_token",
+			"value": ""
 		}
 	]
 }
