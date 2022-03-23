@@ -17,13 +17,13 @@ const mailConfig2 = {
     host: 'smtp.ethereal.email',
     port: 587,
     auth: {
-        user: process.env.ETHEREAL_EMAIL,
-        pass: process.env.ETHEREAL_PWD
+        user: "adell.lubowitz@ethereal.email",
+        pass: "5UCdxN3WkKvNNAqsWS"
     }
 };
 
 
-let transporter = nodemailer.createTransport(mailConfig1);
+let transporter = nodemailer.createTransport(mailConfig2);
 
 // verify connection configuration
 transporter.verify(function (error, success) {
