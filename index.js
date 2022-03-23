@@ -48,7 +48,6 @@ app.use(express.json())
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 
-app.use('/', cors());
 
 app.use('/v1/email', require('./routes/email_route'))
 
