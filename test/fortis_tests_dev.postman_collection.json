@@ -1,0 +1,207 @@
+{
+	"info": {
+		"_postman_id": "afe785da-324d-42b3-b66d-faa0139d9500",
+		"name": "fortis_tests_dev",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "login as unauthorized user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Test login\", function() {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.auth).to.eql(false);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"randomemail@gmail.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login as authorized user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Test login\", function() {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.auth).to.eql(true);",
+							"    pm.expect(responseJson.isOfficer).to.eql(true);",
+							"    pm.globals.set(\"response_token\", responseJson.token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"pofortis@outlook.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "new pia",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Test new pia\", function () {",
+							"    // let token = pm.globals.get(\"response_token\");",
+							"    // pm.request.headers.add({key: \"x-access-token\", value: token});",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.isSuccess).to.eql(true);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// var myHeaders = new fetch.Headers();",
+							"// myHeaders.append(\"Content-Type\", \"application/json\");",
+							"",
+							"// var raw = JSON.stringify({",
+							"//   \"email\": \"pofortis@outlook.com\"",
+							"// });",
+							"",
+							"// var requestOptions = {",
+							"//   method: 'POST',",
+							"//   headers: myHeaders,",
+							"//   body: raw,",
+							"//   redirect: 'follow'",
+							"// };",
+							"",
+							"// fetch(\"http://localhost:3000/login\", requestOptions)",
+							"//   .then(response => {",
+							"//         // let response_token = response.JSON().token",
+							"//         console.log(response.JSON())",
+							"//         // pm.globals.set(\"resphonse_token\", response_token);",
+							"//         // pm.request.headers.add({key: \"Content-Type\", value: \"application/json\"});",
+							"//         // pm.request.headers.add({key: \"x-access-token\", value: response_token});",
+							"//       })",
+							"//   .then(result => console.log(result))",
+							"//   .catch(error => console.log('error', error));",
+							"",
+							"let token = pm.globals.get(\"response_token\");",
+							"pm.request.headers.add({key: \"x-access-token\", value: token});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyMjg0OGNkZDc4MjJiYjRhYjliOWY1MyIsImlhdCI6MTY0ODAwOTYzOSwiZXhwIjoxNjQ4MDExNjM5fQ.VyhSZDq_B3G_dxJ1s-k491AVRGL1XqFulpVOd3Rs9g0\"",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"Pia\": {\n                \"projectName\": \"Test Project\",\n                \"sponsoringBusinessUnit\": \"Test\",\n                \"projectDescription\": \"Test\",\n                \"isCollected\": true,\n                \"personalInfo\": \"test\",\n                \"purpose\": \"Demo1\",\n                \"individualsInfo\": \"Test\",\n                \"isDisclosed\": false,\n                \"disclosedInfo\": null\n            }\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/addNew",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"addNew"
+					],
+					"query": [
+						{
+							"key": "user_email",
+							"value": "pofortis@outlook.com",
+							"disabled": true
+						}
+					]
+				},
+				"description": "`/emailNewPia`"
+			},
+			"response": []
+		}
+	]
+}
