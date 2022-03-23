@@ -85,7 +85,7 @@ export default class NewPia extends React.Component<any, State>{
 
     render(){
         return (
-            <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "calc(100% - 100px)", width: "100%", marginTop: "100px", zIndex: 1}}>
+            <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "calc(100% - 100px)", width: "100%", paddingTop: "100px", zIndex: 1}}>
 
                 <Form style={{paddingTop: "25px", paddingBottom: "40px"}}
                     onSubmitCapture={(e) => {this.onSubmit(e)} }

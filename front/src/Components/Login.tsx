@@ -12,7 +12,6 @@ interface State {
 }
 
 interface Props {
-    setIsOfficer?: (value:boolean) => void,
     setEmail?: (value:string) => void,
     pcl: PublicClientApplication,
 }
@@ -45,8 +44,8 @@ class Login extends React.Component<Props, State>  {
                     response.json().then((response) => {
                         if (response.auth){
                             localStorage.setItem("token", response.token)
+                            localStorage.setItem("isOfficer", response.isOfficer ? "true" : "false")
                             this.props.setEmail(email)
-                            this.props.setIsOfficer(response.isOfficer === "true")
                         }
                         else {
                             sessionStorage.clear();
@@ -66,8 +65,8 @@ class Login extends React.Component<Props, State>  {
         return (
         <div className="container">
              <div className="login-section" style={{width: "60vh"}}>
-               <Row className="fortisLogo">{fortisLogo}</Row>
-                <Row style={{paddingRight: "10px"}}>
+               <Row style={{justifyContent: "center", fontSize: "35px"}}>PIA App</Row>
+                <Row style={{paddingRight: "75px", paddingTop: "30px"}}>
                 <Button className="loginBtn" size="large" type="primary" value="large" onClick={() => this.login()}>Login</Button>
                 </Row>
              </div>
