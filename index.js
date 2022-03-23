@@ -4,7 +4,6 @@ const User = require('./models/user')
 
 const nodemailer = require('nodemailer')
 const ejs = require('ejs')
-var cors = require('cors');
 //const NewPia = require('./models/newPIA')
 
 const existingPia = require('./models/piaSchema')
