@@ -142,68 +142,83 @@ app.post('/addNew', verifyJWT, (req, res, ) => {
 
 })
 
-app.post('/deletePia', verifyJWT, (req, res, ) => {
+app.post('/deletePia', verifyJWT, (req, res,) => {
     const token = req.headers["x-access-token"]
     const id = req.body.id
     let pia_name = "A PIA"
     jwt.verify(token, process.env.JWT_VAR, (err, decoded) => {
-        if (decoded.id){
-    existingPia.findById(id, (error, result) => {
-        if (error){
-            res.json({
-                isSuccess: false,
-                message: "Unable to delete Pia",
-            })
-        }
-        else{
-            if (result){
-                pia_name = result.pia.projectName
-                User.findById(result.creatorId, (error, result) => {
-                    if (error){
-                        res.json({
-                            isSuccess: false,
-                            message: "Unable to delete Pia",
-                        })
-                    }
-                    else{
-                        if (result){
-                            const recipients = result.email
-                            existingPia.deleteOne({_id: id}).then((result) => {
-                                if (result.deletedCount === 1){
-                                    res.json({
-                                        isSuccess: true,
-                                        message: "Successfully deleting Pia",
-                                    })
-                                    const event_msg = `${pia_name} has been deleted.`
-                                    const options = {
-                                        from: process.env.NOTIF_EMAIL_USER,
-                                        to: recipients,
-                                        subject: `DELETED: ${pia_name}`,
-                                        text: `${event_msg}`, // Fallback message
-                                    }
-                                    sendEmail("friend", event_msg, options).then((result) => {
-                                        console.log(result)
-                                    })
-                                }
-                                else{
-                                    res.json({
-                                        isSuccess: false,
-                                        message: "Unable to delete Pia",
-                                    })
-                                }
+        if (decoded.id) {
+            // Verify that user is privacy officer
+            User.findById(decoded.id, (error, result) => {
+                if (result === null) {
+                    res.json({
+                        isSuccess: false,
+                        error: error,
+                        message: "Can not get user from db",
+                    })
+                } if (!result.isOfficer) {
+                    res.json({
+                        isSuccess: false,
+                        error: "PermissionError",
+                        message: "User does not have delete permissions",
+                    })
+                } else {
+                    existingPia.findById(id, (error, result) => {
+                        if (error) {
+                            res.json({
+                                isSuccess: false,
+                                message: "Unable to delete Pia",
                             })
                         }
-                    }
-                })
-            }
+                        else {
+                            if (result) {
+                                pia_name = result.pia.projectName
+                                User.findById(result.creatorId, (error, result) => {
+                                    if (error) {
+                                        res.json({
+                                            isSuccess: false,
+                                            message: "Unable to delete Pia",
+                                        })
+                                    }
+                                    else {
+                                        if (result) {
+                                            const recipients = result.email
+                                            existingPia.deleteOne({ _id: id }).then((result) => {
+                                                if (result.deletedCount === 1) {
+                                                    res.json({
+                                                        isSuccess: true,
+                                                        message: "Successfully deleting Pia",
+                                                    })
+                                                    const event_msg = `${pia_name} has been deleted.`
+                                                    const options = {
+                                                        from: process.env.NOTIF_EMAIL_USER,
+                                                        to: recipients,
+                                                        subject: `DELETED: ${pia_name}`,
+                                                        text: `${event_msg}`, // Fallback message
+                                                    }
+                                                    sendEmail("friend", event_msg, options).then((result) => {
+                                                        console.log(result)
+                                                    })
+                                                }
+                                                else {
+                                                    res.json({
+                                                        isSuccess: false,
+                                                        message: "Unable to delete Pia",
+                                                    })
+                                                }
+                                            })
+                                        }
+                                    }
+                                })
+                            }
+                        }
+                    })
+                }
+        
+            })
         }
-                })
-        }
-
-    })
-
-
-})
+    })// jwt.verify
+}) //app.post
 
 app.post('/getAllPia', verifyJWT, (req, res, ) => {
     const token = req.headers["x-access-token"]
