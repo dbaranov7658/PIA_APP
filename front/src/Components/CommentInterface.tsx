@@ -1,13 +1,26 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Comment, Avatar, Form, Button, List, Input } from 'antd';
-import moment from 'moment';
-
+import * as moment from "moment";
+import TextArea from "antd/es/input/TextArea";
 interface State{
     comments: String[],
     submitting: Boolean,
     value: String,
 }
+
+const Editor = ({ onChange, onSubmit, submitting, value }) => (
+    <>
+        <Form.Item>
+            <TextArea rows={4} onChange={onChange} value={value} />
+        </Form.Item>
+        <Form.Item>
+            <Button htmlType="submit" loading={submitting} onClick={onSubmit} type="primary">
+                Add Comment
+            </Button>
+        </Form.Item>
+    </>
+);
 
 
 export default class commentInterface extends React.Component<any,State> {
@@ -33,6 +46,7 @@ export default class commentInterface extends React.Component<any,State> {
           value: e.target.value,
         });
       };
+
   render() {
     const { comments, submitting, value } = this.state;
     return (

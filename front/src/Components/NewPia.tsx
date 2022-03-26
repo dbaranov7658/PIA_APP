@@ -1,13 +1,14 @@
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import classicEditor from '@ckeditor/ckeditor5-build-classic'
-import {Form, Button, Radio, Input, Select, Row, FormInstance, message,} from 'antd';
+import {Form, Button, Radio, Input, Select, Row, FormInstance, message, Col,} from 'antd';
 import '../CSS/App.css';
 import * as React from "react";
 import {Link} from "react-router-dom";
 import TextArea from "antd/es/input/TextArea";
 // @ts-ignore
 import {pia} from "../consts/interfaces.tsx";
-
+// @ts-ignore
+import CommentInterface from "../Components/CommentInterface.tsx"
 
 interface State{
     personalInfo: string;
@@ -86,6 +87,10 @@ export default class NewPia extends React.Component<any, State>{
     render(){
         return (
             <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "calc(100% - 100px)", width: "100%", paddingTop: "100px", zIndex: 1}}>
+                <Col span={12}>
+                    <CommentInterface/>
+                </Col>
+                <Col span={12}>
 
                 <Form style={{paddingTop: "25px", paddingBottom: "40px"}}
                     onSubmitCapture={(e) => {this.onSubmit(e)} }
@@ -287,6 +292,7 @@ export default class NewPia extends React.Component<any, State>{
                         </div>
                     </Row>
                 </Form>
+                </Col>
             </div>
 
         );
