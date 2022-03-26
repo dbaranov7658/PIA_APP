@@ -1,10 +1,8 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import { Comment, Avatar, Form, Button, List, Input } from 'antd';
-import * as moment from "moment";
+import {Comment, Avatar, Form, Button, List, Input, message} from 'antd';
 import TextArea from "antd/es/input/TextArea";
 interface State{
-    comments: String[],
+    comments: any[],
     submitting: Boolean,
     value: String,
 }
@@ -29,18 +27,20 @@ export default class commentInterface extends React.Component<any,State> {
         this.state = {
             comments: [],
             submitting: false,
-            value: '',
+            value: "",
         }
         
     }
     handleSubmit = () => {
-        if (!this.state.value) {
-          return;
+        if (this.state.value === "") {
+            message.error("Empty comment")
         }
-    
-        this.setState({
-          submitting: true,
-        })};
+        else{
+
+        }
+
+
+    };
     handleChange = e => {
         this.setState({
           value: e.target.value,
@@ -48,17 +48,16 @@ export default class commentInterface extends React.Component<any,State> {
       };
 
   render() {
-    const { comments, submitting, value } = this.state;
     return (
       <div>
       <Comment 
        avatar={<Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />}
        content={
         <Editor
-          onChange={this.handleChange}
-          onSubmit={this.handleSubmit}
-          submitting={submitting}
-          value={value}
+          onChange={(e) => { this.handleChange(e)}}
+          onSubmit={() => {this.handleSubmit()}}
+          submitting={this.state.submitting}
+          value={this.state.value}
        
         />
        }
