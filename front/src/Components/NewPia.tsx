@@ -10,6 +10,10 @@ import {pia} from "../consts/interfaces.tsx";
 // @ts-ignore
 import CommentInterface from "../Components/CommentInterface.tsx"
 
+interface Props {
+    email: string
+}
+
 interface State{
     personalInfo: string;
     projectName: string;
@@ -23,7 +27,7 @@ interface State{
 }
 
 
-export default class NewPia extends React.Component<any, State>{
+export default class NewPia extends React.Component<Props, State>{
     formRef = React.createRef<FormInstance>();
     constructor(props: any){
         super(props);
@@ -86,11 +90,12 @@ export default class NewPia extends React.Component<any, State>{
 
     render(){
         return (
-            <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "calc(100% - 100px)", width: "100%", paddingTop: "100px", zIndex: 1}}>
-                <Col span={12}>
-                    <CommentInterface/>
+            <div>
+
+                <Col style={{position: "fixed", marginTop: "300px", marginLeft: "50px", width: "400px"}}>
+                    <CommentInterface author={this.props.email}/>
                 </Col>
-                <Col span={12}>
+            <Col span={24} style={{display: "flex", justifyContent: "center", alignItems: "center", height: "calc(100% - 100px)", width: "100%", paddingTop: "100px", zIndex: 1}}>
 
                 <Form style={{paddingTop: "25px", paddingBottom: "40px"}}
                     onSubmitCapture={(e) => {this.onSubmit(e)} }
@@ -292,9 +297,8 @@ export default class NewPia extends React.Component<any, State>{
                         </div>
                     </Row>
                 </Form>
-                </Col>
+            </Col>
             </div>
-
         );
     }
 }
