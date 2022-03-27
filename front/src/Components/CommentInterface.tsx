@@ -96,7 +96,7 @@ export default class commentInterface extends React.Component<Props,State> {
 
   render() {
     return (
-      <div>
+      <div style={{width: "100%", height: "100%"}}>
           {this.state.comments.length > 0 && <this.CommentList comments={this.state.comments} />}
           <Comment
        content={
