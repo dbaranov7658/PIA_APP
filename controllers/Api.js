@@ -223,7 +223,6 @@ exports.addNew = (req, res, ) => {
                 pia: newPia,
                 creatorId: decoded.id,
                 status: "PENDING",
-                comments: "",
                 date: new Date()
             })
             insertedPia.save((err, user) => {

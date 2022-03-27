@@ -37,6 +37,9 @@ const existingPiaSchema = new Schema({
         },
         disclosedInfo:{
             type:String
+        },
+        comments:{
+            type: [],
         }
     },
     creatorId: {
@@ -47,9 +50,6 @@ const existingPiaSchema = new Schema({
         type: String,
         required: true
     },
-    comments:{
-        type: String,
-    }
 
 }, {timestamps: true}); //auto assign to created at and updated at properties in mongo
 
