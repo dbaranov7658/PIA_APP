@@ -4,9 +4,8 @@ import {Form, Button, Radio, Input, Select, Row, FormInstance, message, Col,} fr
 import '../CSS/App.css';
 import * as React from "react";
 import {Link} from "react-router-dom";
-import TextArea from "antd/es/input/TextArea";
-// @ts-ignore
-import {pia} from "../consts/interfaces.tsx";
+import {comment} from "../consts/interfaces";
+import {pia} from "../consts/interfaces";
 // @ts-ignore
 import CommentInterface from "../Components/CommentInterface.tsx"
 
@@ -25,6 +24,7 @@ interface State{
     isDisclosed: boolean
     disclosedInfo: string
     viewComments: boolean
+    comments: comment[]
 }
 
 
@@ -42,7 +42,8 @@ export default class NewPia extends React.Component<Props, State>{
             purpose: "",
             individualsInfo: undefined,
             isDisclosed: null,
-            viewComments: false
+            viewComments: false,
+            comments: []
         }
 
     }
@@ -63,6 +64,7 @@ export default class NewPia extends React.Component<Props, State>{
                             individualsInfo: this.state.individualsInfo,
                             isDisclosed: this.state.isDisclosed,
                             disclosedInfo: this.state.disclosedInfo,
+                            comments: this.state.comments
                         }
                         await fetch('/addNew', {
                                    method: 'POST',
@@ -87,6 +89,13 @@ export default class NewPia extends React.Component<Props, State>{
                 message.error("Please correct the mistake in form")
             })
         }
+    }
+
+    onComment = (newComment: comment) => {
+        let newArr = this.state.comments
+        newArr.push(newComment)
+        this.setState({comments: newArr})
+
     }
 
     newPia = () => {
@@ -307,7 +316,7 @@ export default class NewPia extends React.Component<Props, State>{
                 {
                     this.state.viewComments ?
                         <Col span={10} style={{display: "flex", justifyContent: "center", alignItems: "center", width: "100%", paddingRight: "60px"}}>
-                            <CommentInterface author={this.props.email}/>
+                            <CommentInterface author={this.props.email} onComment={this.onComment} comments={this.state.comments}/>
                         </Col>
                         :
                         null

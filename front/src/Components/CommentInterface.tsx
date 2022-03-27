@@ -1,16 +1,18 @@
 import * as React from 'react';
-import {Comment, Avatar, Form, Button, List, Input, message} from 'antd';
+import {Comment, Form, Button, List, message} from 'antd';
 import TextArea from "antd/es/input/TextArea";
+import {comment} from "../consts/interfaces";
 
 
 interface Props{
     author: string
+    onComment: (value:comment) => void,
+    comments: comment[]
 }
 
 interface State{
-    comments: any[],
-    submitting: Boolean,
-    value: String,
+    submitting: boolean,
+    value: string,
 }
 
 
@@ -18,7 +20,6 @@ export default class commentInterface extends React.Component<Props,State> {
     constructor(props: any){
         super(props);
         this.state = {
-            comments: [],
             submitting: false,
             value: "",
         }
@@ -36,8 +37,9 @@ export default class commentInterface extends React.Component<Props,State> {
                 return <Comment
                     author={<a>{this.props.author}</a>}
                     content={
-                        props.content
+                        <p>{props.content}</p>
                     }
+                    datetime={props.date}
                 />
             }
             }
@@ -67,25 +69,20 @@ export default class commentInterface extends React.Component<Props,State> {
             this.setState({
                 submitting: true,
             });
-
+            let newContent = this.state.value
             setTimeout(() => {
+                let newComment: comment = {author: this.props.author, content: newContent, date: new Date().toISOString().slice(0, 10).toString()}
+                this.props.onComment(newComment)
                 this.setState({
                     submitting: false,
-                    value: '',
-                    comments: [
-                        {
-                            author: 'Test',
-                            content: <p>{this.state.value}</p>,
-                            datetime: Date.now().toString(),
-                        },
-                        ...this.state.comments,
-                    ],
+                    value: ""
                 });
             }, 1000);
+
         }
-
-
     };
+
+
     handleChange = e => {
         this.setState({
           value: e.target.value,
@@ -97,7 +94,7 @@ export default class commentInterface extends React.Component<Props,State> {
   render() {
     return (
       <div style={{width: "100%", height: "100%"}}>
-          {this.state.comments.length > 0 && <this.CommentList comments={this.state.comments} />}
+          {this.props.comments.length > 0 && <this.CommentList comments={this.props.comments} />}
           <Comment
        content={
         <this.Editor
