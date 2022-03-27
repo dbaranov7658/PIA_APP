@@ -8,6 +8,7 @@ interface pia{
     individualsInfo: string
     isDisclosed: boolean
     disclosedInfo?: string
+    comments: comment[]
 }
 
 
@@ -15,7 +16,6 @@ interface piaInfo{
     pia: pia,
     status: string,
     date: Date,
-    comments: string,
     createdAt: string,
     updatedAt: string,
     creator: string,
@@ -30,8 +30,15 @@ interface tableData{
     submission_date: string
 }
 
+interface comment{
+    author: string,
+    content: string,
+    date: string
+}
+
 export {
     pia,
     piaInfo,
-    tableData
+    tableData,
+    comment
 };
