@@ -8,6 +8,7 @@ import {comment} from "../consts/interfaces";
 import {pia} from "../consts/interfaces";
 // @ts-ignore
 import CommentInterface from "../Components/CommentInterface.tsx"
+import Draggable from 'react-draggable';
 
 interface Props {
     email: string
@@ -23,8 +24,8 @@ interface State{
     individualsInfo: string
     isDisclosed: boolean
     disclosedInfo: string
-    viewComments: boolean
     comments: comment[]
+
 }
 
 
@@ -42,7 +43,6 @@ export default class NewPia extends React.Component<Props, State>{
             purpose: "",
             individualsInfo: undefined,
             isDisclosed: null,
-            viewComments: false,
             comments: []
         }
 
@@ -106,7 +106,7 @@ export default class NewPia extends React.Component<Props, State>{
                   scrollToFirstError
                   ref={this.formRef}
             >
-                <Form.Item label="Project Name" rules={[{required: true, message: 'Please enter your Project Name!' }]} name="projectName"   hasFeedback>
+                <Form.Item style={{fontWeight: "bold"}} label="Project Name" rules={[{required: true, message: 'Please enter your Project Name!' }]} name="projectName"   hasFeedback>
                     <Input value={this.state.projectName}
                            onChange={e=>this.setState({projectName :e.target.value})}
                            type="text" name="ProjName"
@@ -116,7 +116,7 @@ export default class NewPia extends React.Component<Props, State>{
                 </Form.Item>
 
 
-                <Form.Item label="Sponsoring Business Unit" rules={[{required: true, message: 'Please enter Sponsoring Business Unit!' }]} name="sponsors"  hasFeedback >
+                <Form.Item style={{fontWeight: "bold"}} label="Sponsoring Business Unit" rules={[{required: true, message: 'Please enter Sponsoring Business Unit!' }]} name="sponsors"  hasFeedback >
                     <Select allowClear={true} id="sponsors" value={this.state.sponsoringBusinessUnit}
                             onChange={(e) => {this.setState({sponsoringBusinessUnit: e})} }
 
@@ -130,7 +130,7 @@ export default class NewPia extends React.Component<Props, State>{
 
 
 
-                <Form.Item label="Project description" style={{marginBottom: this.state.projectDescription === "" ? "0px" : "24px"}}
+                <Form.Item  label="Project description" style={{marginBottom: this.state.projectDescription === "" ? "0px" : "24px", fontWeight: "bold"}}
                            rules={[{ required: true, message: 'Please enter the project description' }]}  name="projectDescription" >
 
                     <CKEditor
@@ -161,13 +161,13 @@ export default class NewPia extends React.Component<Props, State>{
                 }
 
 
-                <Form.Item label="Is it necessary for the purpose of the project that personal information be collected, used or disclosed?" rules={[{required:true, message:"Please select an option"}]}
+                <Form.Item style={{fontWeight: "bold"}} label="Is it necessary for the purpose of the project that personal information be collected, used or disclosed?" rules={[{required:true, message:"Please select an option"}]}
                            name="isCollected">
 
-                    <Radio.Group onChange={(e) => {
+                    <Radio.Group style={{fontWeight: "400"}} onChange={(e) => {
                         this.setState({isCollected: e.target.value === "1"})
                     }} >
-                        <Radio value={'1'}>Yes </Radio>
+                        <Radio value={'1'}> <div>Yes </div>  </Radio>
 
                         <Radio value={'2'}>No</Radio>
                     </Radio.Group>
@@ -176,7 +176,7 @@ export default class NewPia extends React.Component<Props, State>{
                 </Form.Item>
 
                 {this.state.isCollected ?
-                    <Form.Item label="What personal information will be collected, used or disclosed?"  style={{marginBottom: this.state.personalInfo === "" ? "0px" : "24px"}}
+                    <Form.Item label="What personal information will be collected, used or disclosed?"  style={{marginBottom: this.state.personalInfo === "" ? "0px" : "24px", fontWeight: "bold"}}
                                rules={[{ required: true, message: 'Please enter the personal information' }]}  name="personalInformation" >
 
                         <CKEditor
@@ -209,7 +209,7 @@ export default class NewPia extends React.Component<Props, State>{
 
 
 
-                <Form.Item label="Which “purpose” in S2.3 of the FortisBC Privacy Policy applies to this project?"
+                <Form.Item style={{fontWeight: "bold"}} label="Which “purpose” in S2.3 of the FortisBC Privacy Policy applies to this project?"
                            name="purpose"
                            rules={[{ required: true, message: 'Please select an option' }]}
                            hasFeedback validateFirst={true}
@@ -220,7 +220,7 @@ export default class NewPia extends React.Component<Props, State>{
                     </Select>
                 </Form.Item>
                 <Form.Item label="List the individuals accountable for the personal information"
-                           style={{marginBottom: this.state.individualsInfo === "" ? "0px" : "24px"}}
+                           style={{marginBottom: this.state.individualsInfo === "" ? "0px" : "24px", fontWeight: "bold"}}
                            name="individualsAccountable" rules={[{ required: true, message: 'Please list individuals' }]}>
 
                     <CKEditor
@@ -245,10 +245,10 @@ export default class NewPia extends React.Component<Props, State>{
                     null
                 }
 
-                <Form.Item label="Is any information being disclosed or stored outside of Canada as part of this project?" name="isDisclosed"
+                <Form.Item style={{fontWeight: "bold"}} label="Is any information being disclosed or stored outside of Canada as part of this project?" name="isDisclosed"
                            rules={[{ required: true, message: 'Please select an option' }]}>
-                    <Radio.Group onChange={(e) => { this.setState({isDisclosed: e.target.value === '1'})} }>
-                        <Radio value={'1'}>Yes</Radio>
+                    <Radio.Group style={{fontWeight: "400"}} onChange={(e) => { this.setState({isDisclosed: e.target.value === '1'})} }>
+                        <Radio  value={'1'}>Yes</Radio>
                         <Radio value={'2'}>No</Radio>
                     </Radio.Group>
 
@@ -257,7 +257,7 @@ export default class NewPia extends React.Component<Props, State>{
 
                 {this.state.isDisclosed ?
                     <Form.Item label="What information being disclosed or stored outside of Canada as part of this project??"
-                               style={{marginBottom: this.state.disclosedInfo === "" ? "0px" : "24px"}}
+                               style={{marginBottom: this.state.disclosedInfo === "" ? "0px" : "24px", fontWeight: "bold"}}
                                rules={[{ required: true, message: 'Please enter the disclosed information' }]}  name="disclosedInformation" >
 
                         <CKEditor
@@ -298,10 +298,6 @@ export default class NewPia extends React.Component<Props, State>{
                                     style={{background: "#ffffff", color: "black"}}>Back</Button>
                         </Link>
                     </div>
-                    <div className="btn" style={{paddingLeft: "15px"}}>
-                            <Button type="default" onClick={() => {this.setState({viewComments: !this.state.viewComments})}}
-                                    style={{background: "#ffffff", color: "black"}}>{this.state.viewComments ? "close comments" : "view comments"}</Button>
-                    </div>
                 </Row>
             </Form>
         )
@@ -310,17 +306,20 @@ export default class NewPia extends React.Component<Props, State>{
     render(){
         return (
             <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "calc(100% - 100px)", width: "100%", paddingTop: "100px", zIndex: 1}}>
-                <Col span={this.state.viewComments ? 14 : 24} style={{display: "flex", justifyContent: "center", alignItems: "center", width: "100%"}}>
+                <Col span={16} style={{display: "flex", justifyContent: "center", alignItems: "center", width: "100%"}}>
                     {this.newPia()}
                 </Col>
-                {
-                    this.state.viewComments ?
-                        <Col span={10} style={{display: "flex", justifyContent: "center", alignItems: "center", width: "100%", paddingRight: "60px"}}>
-                            <CommentInterface author={this.props.email} onComment={this.onComment} comments={this.state.comments}/>
-                        </Col>
-                        :
-                        null
-                }
+                        <Draggable
+                            bounds="parent"
+                            axis="both"
+                            onStart={() => {}}
+                            onDrag={() => {}}
+                            onStop={() => {}}>
+                            <div>
+                                <CommentInterface author={this.props.email} onComment={this.onComment} comments={this.state.comments}/>
+                            </div>
+
+                        </Draggable>
             </div>
 
         );

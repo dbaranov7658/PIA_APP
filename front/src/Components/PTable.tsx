@@ -1,12 +1,13 @@
 import * as React from "react";
 import '../CSS/App.css';
 import '../CSS/PTable.css';
-import {Row, Table, Button, Tag, Tooltip, Popconfirm, message} from 'antd';
+import {Row, Table, Button, Tag, Tooltip, Popconfirm, message, Skeleton} from 'antd';
 // @ts-ignore
 import {Link} from "react-router-dom";
-import {piaInfo} from "../consts/interfaces";
+import {comment, piaInfo} from "../consts/interfaces";
 import {tableData} from "../consts/interfaces";
 import {DeleteOutlined, PrinterOutlined} from "@ant-design/icons";
+import Search from "antd/es/input/Search";
 
 
 
@@ -17,6 +18,8 @@ interface Props{
 interface State{
     allPia: piaInfo[]
     tableData: tableData[]
+    isSkeleton: boolean
+    searchValue: string
 }
 
 
@@ -211,7 +214,9 @@ class PTable extends React.Component<Props, State> {
         ];
         this.state = {
             allPia: [],
-            tableData: []
+            tableData: [],
+            isSkeleton: true,
+            searchValue: ""
         };
     }
 
@@ -321,7 +326,10 @@ class PTable extends React.Component<Props, State> {
                             newArr.push({key: index.toString(), name: el.pia.projectName, status: el.status, submission_date: el.createdAt.substr(0, 10)})
 
                         })
-                        this.setState({tableData: newArr})
+                        setTimeout(() => {
+                            this.setState({tableData: newArr, isSkeleton: false})
+                        }, 500);
+
                     }
 
                     });
@@ -357,27 +365,34 @@ class PTable extends React.Component<Props, State> {
     render() {
         return (
             <div className='page-body'>
+                <Skeleton loading={this.state.isSkeleton}>
                 {localStorage.getItem("isOfficer") === "true" ?
-                    <h1>All PIAs</h1>
+                    <Row>
+                        <h1>All PIAs</h1>
+                        <Search allowClear placeholder="search by name" onChange={(e) => {this.setState({searchValue: e.target.value.toLowerCase()})}} style={{ width: 200, paddingTop: "7px", marginLeft: "25px" }} />
+                    </Row>
+
                     :
+                    <Row>
                     <h1>Your PIAs</h1>
+                    <Search allowClear placeholder="search by name" onChange={(e) => {this.setState({searchValue: e.target.value.toLowerCase()})}} style={{ width: 200, paddingTop: "7px", marginLeft: "25px" }} />
+                    </Row>
                 }
-                <Table dataSource={this.state.tableData} columns={localStorage.getItem("isOfficer") === "true" ? this.columnsForOfficer : this.columns}
-                />
-                <Row style={{paddingTop: this.state.tableData.length === 0 ? "40px": ""}}  >
-                    <Link to="/addNew">
-                    <Button style={{backgroundColor: "#ffc82c", color: "#173a64", border: "none"}} type="primary">New PIA</Button>
-                    </Link>
-                </Row>
-               {/* <p style={{ paddingTop: "2rem" }}>Email test buttons: </p>
-                <Row>
-                    <Button type="primary" onClick={this.emailNewPia} style={{marginRight: "40px"}}>Submit new PIA</Button>
-                    <Button type="primary" onClick={this.emailCommentPia} style={{ marginRight: "40px" }}>Comment on PIA</Button>
-                    <Button type="primary" onClick={this.emailEditPia} style={{ marginRight: "40px" }}>Edit PIA</Button>
-                    <Button type="primary" onClick={this.emailApprovePia} style={{ marginRight: "40px" }}>Approve PIA</Button>
-                    <Button type="primary" onClick={this.emailRejectPia} style={{ marginRight: "40px" }}>Reject PIA</Button>
-                    <Button type="primary" onClick={this.emailDeletePia} style={{marginRight: "40px"}}>Delete PIA</Button>
-                </Row>*/}
+                    <Table pagination={{ pageSize: 8 }}
+                        dataSource={this.state.tableData.filter(data => data.name.toLowerCase().includes(this.state.searchValue))} columns={localStorage.getItem("isOfficer") === "true" ? this.columnsForOfficer : this.columns}
+                    />
+                    {localStorage.getItem("isOfficer") === "true" ?
+                        null
+                        :
+                        <Row style={{paddingTop: this.state.tableData.length === 0 ? "40px": ""}}  >
+                            <Link to="/addNew">
+                                <Button style={{backgroundColor: "#ffc82c", color: "#173a64", border: "none"}} type="primary">New PIA</Button>
+                            </Link>
+                        </Row>
+
+                    }
+                </Skeleton>
+
             </div>
         );
     }
