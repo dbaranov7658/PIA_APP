@@ -30,6 +30,7 @@ export default class commentInterface extends React.Component<Props,State> {
 
     CommentList = ({ comments }) => (
         <List
+            style={{maxHeight: "300px", overflow: "auto"}}
             dataSource={comments}
             header={`${comments.length} ${comments.length > 1 ? 'comments' : 'comment'}`}
             itemLayout="horizontal"
@@ -93,7 +94,7 @@ export default class commentInterface extends React.Component<Props,State> {
 
   render() {
     return (
-      <div style={{width: "100%", height: "100%"}}>
+      <div style={{width: "300px"}}>
           {this.props.comments.length > 0 && <this.CommentList comments={this.props.comments} />}
           <Comment
        content={
