@@ -7,6 +7,8 @@ import Login from '../Components/Login.tsx'
 import * as React from "react";
 // @ts-ignore
 import PTable from "../Components/PTable.tsx";
+// @ts-ignore
+import PageNotFound from '../Components/PageNotFound.tsx';
 import {Button, Col, Row, Tooltip} from "antd";
 import {Routes, Route} from 'react-router-dom'
 
@@ -121,7 +123,8 @@ export default  class Main extends React.Component<any, State> {
                     <Route path="/addNew" element={<NewPia email={this.state.email}/>}/>
                     <Route path="/" element={<PTable email={this.state.email} />}/>
                     <Route path="/editPia:id" element={<PTable email={this.state.email} />}/>
-                    <Route path="/editPia:id" element={<PTable email={this.state.email} />}/>
+                    <Route path="/editPia:id" element={<PTable email={this.state.email} />} />
+                    <Route path="/notfound" element={<PageNotFound />}/>
                 </Routes>
             </div>
         )
