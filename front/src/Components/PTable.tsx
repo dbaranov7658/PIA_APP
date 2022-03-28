@@ -8,7 +8,7 @@ import {comment, piaInfo} from "../consts/interfaces";
 import {tableData} from "../consts/interfaces";
 import {DeleteOutlined, PrinterOutlined} from "@ant-design/icons";
 import Search from "antd/es/input/Search";
-import { SearchOutlined } from '@ant-design/icons';
+import FileSaver from 'file-saver';
 
 
 
@@ -198,13 +198,10 @@ class PTable extends React.Component<Props, State> {
                                 </Popconfirm>
                             </Tooltip>
 
-                            {status.status === 'APPROVED' ?
                                 <Tooltip placement="bottom" title={"Print"} style={{flex: "1"}}>
-                                    <Button type={"link"}  onClick={() => {alert("Download PIA Function")}}><PrinterOutlined /></Button>
+                                    <Button type={"link"}  onClick={() => {this.onPrint(key)}}><PrinterOutlined /></Button>
                                 </Tooltip>
-                                :
-                                <h1></h1>
-                            }
+
                         </div>
 
 
@@ -219,6 +216,32 @@ class PTable extends React.Component<Props, State> {
             isSkeleton: true,
             searchValue: ""
         };
+    }
+
+
+
+    async onPrint(key: tableData)  {
+        try {
+            await fetch(`/printPIA`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
+                body: JSON.stringify({Pia: this.state.allPia[parseInt(key.key)]})
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.isSuccess){
+                        message.error(data.message)
+                    }
+                    else{
+                        console.log(data.pdfFile)
+                    }
+                }
+
+                );
+        } catch(err) {
+            console.log(err);
+        }
+
     }
 
     async emailNewPia() {

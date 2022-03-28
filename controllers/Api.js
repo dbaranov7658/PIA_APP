@@ -2,6 +2,9 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const existingPia = require("../models/piaSchema");
 const {sendEmail, getPrivacyOfficers} = require("../Emails/emails");
+const Path = require("path");
+const ejs = require("ejs");
+const pdf = require('html-pdf');
 
 
 
@@ -264,6 +267,38 @@ exports.addNew = (req, res, ) => {
                     })
                 }
             })
+        }
+    })
+}
+
+exports.printPia = (req, res, ) => {
+    const printedPia = req.body.Pia
+    const token = req.headers["x-access-token"]
+    jwt.verify(token, process.env.JWT_VAR, async (err, decoded) => {
+        if (decoded.id && printedPia){
+            try{
+                const htmlPath = Path.join(__dirname, "../printFunctionality/printTemplate.ejs")
+                let dataForPDF = await ejs.renderFile(htmlPath, { projectName: printedPia.pia.projectName, Sponsoring_business_unit: printedPia.pia.sponsoringBusinessUnit, date: printedPia.createdAt.slice(0, 10).toString()});
+
+                pdf.create(dataForPDF).toFile('./test.pdf', function(err, res) {
+                    if (err) {
+                        res.json({
+                            isSuccess: false,
+                            message: "Issue with printing Pia",
+                        })
+                    }
+                    else{
+
+                    }
+                });
+
+            } catch(error){
+                console.log(error);
+                res.json({
+                    isSuccess: false,
+                    message: "Issue with printing Pia",
+                })
+            }
         }
     })
 }
