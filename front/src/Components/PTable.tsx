@@ -4,11 +4,10 @@ import '../CSS/PTable.css';
 import {Row, Table, Button, Tag, Tooltip, Popconfirm, message, Skeleton} from 'antd';
 // @ts-ignore
 import {Link} from "react-router-dom";
-import {comment, piaInfo} from "../consts/interfaces";
+import {piaInfo} from "../consts/interfaces";
 import {tableData} from "../consts/interfaces";
 import {DeleteOutlined, PrinterOutlined} from "@ant-design/icons";
 import Search from "antd/es/input/Search";
-import { SearchOutlined } from '@ant-design/icons';
 
 
 
@@ -203,7 +202,7 @@ class PTable extends React.Component<Props, State> {
                                     <Button type={"link"}  onClick={() => {alert("Download PIA Function")}}><PrinterOutlined /></Button>
                                 </Tooltip>
                                 :
-                                <h1></h1>
+                                null
                             }
                         </div>
 

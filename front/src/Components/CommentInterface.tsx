@@ -36,7 +36,7 @@ export default class commentInterface extends React.Component<Props,State> {
             itemLayout="horizontal"
             renderItem={(props: any) => {
                 return <Comment
-                    author={<a>{this.props.author}</a>}
+                    author={<div>{this.props.author}</div>}
                     content={
                         <p>{props.content}</p>
                     }

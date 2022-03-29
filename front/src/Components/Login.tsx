@@ -4,8 +4,6 @@ import {PublicClientApplication} from '@azure/msal-browser';
 import {config } from '../azure/Config';
 import '../CSS/App.css';
 // @ts-ignore
-import {fortisLogo} from '../consts/Photos.tsx'
-// @ts-ignore
 import {deleteAllCookies} from "./Main.tsx";
 
 interface State {
