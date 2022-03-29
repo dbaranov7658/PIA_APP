@@ -6,7 +6,10 @@ const Path = require("path");
 const ejs = require("ejs");
 const pdf = require('html-pdf');
 
+const fs = require('fs');
+const cors = require("cors");
 
+const pdf2base64 = require('pdf-to-base64');
 
 
 
@@ -279,8 +282,8 @@ exports.printPia = (req, res, ) => {
             try{
                 const htmlPath = Path.join(__dirname, "../printFunctionality/printTemplate.ejs")
                 let dataForPDF = await ejs.renderFile(htmlPath, { projectName: printedPia.pia.projectName, Sponsoring_business_unit: printedPia.pia.sponsoringBusinessUnit, date: printedPia.createdAt.slice(0, 10).toString()});
-
-                pdf.create(dataForPDF).toFile('./test.pdf', function(err, res) {
+                
+                pdf.create(dataForPDF).toFile('./test.pdf', async (err, user) => {
                     if (err) {
                         res.json({
                             isSuccess: false,
@@ -288,7 +291,12 @@ exports.printPia = (req, res, ) => {
                         })
                     }
                     else{
-
+                        var file = fs.createReadStream('./test.pdf');
+                        var stat = fs.statSync('./test.pdf');
+                        res.setHeader('Content-Length', stat.size);
+                        res.setHeader('Content-Type', 'application/pdf');
+                        res.setHeader('Content-Disposition', 'attachment; filename=test.pdf');
+                        file.pipe(res);                        
                     }
                 });
 

@@ -10,7 +10,11 @@ import {DeleteOutlined, PrinterOutlined} from "@ant-design/icons";
 import Search from "antd/es/input/Search";
 import FileSaver from 'file-saver';
 
+//import axios from "axios";
+//let download = require('');
 
+//import fs from 'fs';
+//const fsPromises = require('fs').promises;
 
 interface Props{
     email: string
@@ -22,6 +26,7 @@ interface State{
     isSkeleton: boolean
     searchValue: string
 }
+
 
 
 class PTable extends React.Component<Props, State> {
@@ -222,26 +227,25 @@ class PTable extends React.Component<Props, State> {
 
     async onPrint(key: tableData)  {
         try {
-            await fetch(`/printPIA`, {
+            const response = await fetch(`/printPIA`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
-                body: JSON.stringify({Pia: this.state.allPia[parseInt(key.key)]})
+                body: JSON.stringify({Pia: this.state.allPia[parseInt(key.key)]}),
             })
-                .then(response => response.json())
-                .then(data => {
-                    if (!data.isSuccess){
-                        message.error(data.message)
-                    }
-                    else{
-                        console.log(data.pdfFile)
-                    }
-                }
-
-                );
+           .then(function(resp){
+               return resp.blob();
+           }).then(function(blob){
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = "PIA.pdf";
+                document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+                a.click();    
+                a.remove();  //afterwards we remove the element again 
+           })
         } catch(err) {
             console.log(err);
         }
-
     }
 
     async emailNewPia() {

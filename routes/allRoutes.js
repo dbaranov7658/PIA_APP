@@ -8,7 +8,6 @@ const _r = express.Router()
 
 const verifyJWT = (req, res, next) => {
     const token = req.headers["x-access-token"]
-
     if (!token) {
         res.json({
             auth: false,
