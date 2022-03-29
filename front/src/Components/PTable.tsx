@@ -7,7 +7,6 @@ import {Link} from "react-router-dom";
 import {piaInfo} from "../consts/interfaces";
 import {tableData} from "../consts/interfaces";
 import {DeleteOutlined, PrinterOutlined} from "@ant-design/icons";
-import Search from "antd/es/input/Search";
 import { SearchOutlined } from '@ant-design/icons';
 
 
