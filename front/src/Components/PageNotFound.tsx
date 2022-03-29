@@ -15,6 +15,7 @@ class PageNotFound extends React.Component {
                         <Button style={{backgroundColor: "#ffc82c", color: "#173a64", border: "none"}} type="primary">Go back home</Button>
                     </Link>
                 }
+                style={{marginTop: "10rem"}}
             />
         );
     }
