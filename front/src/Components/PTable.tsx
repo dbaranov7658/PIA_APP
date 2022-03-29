@@ -377,9 +377,7 @@ class PTable extends React.Component<Props, State> {
                             }
                         </Col>
                         <Col span={12} style={{justifyContent: "end", display: "flex", marginTop: "9px"}}>
-                            <Tooltip placement="top" title={"Search by name"} style={{flex: "1"}}>
                             <Button onClick={() => {this.setState({isSearch: !this.state.isSearch})}} icon={<SearchOutlined />} type={"link"}/>
-                            </Tooltip>
                             {this.state.isSearch ?
                                 <Input autoFocus allowClear style={{height: "32px", width: "150px"}} onChange={(e) => {this.setState({searchValue: e.target.value.toLowerCase()})}} placeholder="search by name" bordered={false}/>
                                        :
