@@ -7,11 +7,6 @@ const ejs = require("ejs");
 const pdf = require('html-pdf');
 
 const fs = require('fs');
-const cors = require("cors");
-
-const pdf2base64 = require('pdf-to-base64');
-
-
 
 
 exports.login = async  (req, res) => {

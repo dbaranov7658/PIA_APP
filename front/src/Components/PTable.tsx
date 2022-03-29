@@ -10,11 +10,7 @@ import {DeleteOutlined, PrinterOutlined} from "@ant-design/icons";
 import Search from "antd/es/input/Search";
 import FileSaver from 'file-saver';
 
-//import axios from "axios";
-//let download = require('');
 
-//import fs from 'fs';
-//const fsPromises = require('fs').promises;
 
 interface Props{
     email: string
