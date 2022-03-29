@@ -10,9 +10,6 @@
 }
 
 .loginBtn {
-  background-color: #163a64;
-  borderColor: #163a64;
-  color: #ffc82c;
   margin: 0;
   top: 50%;
   left: 50%;
@@ -34,5 +31,9 @@
 
 .ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before{
     display: none!important;
+}
+
+.ant-form-item-required{
+    font-weight: bold;
 }
 

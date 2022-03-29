@@ -100,13 +100,13 @@ export default class NewPia extends React.Component<Props, State>{
 
     newPia = () => {
         return (
-            <Form style={{paddingTop: "25px", paddingBottom: "40px"}}
+            <Form className={"formPia"} style={{paddingTop: "25px", paddingBottom: "40px"}}
                   onSubmitCapture={(e) => {this.onSubmit(e)} }
                   layout="vertical"
                   scrollToFirstError
                   ref={this.formRef}
             >
-                <Form.Item style={{fontWeight: "bold"}} label="Project Name" rules={[{required: true, message: 'Please enter your Project Name!' }]} name="projectName"   hasFeedback>
+                <Form.Item label="Project Name" rules={[{required: true, message: 'Please enter your Project Name!' }]} name="projectName"   hasFeedback>
                     <Input value={this.state.projectName}
                            onChange={e=>this.setState({projectName :e.target.value})}
                            type="text" name="ProjName"
@@ -116,7 +116,7 @@ export default class NewPia extends React.Component<Props, State>{
                 </Form.Item>
 
 
-                <Form.Item style={{fontWeight: "bold"}} label="Sponsoring Business Unit" rules={[{required: true, message: 'Please enter Sponsoring Business Unit!' }]} name="sponsors"  hasFeedback >
+                <Form.Item label="Sponsoring Business Unit" rules={[{required: true, message: 'Please enter Sponsoring Business Unit!' }]} name="sponsors"  hasFeedback >
                     <Select allowClear={true} id="sponsors" value={this.state.sponsoringBusinessUnit}
                             onChange={(e) => {this.setState({sponsoringBusinessUnit: e})} }
 
@@ -130,7 +130,7 @@ export default class NewPia extends React.Component<Props, State>{
 
 
 
-                <Form.Item  label="Project description" style={{marginBottom: this.state.projectDescription === "" ? "0px" : "24px", fontWeight: "bold"}}
+                <Form.Item  label="Project description" style={{marginBottom: this.state.projectDescription === "" ? "0px" : "24px"}}
                            rules={[{ required: true, message: 'Please enter the project description' }]}  name="projectDescription" >
 
                     <CKEditor
@@ -161,7 +161,7 @@ export default class NewPia extends React.Component<Props, State>{
                 }
 
 
-                <Form.Item style={{fontWeight: "bold"}} label="Is it necessary for the purpose of the project that personal information be collected, used or disclosed?" rules={[{required:true, message:"Please select an option"}]}
+                <Form.Item label="Is it necessary for the purpose of the project that personal information be collected, used or disclosed?" rules={[{required:true, message:"Please select an option"}]}
                            name="isCollected">
 
                     <Radio.Group style={{fontWeight: "400"}} onChange={(e) => {
@@ -176,7 +176,7 @@ export default class NewPia extends React.Component<Props, State>{
                 </Form.Item>
 
                 {this.state.isCollected ?
-                    <Form.Item label="What personal information will be collected, used or disclosed?"  style={{marginBottom: this.state.personalInfo === "" ? "0px" : "24px", fontWeight: "bold"}}
+                    <Form.Item label="What personal information will be collected, used or disclosed?"  style={{marginBottom: this.state.personalInfo === "" ? "0px" : "24px"}}
                                rules={[{ required: true, message: 'Please enter the personal information' }]}  name="personalInformation" >
 
                         <CKEditor
@@ -209,7 +209,7 @@ export default class NewPia extends React.Component<Props, State>{
 
 
 
-                <Form.Item style={{fontWeight: "bold"}} label="Which “purpose” in S2.3 of the FortisBC Privacy Policy applies to this project?"
+                <Form.Item label="Which “purpose” in S2.3 of the FortisBC Privacy Policy applies to this project?"
                            name="purpose"
                            rules={[{ required: true, message: 'Please select an option' }]}
                            hasFeedback validateFirst={true}
@@ -220,7 +220,7 @@ export default class NewPia extends React.Component<Props, State>{
                     </Select>
                 </Form.Item>
                 <Form.Item label="List the individuals accountable for the personal information"
-                           style={{marginBottom: this.state.individualsInfo === "" ? "0px" : "24px", fontWeight: "bold"}}
+                           style={{marginBottom: this.state.individualsInfo === "" ? "0px" : "24px"}}
                            name="individualsAccountable" rules={[{ required: true, message: 'Please list individuals' }]}>
 
                     <CKEditor
@@ -245,7 +245,7 @@ export default class NewPia extends React.Component<Props, State>{
                     null
                 }
 
-                <Form.Item style={{fontWeight: "bold"}} label="Is any information being disclosed or stored outside of Canada as part of this project?" name="isDisclosed"
+                <Form.Item label="Is any information being disclosed or stored outside of Canada as part of this project?" name="isDisclosed"
                            rules={[{ required: true, message: 'Please select an option' }]}>
                     <Radio.Group style={{fontWeight: "400"}} onChange={(e) => { this.setState({isDisclosed: e.target.value === '1'})} }>
                         <Radio  value={'1'}>Yes</Radio>
@@ -257,7 +257,7 @@ export default class NewPia extends React.Component<Props, State>{
 
                 {this.state.isDisclosed ?
                     <Form.Item label="What information being disclosed or stored outside of Canada as part of this project??"
-                               style={{marginBottom: this.state.disclosedInfo === "" ? "0px" : "24px", fontWeight: "bold"}}
+                               style={{marginBottom: this.state.disclosedInfo === "" ? "0px" : "24px"}}
                                rules={[{ required: true, message: 'Please enter the disclosed information' }]}  name="disclosedInformation" >
 
                         <CKEditor
