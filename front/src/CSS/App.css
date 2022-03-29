@@ -37,3 +37,14 @@
     font-weight: bold;
 }
 
+.ant-table.ant-table-bordered{
+    box-shadow: rgb(240 241 242) 0 2px 8px
+}
+
+.ant-table-thead>tr>th {
+    background: #e5e5e5
+}
+.ant-table-thead th.ant-table-column-has-sorters:hover{
+    background: #e5e5e5;
+}
+

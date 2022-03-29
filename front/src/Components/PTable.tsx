@@ -1,13 +1,14 @@
 import * as React from "react";
 import '../CSS/App.css';
 import '../CSS/PTable.css';
-import {Row, Table, Button, Tag, Tooltip, Popconfirm, message, Skeleton} from 'antd';
+import {Row, Table, Button, Tag, Tooltip, Popconfirm, message, Skeleton, Col, Input} from 'antd';
 // @ts-ignore
 import {Link} from "react-router-dom";
 import {piaInfo} from "../consts/interfaces";
 import {tableData} from "../consts/interfaces";
 import {DeleteOutlined, PrinterOutlined} from "@ant-design/icons";
 import Search from "antd/es/input/Search";
+import { SearchOutlined } from '@ant-design/icons';
 
 
 
@@ -20,6 +21,7 @@ interface State{
     tableData: tableData[]
     isSkeleton: boolean
     searchValue: string
+    isSearch: boolean
 }
 
 
@@ -28,6 +30,13 @@ class PTable extends React.Component<Props, State> {
         columnsForOfficer: any[]
         constructor(props: any){
         super(props);
+            this.state = {
+                allPia: [],
+                tableData: [],
+                isSkeleton: true,
+                searchValue: "",
+                isSearch: false
+            };
         this.emailNewPia = this.emailNewPia.bind(this);
         this.emailCommentPia = this.emailCommentPia.bind(this);
         this.emailEditPia = this.emailEditPia.bind(this);
@@ -212,12 +221,6 @@ class PTable extends React.Component<Props, State> {
                 },
             },
         ];
-        this.state = {
-            allPia: [],
-            tableData: [],
-            isSkeleton: true,
-            searchValue: ""
-        };
     }
 
     async emailNewPia() {
@@ -367,21 +370,30 @@ class PTable extends React.Component<Props, State> {
             <div className='page-body'>
                 <Skeleton loading={this.state.isSkeleton}>
                     <Row>
-                        {localStorage.getItem("isOfficer") === "true" ?
-                            <h1>All PIAs</h1>
-                            :
-                            <h1>Your PIAs</h1>
-                        }
-                        <Search allowClear placeholder="search by name" onChange={(e) => {this.setState({searchValue: e.target.value.toLowerCase()})}} style={{ width: 200, paddingTop: "7px", marginLeft: "25px" }} />
+                        <Col span={12}>
+                            {localStorage.getItem("isOfficer") === "true" ?
+                                <h1>All PIAs</h1>
+                                :
+                                <h1>Your PIAs</h1>
+                            }
+                        </Col>
+                        <Col span={12} style={{justifyContent: "end", display: "flex", marginTop: "9px"}}>
+                            <Button onClick={() => {this.setState({isSearch: !this.state.isSearch})}} icon={<SearchOutlined />} type={"link"}/>
+                            {this.state.isSearch ?
+                                <Input autoFocus allowClear style={{height: "32px", width: "150px"}} onChange={(e) => {this.setState({searchValue: e.target.value.toLowerCase()})}} placeholder="search by name" bordered={false}/>
+                                       :
+                                null
+                            }
+                        </Col>
                     </Row>
 
-                    <Table pagination={{ pageSize: 8 }}
+                    <Table bordered pagination={{ pageSize: 7 }}
                         dataSource={this.state.tableData.filter(data => data.name.toLowerCase().includes(this.state.searchValue))} columns={localStorage.getItem("isOfficer") === "true" ? this.columnsForOfficer : this.columns}
                     />
                     {localStorage.getItem("isOfficer") === "true" ?
                         null
                         :
-                        <Row style={{paddingTop: this.state.tableData.length === 0 ? "40px": ""}}  >
+                        <Row style={{paddingTop: this.state.tableData.length === 0 || this.state.tableData.filter(data => data.name.toLowerCase().includes(this.state.searchValue)).length === 0 ? "40px": ""}}  >
                             <Link to="/addNew">
                                 <Button style={{backgroundColor: "#ffc82c", color: "#173a64", border: "none"}} type="primary">New PIA</Button>
                             </Link>
