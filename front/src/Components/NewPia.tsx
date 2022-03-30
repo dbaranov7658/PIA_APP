@@ -1,6 +1,6 @@
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import classicEditor from '@ckeditor/ckeditor5-build-classic'
-import {Form, Button, Radio, Input, Select, Row, FormInstance, message, Col,} from 'antd';
+import {Form, Button, Radio, Input, Select, Row, FormInstance, message, Col, BackTop,} from 'antd';
 import '../CSS/App.css';
 import * as React from "react";
 import {Link} from "react-router-dom";
@@ -9,6 +9,7 @@ import {pia} from "../consts/interfaces";
 // @ts-ignore
 import CommentInterface from "../Components/CommentInterface.tsx"
 import Draggable from 'react-draggable';
+
 
 interface Props {
     email: string
@@ -25,7 +26,6 @@ interface State{
     isDisclosed: boolean
     disclosedInfo: string
     comments: comment[]
-
 }
 
 
@@ -43,7 +43,7 @@ export default class NewPia extends React.Component<Props, State>{
             purpose: "",
             individualsInfo: undefined,
             isDisclosed: null,
-            comments: []
+            comments: [],
         }
 
     }
@@ -114,8 +114,6 @@ export default class NewPia extends React.Component<Props, State>{
                     />
 
                 </Form.Item>
-
-
                 <Form.Item style={{fontWeight: "bold"}} label="Sponsoring Business Unit" rules={[{required: true, message: 'Please enter Sponsoring Business Unit!' }]} name="sponsors"  hasFeedback >
                     <Select allowClear={true} id="sponsors" value={this.state.sponsoringBusinessUnit}
                             onChange={(e) => {this.setState({sponsoringBusinessUnit: e})} }
@@ -305,21 +303,23 @@ export default class NewPia extends React.Component<Props, State>{
 
     render(){
         return (
-            <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "calc(100% - 100px)", width: "100%", paddingTop: "100px", zIndex: 1}}>
-                <Col span={16} style={{display: "flex", justifyContent: "center", alignItems: "center", width: "100%"}}>
+            <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "calc(100% - 100px)", width: "100%", paddingTop: "100px", zIndex: 1,scrollBehavior:"smooth"}}>
+                <Col span={16} style={{display: "flex", justifyContent: "center", alignItems: "center", width: "100%",height:"100%"}}>
                     {this.newPia()}
                 </Col>
+
                         <Draggable
                             bounds="parent"
                             axis="both"
                             onStart={() => {}}
                             onDrag={() => {}}
                             onStop={() => {}}>
-                            <div>
+                            <div style={{boxShadow:"0px 5px 10px 0px rgba(0, 0, 0, 0.5)",padding:"6px",scrollBehavior:"smooth"}}>
                                 <CommentInterface author={this.props.email} onComment={this.onComment} comments={this.state.comments}/>
                             </div>
 
                         </Draggable>
+
             </div>
 
         );
