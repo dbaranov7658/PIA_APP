@@ -110,7 +110,7 @@ export default  class Main extends React.Component<any, State> {
                        {fortisLogoForMain}
                     </Col>
                     <Col span={12}>
-                        <Row style={{paddingRight: "25px", justifyContent: "end", alignItems: "center", height: "80px", paddingTop: "10px"}}>
+                        <Row style={{paddingRight: "25px", justifyContent: "flex-end", alignItems: "center", height: "80px", paddingTop: "10px"}}>
                             <div className={'text'} style={{paddingRight: "20px"}}>{this.state.email}</div>
                             <Tooltip placement="bottom" title={"Log out"}>
                             <Button ghost={true} type="link" onClick={this.logOut} shape="circle"><LoginOutlined  style={{color: "#000000"}} /></Button>
