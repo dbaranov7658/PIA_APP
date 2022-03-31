@@ -386,8 +386,11 @@ class PTable extends React.Component<Props, State> {
                         </Col>
                     </Row>
 
-                    <Table bordered pagination={{ pageSize: 7 }}
-                        dataSource={this.state.tableData.filter(data => data.name.toLowerCase().includes(this.state.searchValue))} columns={localStorage.getItem("isOfficer") === "true" ? this.columnsForOfficer : this.columns}
+                    <Table
+                        bordered
+                        pagination={{ defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['10', '20', '30', '50', '100'] }}
+                        dataSource={this.state.tableData.filter(data => data.name.toLowerCase().includes(this.state.searchValue))}
+                        columns={localStorage.getItem("isOfficer") === "true" ? this.columnsForOfficer : this.columns}
                     />
                     {localStorage.getItem("isOfficer") === "true" ?
                         null

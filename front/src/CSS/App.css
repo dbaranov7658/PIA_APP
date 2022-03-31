@@ -1,22 +1,21 @@
-@import '~antd/dist/antd.css';
+@import "~antd/dist/antd.css";
 
-.text{
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 14px;
-    line-height: 14px;
-    color: #000000;
+.text {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 14px;
+  color: #000000;
 }
 
 .loginBtn {
   margin: 0;
   top: 50%;
   left: 50%;
-
 }
-.fortisLogo{
-    margin-bottom: 120px;
+.fortisLogo {
+  margin-bottom: 120px;
 }
 
 .container {
@@ -28,24 +27,24 @@
   background-repeat: no-repeat;
 }
 
-
-.ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before{
-    display: none!important;
+.ant-form-item-label
+  > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+  display: none !important;
 }
 
-.ant-form-item-required{
-    font-weight: bold;
+.ant-form-item-required {
+  font-weight: bold;
 }
 
-.ant-table.ant-table-bordered{
-    box-shadow: rgb(240 241 242) 0 2px 8px
+.ant-table.ant-table-bordered {
+  box-shadow: rgb(240 241 242) 0 2px 8px;
 }
 
-.ant-table-thead>tr>th {
-    background: #ededed
+.ant-table-thead > tr > th {
+  background: #ededed;
 }
-.ant-table-thead th.ant-table-column-has-sorters:hover{
-    background: #ededed
+.ant-table-thead th.ant-table-column-has-sorters:hover {
+  background: #ededed;
 }
 
 ::-webkit-scrollbar {
