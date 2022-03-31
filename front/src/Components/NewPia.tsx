@@ -167,9 +167,9 @@ export default class NewPia extends React.Component<Props, State>{
                     <Radio.Group style={{fontWeight: "400"}} onChange={(e) => {
                         this.setState({isCollected: e.target.value === "1"})
                     }} >
-                        <Radio value={'1'}> <div>Yes </div>  </Radio>
+                        <Radio style={{fontSize: "15px"}} value={'1'}> <div>Yes </div>  </Radio>
 
-                        <Radio value={'2'}>No</Radio>
+                        <Radio style={{fontSize: "15px"}} value={'2'}>No</Radio>
                     </Radio.Group>
 
 
@@ -215,8 +215,18 @@ export default class NewPia extends React.Component<Props, State>{
                            hasFeedback validateFirst={true}
                 >
                     <Select allowClear id="purpose" value={this.state.purpose} onChange={(e) => { this.setState({purpose: e})}} >
-                        <Select.Option value="Demo1">Demo1</Select.Option>
-                        <Select.Option value="Demo2">Demo2</Select.Option>
+                        <Select.Option value="To create and maintain an effective business relationship">To create and maintain an effective business relationship</Select.Option>
+                        <Select.Option value="For quality assurance purposes such as the recording of telephone calls to our call centers">For quality assurance purposes such as the recording of telephone calls to our call centers</Select.Option>
+                        <Select.Option value="To facilitate account, billing, credit, collections and customer services, this may include the collection of contact information, emergency contact information, consent to complete a credit check for new customers">To facilitate account, billing, credit, collections and customer services, this may include the collection of contact information, emergency contact information, consent to complete a credit check for new customers</Select.Option>
+                        <Select.Option value="To provide ongoing electricity, natural gas, propane and various other services to its customers">To provide ongoing electricity, natural gas, propane and various other services to its customers</Select.Option>
+                        <Select.Option value="To avoid and investigate fraud and identity theft">To avoid and investigate fraud and identity theft</Select.Option>
+                        <Select.Option value="To enable energy efficiency and enhanced customer energy consumption feedback, including the collection of hourly consumption data">To enable energy efficiency and enhanced customer energy consumption feedback, including the collection of hourly consumption data</Select.Option>
+                        <Select.Option value="To reduce energy and revenue theft which may include the collection of outage, voltage, load profile and consumption information">To reduce energy and revenue theft which may include the collection of outage, voltage, load profile and consumption information</Select.Option>
+                        <Select.Option value="To further develop, enhance and market products and services offered by FortisBC, which may include contacting our customers to offer them energy efficiency rebates or other programs">To further develop, enhance and market products and services offered by FortisBC, which may include contacting our customers to offer them energy efficiency rebates or other programs</Select.Option>
+                        <Select.Option value="To understand customer needs and preferences, which may include contacting our customers to ask them to participate in a survey regarding our programs and services">To understand customer needs and preferences, which may include contacting our customers to ask them to participate in a survey regarding our programs and services</Select.Option>
+                        <Select.Option value="To meet legal and regulatory requirements">To meet legal and regulatory requirements</Select.Option>
+                        <Select.Option value="To manage FortisBC's business and operations">To manage FortisBC's business and operations</Select.Option>
+                        <Select.Option value="To help ensure the security of FortisBC premises and physical assets">To help ensure the security of FortisBC premises and physical assets</Select.Option>
                     </Select>
                 </Form.Item>
                 <Form.Item label="List the individuals accountable for the personal information"
@@ -248,8 +258,8 @@ export default class NewPia extends React.Component<Props, State>{
                 <Form.Item label="Is any information being disclosed or stored outside of Canada as part of this project?" name="isDisclosed"
                            rules={[{ required: true, message: 'Please select an option' }]}>
                     <Radio.Group style={{fontWeight: "400"}} onChange={(e) => { this.setState({isDisclosed: e.target.value === '1'})} }>
-                        <Radio  value={'1'}>Yes</Radio>
-                        <Radio value={'2'}>No</Radio>
+                        <Radio style={{fontSize: "15px"}}  value={'1'}>Yes</Radio>
+                        <Radio style={{fontSize: "15px"}} value={'2'}>No</Radio>
                     </Radio.Group>
 
 

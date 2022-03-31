@@ -9,7 +9,6 @@ interface Props{
     author: string
     onComment: (value:comment) => void,
     comments: comment[]
-    isPrivacyOfficer:boolean
 
 }
 
@@ -37,14 +36,14 @@ export default class commentInterface extends React.Component<Props,State> {
             itemLayout="horizontal"
             renderItem={(props: any) => {
                 return <Comment
-                    author={<div>{this.props.author}</div>}
+                    author={<div>{props.author}</div>}
                     content={
-                        <p style={{ width: "fit-content",textAlign: localStorage.getItem("isOfficer")==="true" ? "right":"left",
-                            backgroundColor:localStorage.getItem("isOfficer")==="true" ? "#eee": "rgb(70 9 255)",
-                            color:localStorage.getItem("isOfficer")==="true" ? "black":"#eee",
+                        <p style={{ width: "fit-content", textAlign: this.props.author !== props.author ? "right":"left",
+                            backgroundColor: this.props.author !== props.author ? "#eee": "#163a64",
+                            color: this.props.author !== props.author ? "black":"#eee",
                             borderRadius:"10px",
                             padding:"10px",
-                            float:localStorage.getItem("isOfficer")==="true" ?"left":"right"
+                            float: this.props.author !== props.author ? "left":"right"
 
                         }}>{props.content}</p>
 
@@ -63,8 +62,8 @@ export default class commentInterface extends React.Component<Props,State> {
                 <TextArea rows={4} onChange={onChange} value={value} placeholder="Add a comment..."/>
             </Form.Item>
             <Form.Item>
-                <Button htmlType="submit" loading={submitting} onClick={onSubmit} type="primary"style={{
-                    background: "#FFC82C",color:"black", marginLeft:"4px"}}>
+                <Button className={"commentButton"} htmlType="submit" loading={submitting} onClick={onSubmit} type="primary"
+                        style={{color:"black", marginLeft:"4px", backgroundColor: "rgb(255, 200, 44)", borderColor: "rgb(255, 200, 44)"}}>
                     Add Comment
                 </Button>
             </Form.Item>

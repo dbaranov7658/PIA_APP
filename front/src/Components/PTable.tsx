@@ -48,7 +48,7 @@ class PTable extends React.Component<Props, State> {
                 dataIndex: 'name',
                 key: 'name',
                 render: name => {
-                    return <a>{ name }</a>
+                    return <a style={{color: "black", fontWeight: "500"}}>{ name }</a>
                 },
                 sorter: (a, b) => {
                     if (a.name > b.name) {
@@ -128,7 +128,7 @@ class PTable extends React.Component<Props, State> {
                 dataIndex: 'name',
                 key: 'name',
                 render: name => {
-                    return <a>{ name }</a>
+                    return <a style={{color: "black", fontWeight: "500"}}>{ name }</a>
                 },
                 sorter: (a, b) => {
                     if (a.name > b.name) {
