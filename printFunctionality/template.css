@@ -1,0 +1,72 @@
+body{
+    width: 1587px;
+    height: 2245px;
+    margin: 0px;
+    font-family: 'Lato', sans-serif;
+}
+
+#imgheadercontainer{
+    height:300px;
+    background-color: rgb(23, 58, 100);
+}
+
+#imgheader{
+    width: 1587px;
+    height: 200px;
+    margin: auto;
+    margin-top: 50px;
+}
+
+#PIA{
+    margin-top: 100px;
+    text-align: center;
+    font-size: 60px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+#yellow-line{
+    width: 80%;
+    border: none;
+    border-top: 10px solid #FFC82C;
+    margin: auto;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+#date-created-container{
+    text-align: right;
+    margin: 0px;
+    margin-right: 150px;
+    flex-direction: row;
+    width: auto;
+    font-size: 30px;
+}
+
+#date-created{
+    text-align: right;
+    margin: 0px;
+    font-family: 'Lato', sans-serif;
+}
+
+#date{
+    font-family: "Palatino Linotype";  
+    margin:0px;
+    text-align: right;
+}
+
+#text-content{
+    margin: auto;
+    width: 85%;
+    font-size: 40px;
+}
+
+p{
+    font-size: 40px;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+strong{
+    font-weight: 700;
+}

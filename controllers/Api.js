@@ -8,6 +8,9 @@ const pdf = require('html-pdf');
 
 const fs = require('fs');
 
+var myCss = {
+    style : fs.readFileSync('./printFunctionality/template.css','utf8'),
+};
 
 exports.login = async  (req, res) => {
     const mail = req.body.email
@@ -272,13 +275,31 @@ exports.addNew = (req, res, ) => {
 exports.printPia = (req, res, ) => {
     const printedPia = req.body.Pia
     const token = req.headers["x-access-token"]
+    //console.log(printedPia);
+    //console.log(printedPia.pia.projectDescription.replace(/['"]+/g, ''));
+    //console.log(printedPia.pia.individualsInfo.replace(/['"]+/g, ''));
+
     jwt.verify(token, process.env.JWT_VAR, async (err, decoded) => {
         if (decoded.id && printedPia){
             try{
                 const htmlPath = Path.join(__dirname, "../printFunctionality/printTemplate.ejs")
-                let dataForPDF = await ejs.renderFile(htmlPath, { projectName: printedPia.pia.projectName, Sponsoring_business_unit: printedPia.pia.sponsoringBusinessUnit, date: printedPia.createdAt.slice(0, 10).toString()});
+                let dataForPDF = await ejs.renderFile(htmlPath, { 
+                    myCss: myCss, 
+                    projectName: printedPia.pia.projectName, 
+                    sponsoringBusinessUnit: printedPia.pia.sponsoringBusinessUnit, 
+                    projectDescription: printedPia.pia.projectDescription.replace(/['"]+/g, ''), 
+                    isCollected: printedPia.pia.isCollected,
+                    personalInfo: printedPia.pia.personalInfo.replace(/['"]+/g, ''),
+                    purpose: printedPia.pia.purpose,
+                    individualsInfo: printedPia.pia.individualsInfo.replace(/['"]+/g, ''),
+                    date: printedPia.createdAt.slice(0, 10).toString(),
+                    isDisclosed: false
+                });
                 
-                pdf.create(dataForPDF).toFile('./test.pdf', async (err, user) => {
+                var options = { height: '842px', width: '595px', type: "pdf", ppi: '72' };
+                options = { format: 'A4', type: "pdf", ppi: '72' };
+
+                pdf.create(dataForPDF, options).toFile('./test.pdf', async (err, user) => {
                     if (err) {
                         res.json({
                             isSuccess: false,
