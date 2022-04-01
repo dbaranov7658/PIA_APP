@@ -392,16 +392,13 @@ class PTable extends React.Component<Props, State> {
                         dataSource={this.state.tableData.filter(data => data.name.toLowerCase().includes(this.state.searchValue))}
                         columns={localStorage.getItem("isOfficer") === "true" ? this.columnsForOfficer : this.columns}
                     />
-                    {localStorage.getItem("isOfficer") === "true" ?
-                        null
-                        :
+
                         <Row style={{paddingTop: this.state.tableData.length === 0 || this.state.tableData.filter(data => data.name.toLowerCase().includes(this.state.searchValue)).length === 0 ? "40px": ""}}  >
                             <Link to="/addNew">
                                 <Button style={{backgroundColor: "#ffc82c", color: "#173a64", border: "none"}} type="primary">New PIA</Button>
                             </Link>
                         </Row>
 
-                    }
                 </Skeleton>
 
             </div>
