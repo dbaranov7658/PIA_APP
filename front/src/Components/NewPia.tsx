@@ -148,7 +148,6 @@ export default class NewPia extends React.Component<Props, State>{
                             this.setState({projectDescription: editor.getData()})
                         }
                         }
-
                     />
 
                 </Form.Item >
