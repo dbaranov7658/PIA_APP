@@ -82,7 +82,6 @@ export default class NewPia extends React.Component<Props, State>{
                                            window.location.href = window.location.origin
 
                                        }
-
                                    })
                                })
                     }
