@@ -275,39 +275,29 @@ exports.addNew = (req, res, ) => {
 exports.printPia = (req, res, ) => {
     const printedPia = req.body.Pia
     const token = req.headers["x-access-token"]
-    console.log(printedPia);
+    //console.log(printedPia);
 
     jwt.verify(token, process.env.JWT_VAR, async (err, decoded) => {
         if (decoded.id && printedPia){
             try{
                 const htmlPath = Path.join(__dirname, "../printFunctionality/printTemplate.ejs")
-
-                let individualsInfo = printedPia.pia.individualsInfo ? printedPia.pia.individualsInfo.replace(/['"]+/g, ''): '';
-                let projectDescription = printedPia.pia.projectDescription ? printedPia.pia.projectDescription.replace(/['"]+/g, '') : '';
-                let personalInfo = printedPia.pia.personalInfo ?  printedPia.pia.personalInfo.replace(/['"]+/g, '') : '';
                 
                 let dataForPDF = await ejs.renderFile(htmlPath,{ 
                     myCss: myCss, 
                     projectName: printedPia.pia.projectName, 
                     sponsoringBusinessUnit: printedPia.pia.sponsoringBusinessUnit, 
-                    projectDescription: projectDescription, 
+                    projectDescription: printedPia.pia.projectDescription ? printedPia.pia.projectDescription.replace(/['"]+/g, '') : '', 
                     isCollected: Boolean(printedPia.pia.isCollected),
-                    personalInfo: personalInfo,
+                    personalInfo: printedPia.pia.personalInfo ?  printedPia.pia.personalInfo.replace(/['"]+/g, '') : '',
                     purpose: printedPia.pia.purpose,
-                    individualsInfo: individualsInfo,
+                    individualsInfo: printedPia.pia.individualsInfo ? printedPia.pia.individualsInfo.replace(/['"]+/g, ''): '',
                     date: printedPia.createdAt.slice(0, 10).toString(),
                     isDisclosed: printedPia.pia.isDisclosed,
                     disclosedInfo: printedPia.pia.disclosedInfo
                 },{async:true});
                 
                 var options = { height: '842px', width: '595px', type: "pdf", ppi: '72' };
-                options = { format: 'A4', type: "pdf", ppi: '72', "header": {
-                    "height": "5mm"
-                    //"contents": '<div style="text-align: center;">Author: Marc Bachmann</div>'
-                  }, "footer": {
-                    "height": "5mm"
-                    //"contents": '<div style="text-align: center;">Author: Marc Bachmann</div>'
-                  } };
+                options = { format: 'A4', type: "pdf", ppi: '72', "header": {"height": "0mm"}, "footer": {"height": "0mm"} };
 
                 pdf.create(dataForPDF, options).toFile('./test.pdf', async (err, user) => {
                     if (err) {
