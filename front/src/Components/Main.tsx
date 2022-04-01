@@ -120,7 +120,7 @@ export default  class Main extends React.Component<any, State> {
                 </Row>
 
                 <Routes>
-                    <Route path="/addNew" element={localStorage.getItem("isOfficer") === "true" ? <PageNotFound /> : <NewPia email={this.state.email}/>}/>
+                    <Route path="/addNew" element={<NewPia email={this.state.email}/>}/>
                     <Route path="/" element={<PTable email={this.state.email} />}/>
                     <Route path="/editPia:id" element={<PTable email={this.state.email} />}/>
                     <Route path="*" element={<PageNotFound />}/> 
