@@ -276,35 +276,36 @@ exports.printPia = (req, res, ) => {
     const printedPia = req.body.Pia
     const token = req.headers["x-access-token"]
     console.log(printedPia);
-    //console.log(printedPia.pia.projectDescription.replace(/['"]+/g, ''));
-    //console.log(printedPia.pia.individualsInfo.replace(/['"]+/g, ''));
 
     jwt.verify(token, process.env.JWT_VAR, async (err, decoded) => {
         if (decoded.id && printedPia){
             try{
                 const htmlPath = Path.join(__dirname, "../printFunctionality/printTemplate.ejs")
+
+                let individualsInfo = printedPia.pia.individualsInfo ? printedPia.pia.individualsInfo.replace(/['"]+/g, ''): '';
+                let projectDescription = printedPia.pia.projectDescription ? printedPia.pia.projectDescription.replace(/['"]+/g, '') : '';
+                let personalInfo = printedPia.pia.personalInfo ?  printedPia.pia.personalInfo.replace(/['"]+/g, '') : '';
                 
-                
-                let dataForPDF = await ejs.renderFile(htmlPath, { 
+                let dataForPDF = await ejs.renderFile(htmlPath,{ 
                     myCss: myCss, 
                     projectName: printedPia.pia.projectName, 
                     sponsoringBusinessUnit: printedPia.pia.sponsoringBusinessUnit, 
-                    projectDescription: printedPia.pia.projectDescription.replace(/['"]+/g, ''), 
-                    isCollected: printedPia.pia.isCollected,
-                    personalInfo: printedPia.pia.personalInfo.replace(/['"]+/g, ''),
+                    projectDescription: projectDescription, 
+                    isCollected: Boolean(printedPia.pia.isCollected),
+                    personalInfo: personalInfo,
                     purpose: printedPia.pia.purpose,
-                    individualsInfo: printedPia.pia.individualsInfo.replace(/['"]+/g, ''),
+                    individualsInfo: individualsInfo,
                     date: printedPia.createdAt.slice(0, 10).toString(),
                     isDisclosed: printedPia.pia.isDisclosed,
                     disclosedInfo: printedPia.pia.disclosedInfo
-                });
+                },{async:true});
                 
                 var options = { height: '842px', width: '595px', type: "pdf", ppi: '72' };
                 options = { format: 'A4', type: "pdf", ppi: '72', "header": {
-                    "height": "10mm"
+                    "height": "5mm"
                     //"contents": '<div style="text-align: center;">Author: Marc Bachmann</div>'
                   }, "footer": {
-                    "height": "10mm"
+                    "height": "5mm"
                     //"contents": '<div style="text-align: center;">Author: Marc Bachmann</div>'
                   } };
 

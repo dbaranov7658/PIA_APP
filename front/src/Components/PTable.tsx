@@ -12,7 +12,6 @@ import FileSaver from 'file-saver';
 
 
 const LoadingButton = () => {message.loading('Downloading PIA..', 0)};
-var LoadingDocument = false;
 
 interface Props{
     email: string
@@ -23,6 +22,7 @@ interface State{
     tableData: tableData[]
     isSkeleton: boolean
     searchValue: string
+    loadingDocument: boolean
 }
 
 
@@ -202,7 +202,7 @@ class PTable extends React.Component<Props, State> {
                             </Tooltip>
 
                                 <Tooltip placement="bottom" title={"Print"} style={{flex: "1"}}>
-                                    <Button type={"link"}  onClick={() => {this.onPrint(key)}} disabled={LoadingDocument} ghost={LoadingDocument}><PrinterOutlined /></Button>
+                                    <Button type={"link"}  onClick={() => {this.onPrint(key)}}><PrinterOutlined /></Button>
                                 </Tooltip>
 
                         </div>
@@ -217,36 +217,40 @@ class PTable extends React.Component<Props, State> {
             allPia: [],
             tableData: [],
             isSkeleton: true,
-            searchValue: ""
+            searchValue: "",
+            loadingDocument: false
         };
     }
 
 
-    async onPrint(key: tableData)  {
-        try {
-            LoadingButton();
-            LoadingDocument = true;
-            const response = await fetch(`/printPIA`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
-                body: JSON.stringify({Pia: this.state.allPia[parseInt(key.key)]}),
+    async onPrint(key: tableData){
+        if(!this.state.loadingDocument){
+            try {
+                this.setState({loadingDocument: true})
+                LoadingButton();
+                const response = await fetch(`/printPIA`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
+                    body: JSON.stringify({Pia: this.state.allPia[parseInt(key.key)]}),
+                })
+            .then(function(resp){
+                return resp.blob();
+            }).then(function(blob){
+                    var url = window.URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.download = "PIA.pdf";
+                    document.body.appendChild(a);
+                    a.click();    
+                    a.remove();
+                    message.destroy();
+                    message.success('PIA downloaded', 2);
+                    this.setState({loadingDocument: false})
             })
-           .then(function(resp){
-            LoadingDocument = false;
-               return resp.blob();
-           }).then(function(blob){
-                var url = window.URL.createObjectURL(blob);
-                var a = document.createElement('a');
-                a.href = url;
-                a.download = "PIA.pdf";
-                document.body.appendChild(a);
-                a.click();    
-                a.remove();
-                message.destroy();
-                message.success('PIA downloaded', 2);
-           })
-        } catch(err) {
-            console.log(err);
+            } catch(err) {
+                console.log(err);
+                this.setState({loadingDocument: false})
+            }
         }
     }
 

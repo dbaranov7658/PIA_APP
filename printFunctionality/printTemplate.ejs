@@ -1,15 +1,12 @@
 <html lang="en">
 <head>
-    <!-- <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge"> -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet">
 
 </head>
-<!-- projectName: printedPia.pia.projectName, Sponsoring_business_unit: printedPia.pia.sponsoringBusinessUnit -->
+
 <body>
     
     <div id="imgheadercontainer">
@@ -32,7 +29,6 @@
         </svg>
     </div>
 
-    <!-- <img src="https://cdn.discordapp.com/attachments/937501199547130007/957839494013419520/PDF_header.png" id="imgheader"> -->
     <h1 id="PIA">Privacy Impact Assessment</h1>
     <hr id="yellow-line">
 
@@ -48,9 +44,12 @@
 
         <p><strong>Is it necessary for the purpose of the project that
             personal information be collected, used or disclosed?  </strong> <%= isCollected %></p>
-        
-        <p><strong>If yes, what?</strong></p> 
-            <%- personalInfo %>
+
+            <% if(Boolean(isCollected)){ %>
+                <p><strong>If yes, what?</strong></p> 
+                <p><%- personalInfo %></p>
+            <% } else{ %>  
+            <% } %>
 
         <p><strong>List the individuals accountable for the personal information: </strong></p> 
             <%- individualsInfo %>
@@ -58,9 +57,12 @@
         <p><strong>Which "purpose" in S2.3 of the FortisBC Privacy Policy applies to this project?</strong> <br> <%= purpose %></p>
 
         <p><strong>Is any information being disclosed or stored outside of Canada as part of this project?</strong> <br> <%= isDisclosed %></p>
-        
-        <p><strong>If yes, what?</strong></p> 
-            <%- disclosedInfo %>
+
+            <% if(Boolean(isDisclosed)){ %>
+                <p><strong>If yes, what?</strong></p> 
+                <%- disclosedInfo %>
+            <% } else{ %>  
+            <% } %>
 
     </div>
 
