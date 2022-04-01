@@ -11,6 +11,8 @@ import Search from "antd/es/input/Search";
 import FileSaver from 'file-saver';
 
 
+const LoadingButton = () => {message.loading('Downloading PIA..', 0)};
+var LoadingDocument = false;
 
 interface Props{
     email: string
@@ -200,7 +202,7 @@ class PTable extends React.Component<Props, State> {
                             </Tooltip>
 
                                 <Tooltip placement="bottom" title={"Print"} style={{flex: "1"}}>
-                                    <Button type={"link"}  onClick={() => {this.onPrint(key)}}><PrinterOutlined /></Button>
+                                    <Button type={"link"}  onClick={() => {this.onPrint(key)}} disabled={LoadingDocument} ghost={LoadingDocument}><PrinterOutlined /></Button>
                                 </Tooltip>
 
                         </div>
@@ -220,24 +222,28 @@ class PTable extends React.Component<Props, State> {
     }
 
 
-
     async onPrint(key: tableData)  {
         try {
+            LoadingButton();
+            LoadingDocument = true;
             const response = await fetch(`/printPIA`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
                 body: JSON.stringify({Pia: this.state.allPia[parseInt(key.key)]}),
             })
            .then(function(resp){
+            LoadingDocument = false;
                return resp.blob();
            }).then(function(blob){
                 var url = window.URL.createObjectURL(blob);
                 var a = document.createElement('a');
                 a.href = url;
                 a.download = "PIA.pdf";
-                document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+                document.body.appendChild(a);
                 a.click();    
-                a.remove();  //afterwards we remove the element again 
+                a.remove();
+                message.destroy();
+                message.success('PIA downloaded', 2);
            })
         } catch(err) {
             console.log(err);

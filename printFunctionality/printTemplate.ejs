@@ -33,7 +33,7 @@
     </div>
 
     <!-- <img src="https://cdn.discordapp.com/attachments/937501199547130007/957839494013419520/PDF_header.png" id="imgheader"> -->
-    <h1 id="PIA">Personal Information Assessment</h1>
+    <h1 id="PIA">Privacy Impact Assessment</h1>
     <hr id="yellow-line">
 
     <div id="date-created-container">
@@ -48,6 +48,10 @@
 
         <p><strong>Is it necessary for the purpose of the project that
             personal information be collected, used or disclosed?  </strong> <%= isCollected %></p>
+        
+        <p><strong>If yes, what?</strong></p> 
+            <%- personalInfo %>
+
         <p><strong>List the individuals accountable for the personal information: </strong></p> 
             <%- individualsInfo %>
 
@@ -56,7 +60,7 @@
         <p><strong>Is any information being disclosed or stored outside of Canada as part of this project?</strong> <br> <%= isDisclosed %></p>
         
         <p><strong>If yes, what?</strong></p> 
-            <%- personalInfo %>
+            <%- disclosedInfo %>
 
     </div>
 

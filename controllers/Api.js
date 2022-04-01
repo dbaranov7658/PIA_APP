@@ -275,7 +275,7 @@ exports.addNew = (req, res, ) => {
 exports.printPia = (req, res, ) => {
     const printedPia = req.body.Pia
     const token = req.headers["x-access-token"]
-    //console.log(printedPia);
+    console.log(printedPia);
     //console.log(printedPia.pia.projectDescription.replace(/['"]+/g, ''));
     //console.log(printedPia.pia.individualsInfo.replace(/['"]+/g, ''));
 
@@ -283,6 +283,8 @@ exports.printPia = (req, res, ) => {
         if (decoded.id && printedPia){
             try{
                 const htmlPath = Path.join(__dirname, "../printFunctionality/printTemplate.ejs")
+                
+                
                 let dataForPDF = await ejs.renderFile(htmlPath, { 
                     myCss: myCss, 
                     projectName: printedPia.pia.projectName, 
@@ -293,11 +295,18 @@ exports.printPia = (req, res, ) => {
                     purpose: printedPia.pia.purpose,
                     individualsInfo: printedPia.pia.individualsInfo.replace(/['"]+/g, ''),
                     date: printedPia.createdAt.slice(0, 10).toString(),
-                    isDisclosed: false
+                    isDisclosed: printedPia.pia.isDisclosed,
+                    disclosedInfo: printedPia.pia.disclosedInfo
                 });
                 
                 var options = { height: '842px', width: '595px', type: "pdf", ppi: '72' };
-                options = { format: 'A4', type: "pdf", ppi: '72' };
+                options = { format: 'A4', type: "pdf", ppi: '72', "header": {
+                    "height": "10mm"
+                    //"contents": '<div style="text-align: center;">Author: Marc Bachmann</div>'
+                  }, "footer": {
+                    "height": "10mm"
+                    //"contents": '<div style="text-align: center;">Author: Marc Bachmann</div>'
+                  } };
 
                 pdf.create(dataForPDF, options).toFile('./test.pdf', async (err, user) => {
                     if (err) {
