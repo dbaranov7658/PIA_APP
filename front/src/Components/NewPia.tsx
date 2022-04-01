@@ -80,6 +80,7 @@ export default class NewPia extends React.Component<Props, State>{
                                            console.log(response.message)
                                            message.success(response.message)
                                            window.location.href = window.location.origin
+
                                        }
 
                                    })
