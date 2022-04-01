@@ -95,7 +95,6 @@ export default class NewPia extends React.Component<Props, State>{
         let newArr = this.state.comments
         newArr.push(newComment)
         this.setState({comments: newArr})
-
     }
 
     newPia = () => {
