@@ -22,6 +22,7 @@ class Login extends React.Component<Props, State>  {
         };
     }
 
+
     async login() {
         deleteAllCookies()
         sessionStorage.clear();
