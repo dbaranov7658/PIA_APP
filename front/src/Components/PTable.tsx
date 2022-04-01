@@ -7,7 +7,7 @@ import {Link} from "react-router-dom";
 import {piaInfo} from "../consts/interfaces";
 import {tableData} from "../consts/interfaces";
 import {DeleteOutlined, PrinterOutlined} from "@ant-design/icons";
-import { SearchOutlined } from '@ant-design/icons';
+import { SearchOutlined, CopyOutlined } from '@ant-design/icons';
 
 
 
@@ -212,6 +212,9 @@ class PTable extends React.Component<Props, State> {
                                 :
                                 null
                             }
+                            <Tooltip placement="bottom" title={"Copy"} style={{flex: "1"}}>
+                                <Button type={"link"}  onClick={() => {alert("Copy PIA Function")}}><CopyOutlined /></Button>
+                            </Tooltip>
                         </div>
 
 
