@@ -1,5 +1,4 @@
-
-import { LoginOutlined } from '@ant-design/icons';
+import {LoginOutlined} from '@ant-design/icons';
 import '../CSS/App.css';
 import '../CSS/Main.css';
 // @ts-ignore
@@ -10,19 +9,30 @@ import PTable from "../Components/PTable.tsx";
 // @ts-ignore
 import PageNotFound from '../Components/PageNotFound.tsx';
 import {Button, Col, Row, Tooltip} from "antd";
-import {Routes, Route} from 'react-router-dom'
+import {Route, Routes} from 'react-router-dom'
 
 // @ts-ignore
 import NewPia from "../Components/NewPia.tsx";
 import {PublicClientApplication} from "@azure/msal-browser";
-import {config } from '../azure/Config';
+import {config} from '../azure/Config';
 // @ts-ignore
 import {fortisLogoForMain} from "../consts/Photos.tsx";
+import CryptoJS from "crypto-js"
 
 
 interface State {
     email: string
     pcl: PublicClientApplication
+}
+
+export function encrypted(encryptdeString: string){
+    return encodeURIComponent(CryptoJS.AES.encrypt(encryptdeString, process.env.REACT_APP_EncryptedPass).toString())
+}
+
+export function decrypted(decryptedString: string){
+    let newDecryptedString = decodeURIComponent(decryptedString)
+    const decrypted = CryptoJS.AES.decrypt(newDecryptedString, process.env.REACT_APP_EncryptedPass);
+    return decrypted.toString(CryptoJS.enc.Utf8)
 }
 
 export function deleteAllCookies() {
@@ -35,6 +45,8 @@ export function deleteAllCookies() {
         document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
     }
 }
+
+
 
 export default  class Main extends React.Component<any, State> {
 
@@ -120,10 +132,12 @@ export default  class Main extends React.Component<any, State> {
                 </Row>
 
                 <Routes>
+                    <Route path="/addNew:id" element={<NewPia email={this.state.email}/>}/>
                     <Route path="/addNew" element={<NewPia email={this.state.email}/>}/>
                     <Route path="/" element={<PTable email={this.state.email} />}/>
                     <Route path="/editPia:id" element={<PTable email={this.state.email} />}/>
-                    <Route path="*" element={<PageNotFound />}/> 
+                    <Route path="*" element={<PageNotFound />}/>
+                    <Route path="/pageNotFound" element={<PageNotFound />}/>
                 </Routes>
             </div>
         )

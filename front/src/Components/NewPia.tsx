@@ -1,6 +1,6 @@
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import classicEditor from '@ckeditor/ckeditor5-build-classic'
-import {Form, Button, Radio, Input, Select, Row, FormInstance, message, Col,} from 'antd';
+import {Form, Button, Radio, Input, Select, Row, FormInstance, message, Col, Skeleton,} from 'antd';
 import '../CSS/App.css';
 import * as React from "react";
 import {Link} from "react-router-dom";
@@ -9,6 +9,8 @@ import {pia} from "../consts/interfaces";
 // @ts-ignore
 import CommentInterface from "../Components/CommentInterface.tsx"
 import Draggable from 'react-draggable';
+// @ts-ignore
+import {decrypted} from "./Main.tsx";
 
 interface Props {
     email: string
@@ -25,6 +27,7 @@ interface State{
     isDisclosed: boolean
     disclosedInfo: string
     comments: comment[]
+    isSkeleton: boolean
 
 }
 
@@ -43,9 +46,51 @@ export default class NewPia extends React.Component<Props, State>{
             purpose: "",
             individualsInfo: undefined,
             isDisclosed: null,
-            comments: []
+            comments: [],
+            isSkeleton: true
         }
 
+    }
+
+    async componentDidMount() {
+        if(window.location.pathname.includes(":")){
+            let id = window.location.pathname.substring(8, window.location.pathname.length)
+            try {
+                await fetch(`/getPiaById`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
+                    body: JSON.stringify({id: decrypted(id)})
+                })
+                    .then(response => response.json())
+                    .then((data) => {
+                        if (!data.isSuccess){
+                            console.log(data.message)
+                            window.location.pathname = "/pageNotFound"
+                        }
+                        else{
+                            this.setState({
+                                isSkeleton: false,
+                                disclosedInfo: data.Pia.pia.disclosedInfo.toString() === undefined ? "" : data.Pia.pia.disclosedInfo,
+                                personalInfo: data.Pia.pia.personalInfo.toString() === undefined ? "" : data.Pia.pia.personalInfo,
+                                projectName: data.Pia.pia.projectName + "(copy)",
+                                sponsoringBusinessUnit: data.Pia.pia.sponsoringBusinessUnit,
+                                projectDescription: data.Pia.pia.projectDescription,
+                                isCollected: data.Pia.pia.isCollected,
+                                purpose: data.Pia.pia.purpose,
+                                individualsInfo: data.Pia.pia.individualsInfo,
+                                isDisclosed: data.Pia.pia.isDisclosed
+                            })
+                        }
+
+                    });
+            } catch(err) {
+                console.log(err);
+                window.location.pathname = "/pageNotFound"
+            }
+        }
+        else {
+            this.setState({isSkeleton: false})
+        }
     }
 
 
@@ -105,7 +150,7 @@ export default class NewPia extends React.Component<Props, State>{
                   scrollToFirstError
                   ref={this.formRef}
             >
-                <Form.Item label="Project Name" rules={[{required: true, message: 'Please enter your Project Name!' }]} name="projectName"   hasFeedback>
+                <Form.Item label="Project Name" rules={[{required: true, message: 'Please enter your Project Name!' }]} name="projectName" initialValue={this.state.projectName}   hasFeedback>
                     <Input value={this.state.projectName}
                            onChange={e=>this.setState({projectName :e.target.value})}
                            type="text" name="ProjName"
@@ -115,7 +160,7 @@ export default class NewPia extends React.Component<Props, State>{
                 </Form.Item>
 
 
-                <Form.Item label="Sponsoring Business Unit" rules={[{required: true, message: 'Please enter Sponsoring Business Unit!' }]} name="sponsors"  hasFeedback >
+                <Form.Item initialValue={this.state.sponsoringBusinessUnit} label="Sponsoring Business Unit" rules={[{required: true, message: 'Please enter Sponsoring Business Unit!' }]} name="sponsors"  hasFeedback >
                     <Select allowClear={true} id="sponsors" value={this.state.sponsoringBusinessUnit}
                             onChange={(e) => {this.setState({sponsoringBusinessUnit: e})} }
 
@@ -142,8 +187,6 @@ export default class NewPia extends React.Component<Props, State>{
                             height: 200,
                             menubar: false
                         }}
-
-                        value={this.state.projectDescription}
                         onChange={ ( event, editor ) => {
                             this.setState({projectDescription: editor.getData()})
                         }
@@ -159,7 +202,7 @@ export default class NewPia extends React.Component<Props, State>{
                 }
 
 
-                <Form.Item label="Is it necessary for the purpose of the project that personal information be collected, used or disclosed?" rules={[{required:true, message:"Please select an option"}]}
+                <Form.Item initialValue={window.location.pathname.includes(":") ?  this.state.isCollected ? '1' : '2' : undefined} label="Is it necessary for the purpose of the project that personal information be collected, used or disclosed?" rules={[{required:true, message:"Please select an option"}]}
                            name="isCollected">
 
                     <Radio.Group style={{fontWeight: "400"}} onChange={(e) => {
@@ -178,6 +221,7 @@ export default class NewPia extends React.Component<Props, State>{
                                rules={[{ required: true, message: 'Please enter the personal information' }]}  name="personalInformation" >
 
                         <CKEditor
+                            data={this.state.personalInfo}
                             config={{
                                 toolbar: ['heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList']
                             }}
@@ -207,12 +251,12 @@ export default class NewPia extends React.Component<Props, State>{
 
 
 
-                <Form.Item label="Which “purpose” in S2.3 of the FortisBC Privacy Policy applies to this project?"
+                <Form.Item initialValue={this.state.purpose} label="Which “purpose” in S2.3 of the FortisBC Privacy Policy applies to this project?"
                            name="purpose"
                            rules={[{ required: true, message: 'Please select an option' }]}
                            hasFeedback validateFirst={true}
                 >
-                    <Select allowClear id="purpose" value={this.state.purpose} onChange={(e) => { this.setState({purpose: e})}} >
+                    <Select style={{width: "675.02px"}} allowClear id="purpose" value={this.state.purpose} onChange={(e) => { this.setState({purpose: e})}} >
                         <Select.Option value="To create and maintain an effective business relationship">To create and maintain an effective business relationship</Select.Option>
                         <Select.Option value="For quality assurance purposes such as the recording of telephone calls to our call centers">For quality assurance purposes such as the recording of telephone calls to our call centers</Select.Option>
                         <Select.Option value="To facilitate account, billing, credit, collections and customer services, this may include the collection of contact information, emergency contact information, consent to complete a credit check for new customers">To facilitate account, billing, credit, collections and customer services, this may include the collection of contact information, emergency contact information, consent to complete a credit check for new customers</Select.Option>
@@ -236,7 +280,7 @@ export default class NewPia extends React.Component<Props, State>{
                             toolbar: ['heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList']
                         }}
                         editor={classicEditor}
-                        value={this.state.individualsInfo}
+                        data={this.state.individualsInfo}
                         init={{
                             height: 200,
                             menubar: false
@@ -253,7 +297,7 @@ export default class NewPia extends React.Component<Props, State>{
                     null
                 }
 
-                <Form.Item label="Is any information being disclosed or stored outside of Canada as part of this project?" name="isDisclosed"
+                <Form.Item initialValue={window.location.pathname.includes(":") ? this.state.isDisclosed ? '1' : '2' : undefined} label="Is any information being disclosed or stored outside of Canada as part of this project?" name="isDisclosed"
                            rules={[{ required: true, message: 'Please select an option' }]}>
                     <Radio.Group style={{fontWeight: "400"}} onChange={(e) => { this.setState({isDisclosed: e.target.value === '1'})} }>
                         <Radio style={{fontSize: "15px"}}  value={'1'}>Yes</Radio>
@@ -273,7 +317,7 @@ export default class NewPia extends React.Component<Props, State>{
                                 toolbar: ['heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList']
                             }}
                             editor={classicEditor}
-                            value={this.state.disclosedInfo}
+                            data={this.state.disclosedInfo}
                             init={{
                                 height: 200,
                                 menubar: false
@@ -313,7 +357,9 @@ export default class NewPia extends React.Component<Props, State>{
 
     render(){
         return (
+
             <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "calc(100% - 100px)", width: "100%", paddingTop: "100px", zIndex: 1}}>
+                <Skeleton style={{padding: this.state.isSkeleton ? "10rem" : ""}} loading={this.state.isSkeleton}>
                 <Col span={16} style={{display: "flex", justifyContent: "center", alignItems: "center", width: "100%"}}>
                     {this.newPia()}
                 </Col>
@@ -328,6 +374,7 @@ export default class NewPia extends React.Component<Props, State>{
                             </div>
 
                         </Draggable>
+                </Skeleton>
             </div>
 
         );
