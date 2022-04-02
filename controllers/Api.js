@@ -12,6 +12,7 @@ var myCss = {
     style : fs.readFileSync('./printFunctionality/template.css','utf8'),
 };
 
+
 exports.login = async  (req, res) => {
     const mail = req.body.email
     User.findOne({email: mail}).then((result) => {
@@ -283,7 +284,7 @@ exports.printPia = (req, res, ) => {
                 const htmlPath = Path.join(__dirname, "../printFunctionality/printTemplate.ejs")
                 
                 let dataForPDF = await ejs.renderFile(htmlPath,{ 
-                    myCss: myCss, 
+                    myCss: myCss,
                     projectName: printedPia.pia.projectName, 
                     sponsoringBusinessUnit: printedPia.pia.sponsoringBusinessUnit, 
                     projectDescription: printedPia.pia.projectDescription ? printedPia.pia.projectDescription.replace(/['"]+/g, '') : '', 
@@ -297,7 +298,7 @@ exports.printPia = (req, res, ) => {
                 },{async:true});
                 
                 var options = { height: '842px', width: '595px', type: "pdf", ppi: '72' };
-                options = { format: 'A4', type: "pdf", ppi: '72', "header": {"height": "0mm"}, "footer": {"height": "0mm"} };
+                options = { format: 'A4', type: "pdf", ppi: '72', "header": {"height": "0mm"}, "footer": {"height": "10mm"} };
 
                 pdf.create(dataForPDF, options).toFile('./test.pdf', async (err, user) => {
                     if (err) {
