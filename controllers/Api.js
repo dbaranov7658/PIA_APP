@@ -294,3 +294,57 @@ exports.addNew = (req, res, ) => {
         }
     })
 }
+
+exports.editPia = (req, res, ) => {
+    const newPia = req.body.Pia
+    const token = req.headers["x-access-token"]
+    jwt.verify(token, process.env.JWT_VAR, (err, decoded) => {
+        if (decoded.id){
+            let insertedPia = new existingPia({
+                pia: newPia,
+                creatorId: decoded.id,
+                status: "PENDING",
+                date: new Date()
+            })
+            insertedPia.save((err, user) => {
+                if (err) {
+                    res.json({
+                        isSuccess: false,
+                        error: err,
+                        message: "Can not save it in db",
+                    })
+                }
+                else{
+                    User.findById(decoded.id, async (error, user) => {
+                        if (error){
+                            res.json({
+                                isSuccess: false,
+                                error: err,
+                                message: "Can not get User email",
+                            })
+                        }else{
+                            if (user){
+                                res.json({
+                                    isSuccess: true,
+                                    message: "Successfully submitted",
+                                })
+                                const userMail = user.email
+                                const event_msg = `A new Privacy Impact Assessment has been submitted by ${userMail}.`
+                                const recipients = await getPrivacyOfficers()
+                                const options = {
+                                    from: process.env.NOTIF_EMAIL_USER,
+                                    to: recipients,
+                                    subject: "New PIA",
+                                    text: `${event_msg}`, // Fallback message
+                                }
+                                sendEmail("friend", event_msg, options).then((result) => {
+                                    console.log(result)
+                                })
+                            }
+                        }
+                    })
+                }
+            })
+        }
+    })
+}

@@ -4,8 +4,8 @@ import {Form, Button, Radio, Input, Select, Row, FormInstance, message, Col, Ske
 import '../CSS/App.css';
 import * as React from "react";
 import {Link} from "react-router-dom";
-import {comment} from "../consts/interfaces";
-import {pia} from "../consts/interfaces";
+import {comment} from "../interfaces";
+import {pia} from "../interfaces";
 // @ts-ignore
 import CommentInterface from "../Components/CommentInterface.tsx"
 import Draggable from 'react-draggable';
@@ -28,6 +28,7 @@ interface State{
     disclosedInfo: string
     comments: comment[]
     isSkeleton: boolean
+    isEdit: boolean
 }
 
 
@@ -46,55 +47,65 @@ export default class NewPia extends React.Component<Props, State>{
             individualsInfo: undefined,
             isDisclosed: null,
             comments: [],
-            isSkeleton: true
+            isSkeleton: true,
+            isEdit: false
         }
 
     }
 
     async componentDidMount() {
-        if(window.location.pathname.includes(":")){
-            let id = window.location.pathname.substring(8, window.location.pathname.length)
-            try {
-                await fetch(`/getPiaById`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
-                    body: JSON.stringify({id: decrypted(id)})
-                })
-                    .then(response => response.json())
-                    .then((data) => {
-                        if (!data.isSuccess){
-                            console.log(data.message)
-                            window.location.pathname = "/pageNotFound"
-                        }
-                        else{
-                                this.setState({
-                                isSkeleton: false,
-                                disclosedInfo: data.Pia.pia.disclosedInfo === undefined ? "" : data.Pia.pia.disclosedInfo,
-                                personalInfo: data.Pia.pia.personalInfo === undefined ? "" : data.Pia.pia.personalInfo,
-                                projectName: data.Pia.pia.projectName + "(copy)",
-                                sponsoringBusinessUnit: data.Pia.pia.sponsoringBusinessUnit,
-                                projectDescription: data.Pia.pia.projectDescription,
-                                isCollected: data.Pia.pia.isCollected,
-                                purpose: data.Pia.pia.purpose,
-                                individualsInfo: data.Pia.pia.individualsInfo,
-                                isDisclosed: data.Pia.pia.isDisclosed
-                            })
-                            this.formRef.current.setFieldsValue({
-                                "projectDescription": data.Pia.pia.projectDescription,
-                                "disclosedInformation": data.Pia.pia.disclosedInfo,
-                                "personalInformation": data.Pia.pia.personalInfo,
-                                "individualsAccountable": data.Pia.pia.individualsInfo
-                            })
-                        }
-
-                    });
-            } catch(err) {
-                console.log(err);
-                window.location.pathname = "/pageNotFound"
-            }
+        if(window.location.pathname.includes("addNew:")){
+            await this.getPiaById(true)
+        }
+        else if (window.location.pathname.includes("editPia:")){
+            await this.getPiaById(false)
         }
         else {
             this.setState({isSkeleton: false})
+        }
+    }
+
+    async getPiaById(isCopy: boolean){
+        let id = window.location.pathname.substring(isCopy ? 8 : 9, window.location.pathname.length)
+        try {
+            await fetch(`/getPiaById`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
+                body: JSON.stringify({id: decrypted(id)})
+            })
+                .then(response => response.json())
+                .then((data) => {
+                    if (!data.isSuccess){
+                        console.log(data.message)
+                        window.location.pathname = "/pageNotFound"
+                    }
+                    else{
+                        this.setState({
+                            isSkeleton: false,
+                            disclosedInfo: data.Pia.pia.disclosedInfo === undefined ? "" : data.Pia.pia.disclosedInfo,
+                            personalInfo: data.Pia.pia.personalInfo === undefined ? "" : data.Pia.pia.personalInfo,
+                            projectName: isCopy ? data.Pia.pia.projectName + "(copy)" : data.Pia.pia.projectName,
+                            sponsoringBusinessUnit: data.Pia.pia.sponsoringBusinessUnit,
+                            projectDescription: data.Pia.pia.projectDescription,
+                            isCollected: data.Pia.pia.isCollected,
+                            purpose: data.Pia.pia.purpose,
+                            individualsInfo: data.Pia.pia.individualsInfo,
+                            isDisclosed: data.Pia.pia.isDisclosed,
+                            comments: isCopy ? [] : data.Pia.pia.comments,
+                            isEdit: !isCopy
+                        })
+                        this.formRef.current.setFieldsValue({
+                            "projectDescription": data.Pia.pia.projectDescription,
+                            "disclosedInformation": data.Pia.pia.disclosedInfo,
+                            "personalInformation": data.Pia.pia.personalInfo,
+                            "individualsAccountable": data.Pia.pia.individualsInfo
+                        })
+                    }
+
+                });
+        } catch(err) {
+            console.log(err);
+            window.location.pathname = "/pageNotFound"
         }
     }
 
@@ -115,24 +126,47 @@ export default class NewPia extends React.Component<Props, State>{
                             disclosedInfo: this.state.disclosedInfo,
                             comments: this.state.comments
                         }
-                        await fetch('/addNew', {
-                                   method: 'POST',
-                                   headers: {'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
-                                   body: JSON.stringify({Pia: newPia})
-                               }).then((response) => {
-                                   response.json().then((response) => {
-                                       if (!response.isSuccess){
-                                           console.log(response.error)
-                                           message.error(response.message)
-                                       }
-                                       else {
-                                           console.log(response.message)
-                                           message.success(response.message)
-                                           window.location.href = window.location.origin
+                        if (this.state.isEdit){
+                            await fetch('/editPia', {
+                                method: 'POST',
+                                headers: {'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
+                                body: JSON.stringify({Pia: newPia})
+                            }).then((response) => {
+                                response.json().then((response) => {
+                                    if (!response.isSuccess){
+                                        console.log(response.error)
+                                        message.error(response.message)
+                                    }
+                                    else {
+                                        console.log(response.message)
+                                        message.success(response.message)
+                                        window.location.href = window.location.origin
 
-                                       }
-                                   })
-                               })
+                                    }
+                                })
+                            })
+                        }
+                        else{
+                            await fetch('/addNew', {
+                                method: 'POST',
+                                headers: {'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
+                                body: JSON.stringify({Pia: newPia})
+                            }).then((response) => {
+                                response.json().then((response) => {
+                                    if (!response.isSuccess){
+                                        console.log(response.error)
+                                        message.error(response.message)
+                                    }
+                                    else {
+                                        console.log(response.message)
+                                        message.success(response.message)
+                                        window.location.href = window.location.origin
+
+                                    }
+                                })
+                            })
+                        }
+
             }).catch((er) => {
                 console.log(er)
                 message.error("Please correct the mistake in form")
@@ -385,10 +419,18 @@ export default class NewPia extends React.Component<Props, State>{
                 }
 
 
-                <Row style={{paddingTop: "20px"}}>
+                {this.getFormFooter()}
+            </Form>
+        )
+    }
+
+    getFormFooter = () => {
+        return (
+            this.state.isEdit ?
+                <Row style={{paddingTop: "5px"}}>
                     <div className="btn">
                         <Button type="default" onClick={e=>this.onSubmit(e)}
-                                style={{background: "#FFC82C", color: "black"}}>Submit</Button>
+                                style={{background: "#FFC82C", color: "black"}}>Edit</Button>
                     </div>
                     <div className="btn" style={{paddingLeft: "15px"}}>
                         <Link to="/">
@@ -397,7 +439,20 @@ export default class NewPia extends React.Component<Props, State>{
                         </Link>
                     </div>
                 </Row>
-            </Form>
+
+                :
+            <Row style={{paddingTop: "5px"}}>
+                <div className="btn">
+                    <Button type="default" onClick={e=>this.onSubmit(e)}
+                            style={{background: "#FFC82C", color: "black"}}>Submit</Button>
+                </div>
+                <div className="btn" style={{paddingLeft: "15px"}}>
+                    <Link to="/">
+                        <Button type="default" onClick={() => {}}
+                                style={{background: "#ffffff", color: "black"}}>Back</Button>
+                    </Link>
+                </div>
+            </Row>
         )
     }
 

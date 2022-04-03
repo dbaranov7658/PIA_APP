@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Comment, Form, Button, List, message} from 'antd';
 import TextArea from "antd/es/input/TextArea";
-import {comment} from "../consts/interfaces";
+import {comment} from "../interfaces";
 
 
 

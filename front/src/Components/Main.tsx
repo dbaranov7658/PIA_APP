@@ -135,7 +135,7 @@ export default  class Main extends React.Component<any, State> {
                     <Route path="/addNew:id" element={<NewPia email={this.state.email}/>}/>
                     <Route path="/addNew" element={<NewPia email={this.state.email}/>}/>
                     <Route path="/" element={<PTable email={this.state.email} />}/>
-                    <Route path="/editPia:id" element={<PTable email={this.state.email} />}/>
+                    <Route path="/editPia:id" element={<NewPia email={this.state.email}/>}/>
                     <Route path="*" element={<PageNotFound />}/>
                     <Route path="/pageNotFound" element={<PageNotFound />}/>
                 </Routes>

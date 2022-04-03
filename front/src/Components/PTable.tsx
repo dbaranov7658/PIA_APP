@@ -4,8 +4,8 @@ import '../CSS/PTable.css';
 import {Row, Table, Button, Tag, Tooltip, Popconfirm, message, Skeleton, Col, Input} from 'antd';
 // @ts-ignore
 import {Link} from "react-router-dom";
-import {piaInfo} from "../consts/interfaces";
-import {tableData} from "../consts/interfaces";
+import {piaInfo} from "../interfaces";
+import {tableData} from "../interfaces";
 import {DeleteOutlined, PrinterOutlined} from "@ant-design/icons";
 import { SearchOutlined, CopyOutlined } from '@ant-design/icons';
 // @ts-ignore
@@ -49,8 +49,12 @@ class PTable extends React.Component<Props, State> {
                 title: 'Name',
                 dataIndex: 'name',
                 key: 'name',
-                render: name => {
-                    return <a style={{color: "black", fontWeight: "500"}}>{ name }</a>
+                render: (name, key) => {
+                    return (
+                        <Link style={{color: "black", fontWeight: "500"}}  to={"/editPia:" + encrypted(this.state.allPia[parseInt(key.key)]._id)}>
+                        { name }
+                        </Link>
+                    )
                 },
                 sorter: (a, b) => {
                     if (a.name > b.name) {
