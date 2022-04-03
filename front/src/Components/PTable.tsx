@@ -10,6 +10,8 @@ import {DeleteOutlined, PrinterOutlined} from "@ant-design/icons";
 import { SearchOutlined, CopyOutlined } from '@ant-design/icons';
 // @ts-ignore
 import {encrypted} from "./Main.tsx";
+// @ts-ignore
+import {apiCall} from "../API/api.tsx";
 
 
 
@@ -126,7 +128,7 @@ class PTable extends React.Component<Props, State> {
                                         okText="Yes"
                                         cancelText="No"
                                     >
-                                        <Button type={"link"} onClick={() => {
+                                        <Button style={{paddingLeft: "5px", paddingRight: "5px"}} type={"link"} onClick={() => {
 
                                         }}><DeleteOutlined /></Button>
                                     </Popconfirm>
@@ -137,14 +139,14 @@ class PTable extends React.Component<Props, State> {
 
                             {status.status === 'APPROVED' ?
                                 <Tooltip placement="bottom" title={"Print"} style={{flex: "1"}}>
-                                    <Button type={"link"}  onClick={() => {alert("Download PIA Function")}}><PrinterOutlined /></Button>
+                                    <Button type={"link"} style={{paddingLeft: "5px", paddingRight: "5px"}}  onClick={() => {alert("Download PIA Function")}}><PrinterOutlined /></Button>
                                 </Tooltip>
                                 :
                                 null
                             }
                             <Tooltip placement="bottom" title={"Copy"} style={{flex: "1"}}>
                                 <Link to={"/addNew:" + encrypted(this.state.allPia[parseInt(key.key)]._id)}>
-                                    <Button type={"link"} ><CopyOutlined /></Button>
+                                    <Button style={{paddingLeft: "5px", paddingRight: "5px"}} type={"link"} ><CopyOutlined /></Button>
                                 </Link>
 
                             </Tooltip>
@@ -248,11 +250,7 @@ class PTable extends React.Component<Props, State> {
 
     async getAllPia() {
         try {
-            await fetch(`/getAllPia`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
-            })
-                .then(response => response.json())
+            apiCall(`/getAllPia`, 'POST', {})
                 .then((data) => {
                     if (!data.isSuccess){
                         console.log(data.error)
@@ -279,12 +277,7 @@ class PTable extends React.Component<Props, State> {
     async deletePia(key: any) {
             let arrIndex = parseInt(key.key)
         try {
-            await fetch(`/deletePia`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
-                body: JSON.stringify({id: this.state.allPia[arrIndex]._id})
-            })
-                .then(response => response.json())
+            apiCall(`/deletePia`, 'POST', {id: this.state.allPia[arrIndex]._id})
                 .then((data) => {
                     if (!data.isSuccess){
                         console.log(data.message)

@@ -18,6 +18,8 @@ import {config} from '../azure/Config';
 // @ts-ignore
 import {fortisLogoForMain} from "../consts/Photos.tsx";
 import CryptoJS from "crypto-js"
+// @ts-ignore
+import {apiCall} from "../API/api.tsx";
 
 
 interface State {
@@ -85,11 +87,7 @@ export default  class Main extends React.Component<any, State> {
     }
 
     async isAuth() {
-        await fetch('/isUserAuth', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
-        }).then((response) => {
-            response.json().then((res) => {
+            apiCall('/isUserAuth', 'POST', {}).then((res) => {
                 if (!res.auth){
                     console.log(res.status)
                     this.logOut()
@@ -98,7 +96,6 @@ export default  class Main extends React.Component<any, State> {
                     this.setState({email: res.email})
                 }
             })
-        })
     }
 
     setEmail = (newEmail: string) => {

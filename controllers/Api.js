@@ -298,10 +298,23 @@ exports.addNew = (req, res, ) => {
 exports.editPia = (req, res, ) => {
     const editPia = req.body.data.Pia
     const updatedId = req.body.data.id
+    const newStatus = req.body.data.status
     const token = req.headers["x-access-token"]
+    let updatedObject
+    if (newStatus === undefined){
+         updatedObject = {
+            pia: editPia
+        }
+    }
+    else{
+         updatedObject = {
+            pia: editPia,
+            status: newStatus
+        }
+    }
     jwt.verify(token, process.env.JWT_VAR, (err, decoded) => {
         if (decoded.id ){
-            existingPia.findByIdAndUpdate(updatedId, {pia: editPia}, (err, updatedPia) => {
+            existingPia.findByIdAndUpdate(updatedId, updatedObject, (err, updatedPia) => {
                 if (err) {
                     res.json({
                         isSuccess: false,

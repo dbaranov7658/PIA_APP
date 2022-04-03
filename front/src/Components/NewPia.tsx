@@ -11,6 +11,8 @@ import CommentInterface from "../Components/CommentInterface.tsx"
 import Draggable from 'react-draggable';
 // @ts-ignore
 import {decrypted} from "./Main.tsx";
+// @ts-ignore
+import {apiCall} from "../API/api.tsx";
 
 interface Props {
     email: string
@@ -70,12 +72,7 @@ export default class NewPia extends React.Component<Props, State>{
     async getPiaById(isCopy: boolean){
         let id = window.location.pathname.substring(isCopy ? 8 : 9, window.location.pathname.length)
         try {
-            await fetch(`/getPiaById`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
-                body: JSON.stringify({id: decrypted(id)})
-            })
-                .then(response => response.json())
+           apiCall(`/getPiaById`, 'POST', {id: decrypted(id)})
                 .then((data) => {
                     if (!data.isSuccess){
                         console.log(data.message)
@@ -113,7 +110,7 @@ export default class NewPia extends React.Component<Props, State>{
     }
 
 
-    onSubmit = (e) => {
+    onSubmit = (e, newStatus?: string) => {
         e.preventDefault();
         if (e){
             this.formRef.current.validateFields().then(async (er) => {
@@ -132,14 +129,10 @@ export default class NewPia extends React.Component<Props, State>{
                         if (this.state.isEdit){
                             var data = {
                                 Pia: newPia,
-                                id: this.state.piaId
+                                id: this.state.piaId,
+                                status: newStatus
                             }
-                            await fetch('/editPia', {
-                                method: 'POST',
-                                headers: {'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
-                                body: JSON.stringify({data: data})
-                            }).then((response) => {
-                                response.json().then((response) => {
+                                apiCall('/editPia', 'POST', {data: data}).then((response) => {
                                     if (!response.isSuccess){
                                         console.log(response.error)
                                         message.error(response.message)
@@ -151,15 +144,10 @@ export default class NewPia extends React.Component<Props, State>{
 
                                     }
                                 })
-                            })
                         }
                         else{
-                            await fetch('/addNew', {
-                                method: 'POST',
-                                headers: {'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
-                                body: JSON.stringify({Pia: newPia})
-                            }).then((response) => {
-                                response.json().then((response) => {
+
+                                apiCall('/addNew', 'POST', {Pia: newPia}).then((response) => {
                                     if (!response.isSuccess){
                                         console.log(response.error)
                                         message.error(response.message)
@@ -171,7 +159,7 @@ export default class NewPia extends React.Component<Props, State>{
 
                                     }
                                 })
-                            })
+
                         }
 
             }).catch((er) => {
@@ -433,28 +421,20 @@ export default class NewPia extends React.Component<Props, State>{
 
     getFormFooter = () => {
         return (
-            this.state.isEdit ?
-                <Row style={{paddingTop: "5px"}}>
-                    <div className="btn">
-                        <Button type="default" onClick={e=>this.onSubmit(e)}
-                                style={{background: "#FFC82C", color: "black"}}>Edit</Button>
-                    </div>
-                    {localStorage.getItem("isOfficer") === "true" ?
-                        <div>
-                            <div className="btn" style={{paddingLeft: "15px"}}>
-                                <Button type="default" onClick={() => {
-                                }}
-                                        style={{background: "green", color: "black"}}>Accept</Button>
+            this.state.isEdit && localStorage.getItem("isOfficer") === "true" ?
+                    <Row style={{paddingTop: "5px"}}>
+                            <div className="btn">
+                                <Button type="default" onClick={e=>this.onSubmit(e)}
+                                        style={{background: "#FFC82C", color: "black"}}>Edit</Button>
                             </div>
                             <div className="btn" style={{paddingLeft: "15px"}}>
-                                <Button type="default" onClick={() => {
-                                }}
+                                <Button type="default" onClick={e=>this.onSubmit(e, "APPROVED")}
+                                        style={{background: "green", color: "black"}}>Approve</Button>
+                            </div>
+                            <div className="btn" style={{paddingLeft: "15px"}}>
+                                <Button type="default" onClick={e=>this.onSubmit(e, "REJECTED")}
                                         style={{background: "red", color: "black"}}>Reject</Button>
                             </div>
-                        </div>
-                        :
-                        null
-                    }
                             <div className="btn" style={{paddingLeft: "15px"}}>
                                 <Link to="/">
                                     <Button type="default" onClick={() => {
@@ -462,21 +442,36 @@ export default class NewPia extends React.Component<Props, State>{
                                             style={{background: "#ffffff", color: "black"}}>Back</Button>
                                 </Link>
                             </div>
-                </Row>
+                    </Row>
 
                 :
-            <Row style={{paddingTop: "5px"}}>
-                <div className="btn">
-                    <Button type="default" onClick={e=>this.onSubmit(e)}
-                            style={{background: "#FFC82C", color: "black"}}>Submit</Button>
-                </div>
-                <div className="btn" style={{paddingLeft: "15px"}}>
-                    <Link to="/">
-                        <Button type="default" onClick={() => {}}
-                                style={{background: "#ffffff", color: "black"}}>Back</Button>
-                    </Link>
-                </div>
-            </Row>
+                this.state.isEdit ?
+
+                    <Row style={{paddingTop: "5px"}}>
+                        <div className="btn">
+                            <Button type="default" onClick={e=>this.onSubmit(e)}
+                                    style={{background: "#FFC82C", color: "black"}}>Edit</Button>
+                        </div>
+                        <div className="btn" style={{paddingLeft: "15px"}}>
+                            <Link to="/">
+                                <Button type="default" onClick={() => {}}
+                                        style={{background: "#ffffff", color: "black"}}>Back</Button>
+                            </Link>
+                        </div>
+                    </Row>
+                    :
+                    <Row style={{paddingTop: "5px"}}>
+                        <div className="btn">
+                            <Button type="default" onClick={e=>this.onSubmit(e)}
+                                    style={{background: "#FFC82C", color: "black"}}>Submit</Button>
+                        </div>
+                        <div className="btn" style={{paddingLeft: "15px"}}>
+                            <Link to="/">
+                                <Button type="default" onClick={() => {}}
+                                        style={{background: "#ffffff", color: "black"}}>Back</Button>
+                            </Link>
+                        </div>
+                    </Row>
         )
     }
 
