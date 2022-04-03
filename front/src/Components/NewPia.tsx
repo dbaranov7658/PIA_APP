@@ -28,7 +28,6 @@ interface State{
     disclosedInfo: string
     comments: comment[]
     isSkeleton: boolean
-
 }
 
 
@@ -68,10 +67,10 @@ export default class NewPia extends React.Component<Props, State>{
                             window.location.pathname = "/pageNotFound"
                         }
                         else{
-                            this.setState({
+                                this.setState({
                                 isSkeleton: false,
-                                disclosedInfo: data.Pia.pia.disclosedInfo.toString() === undefined ? "" : data.Pia.pia.disclosedInfo,
-                                personalInfo: data.Pia.pia.personalInfo.toString() === undefined ? "" : data.Pia.pia.personalInfo,
+                                disclosedInfo: data.Pia.pia.disclosedInfo === undefined ? "" : data.Pia.pia.disclosedInfo,
+                                personalInfo: data.Pia.pia.personalInfo === undefined ? "" : data.Pia.pia.personalInfo,
                                 projectName: data.Pia.pia.projectName + "(copy)",
                                 sponsoringBusinessUnit: data.Pia.pia.sponsoringBusinessUnit,
                                 projectDescription: data.Pia.pia.projectDescription,
@@ -79,6 +78,13 @@ export default class NewPia extends React.Component<Props, State>{
                                 purpose: data.Pia.pia.purpose,
                                 individualsInfo: data.Pia.pia.individualsInfo,
                                 isDisclosed: data.Pia.pia.isDisclosed
+                            })
+                            this.formRef.current.setFieldsValue({
+                                "projectDescription": data.Pia.pia.projectDescription,
+                                "disclosedInformation": data.Pia.pia.disclosedInfo,
+                                "personalInformation": data.Pia.pia.personalInfo,
+                                "individualsAccountable": data.Pia.pia.individualsInfo
+
                             })
                         }
 
@@ -98,7 +104,6 @@ export default class NewPia extends React.Component<Props, State>{
         e.preventDefault();
         if (e){
             this.formRef.current.validateFields().then(async (er) => {
-                           if (this.state.projectDescription !== "" && (!this.state.isCollected || (this.state.isCollected && this.state.personalInfo !== "")) && (!this.state.isDisclosed || (this.state.disclosedInfo !== "" && this.state.isDisclosed))) {
                         var newPia: pia = {
                             projectName: this.state.projectName,
                             sponsoringBusinessUnit: this.state.sponsoringBusinessUnit,
@@ -129,8 +134,8 @@ export default class NewPia extends React.Component<Props, State>{
                                        }
                                    })
                                })
-                    }
             }).catch((er) => {
+                console.log(er)
                 message.error("Please correct the mistake in form")
             })
         }
@@ -174,8 +179,22 @@ export default class NewPia extends React.Component<Props, State>{
 
 
 
-                <Form.Item  label="Project description" style={{marginBottom: this.state.projectDescription === "" ? "0px" : "24px"}}
-                           rules={[{ required: true, message: 'Please enter the project description' }]}  name="projectDescription" >
+                <Form.Item  label="Project description" name="projectDescription"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please enter the project description',
+                                },
+                                {
+                                    validator(_, value) {
+                                        if (value !== "") {
+                                            return Promise.resolve();
+                                        }
+                                        throw new Error("test")
+                                    },
+                                },
+                            ]}
+                             >
 
                     <CKEditor
                         data={this.state.projectDescription}
@@ -195,21 +214,13 @@ export default class NewPia extends React.Component<Props, State>{
 
                 </Form.Item >
 
-                {this.state.projectDescription === "" ?
-                    <div style={{color: "red", marginBottom: "24px"}}>Please enter the project description</div>
-                    :
-                    null
-                }
-
-
                 <Form.Item initialValue={window.location.pathname.includes(":") ?  this.state.isCollected ? '1' : '2' : undefined} label="Is it necessary for the purpose of the project that personal information be collected, used or disclosed?" rules={[{required:true, message:"Please select an option"}]}
                            name="isCollected">
 
                     <Radio.Group style={{fontWeight: "400"}} onChange={(e) => {
                         this.setState({isCollected: e.target.value === "1"})
-                    }} >
+                    }}>
                         <Radio style={{fontSize: "15px"}} value={'1'}> <div>Yes </div>  </Radio>
-
                         <Radio style={{fontSize: "15px"}} value={'2'}>No</Radio>
                     </Radio.Group>
 
@@ -217,8 +228,26 @@ export default class NewPia extends React.Component<Props, State>{
                 </Form.Item>
 
                 {this.state.isCollected ?
-                    <Form.Item label="What personal information will be collected, used or disclosed?"  style={{marginBottom: this.state.personalInfo === "" ? "0px" : "24px"}}
-                               rules={[{ required: true, message: 'Please enter the personal information' }]}  name="personalInformation" >
+                    <Form.Item label="What personal information will be collected, used or disclosed?"
+                               name="personalInformation"
+                               rules={[
+                                   {
+                                       required: true,
+                                       message: 'Please enter the personal information',
+                                   },
+                                   {
+                                       validator(_, value) {
+                                           if (value !== "") {
+                                               return Promise.resolve();
+                                           }
+                                           else{
+                                               return Promise.reject(new Error('test'));
+                                           }
+
+                                       },
+                                   },
+                               ]}
+                                >
 
                         <CKEditor
                             data={this.state.personalInfo}
@@ -239,17 +268,7 @@ export default class NewPia extends React.Component<Props, State>{
                     </Form.Item>
                     :
                     null
-
-
                 }
-
-                {this.state.personalInfo === "" && this.state.isCollected ?
-                    <div style={{color: "red", marginBottom: "24px"}}>Please enter the personal information</div>
-                    :
-                    null
-                }
-
-
 
                 <Form.Item initialValue={this.state.purpose} label="Which “purpose” in S2.3 of the FortisBC Privacy Policy applies to this project?"
                            name="purpose"
@@ -271,9 +290,23 @@ export default class NewPia extends React.Component<Props, State>{
                         <Select.Option value="To help ensure the security of FortisBC premises and physical assets">To help ensure the security of FortisBC premises and physical assets</Select.Option>
                     </Select>
                 </Form.Item>
+
                 <Form.Item label="List the individuals accountable for the personal information"
-                           style={{marginBottom: this.state.individualsInfo === "" ? "0px" : "24px"}}
-                           name="individualsAccountable" rules={[{ required: true, message: 'Please list individuals' }]}>
+                           name="individualsAccountable"
+                           rules={[
+                               {
+                                   required: true,
+                                   message: 'Please list individuals',
+                               },
+                               {
+                                   validator(_, value) {
+                                       if (value !== "") {
+                                           return Promise.resolve();
+                                       }
+                                       throw new Error("test")
+                                   },
+                               },
+                           ]}>
 
                     <CKEditor
                         config={{
@@ -309,8 +342,22 @@ export default class NewPia extends React.Component<Props, State>{
 
                 {this.state.isDisclosed ?
                     <Form.Item label="What information being disclosed or stored outside of Canada as part of this project??"
-                               style={{marginBottom: this.state.disclosedInfo === "" ? "0px" : "24px"}}
-                               rules={[{ required: true, message: 'Please enter the disclosed information' }]}  name="disclosedInformation" >
+                               name="disclosedInformation"
+                               rules={[
+                                   {
+                                       required: true,
+                                       message: 'Please enter the disclosed information',
+                                   },
+                                   {
+                                       validator(_, value) {
+                                           if (value !== "") {
+                                               return Promise.resolve();
+                                           }
+                                           throw new Error("test")
+                                       },
+                                   },
+                               ]}
+                                >
 
                         <CKEditor
                             config={{
@@ -339,7 +386,7 @@ export default class NewPia extends React.Component<Props, State>{
                 }
 
 
-                <Row>
+                <Row style={{paddingTop: "20px"}}>
                     <div className="btn">
                         <Button type="default" onClick={e=>this.onSubmit(e)}
                                 style={{background: "#FFC82C", color: "black"}}>Submit</Button>
