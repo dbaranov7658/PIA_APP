@@ -55,6 +55,39 @@ async function getPrivacyOfficers() {
     }
 }
 
+async function setUpEmail(recipients, subject, event_msg) {
+    let recipientNames = [];
+    
+    recipients.forEach(element => {
+        recipientNames.push(element.substring(0, element.indexOf('@')));
+    });
+
+    console.log(recipientNames)
+
+    const options = {
+        from: process.env.NOTIF_EMAIL_USER,
+        to: recipients,
+        subject: subject,
+        text: `${event_msg}`, // Fallback message
+    }
+
+    try {
+        recipientNames.forEach(name => {
+            sendEmail(name, event_msg, options).then((result) => {
+                console.log(result)
+            })
+        });
+    } catch (error) {
+        res.json({
+            status: false,
+            message: 'Something went wrong'
+        })
+        console.log(error);
+    }
+
+    
+}
+
 async function sendEmail(recipient_name, event_msg, options) {
     try {
         // remove controllers from __dirname
@@ -86,5 +119,6 @@ async function sendEmail(recipient_name, event_msg, options) {
 
 module.exports = {
     getPrivacyOfficers,
+    setUpEmail,
     sendEmail
 }
