@@ -29,6 +29,7 @@ interface State{
     comments: comment[]
     isSkeleton: boolean
     isEdit: boolean
+    piaId: string
 }
 
 
@@ -48,7 +49,8 @@ export default class NewPia extends React.Component<Props, State>{
             isDisclosed: null,
             comments: [],
             isSkeleton: true,
-            isEdit: false
+            isEdit: false,
+            piaId: ""
         }
 
     }
@@ -92,7 +94,8 @@ export default class NewPia extends React.Component<Props, State>{
                             individualsInfo: data.Pia.pia.individualsInfo,
                             isDisclosed: data.Pia.pia.isDisclosed,
                             comments: isCopy ? [] : data.Pia.pia.comments,
-                            isEdit: !isCopy
+                            isEdit: !isCopy,
+                            piaId: isCopy ? "" : decrypted(id)
                         })
                         this.formRef.current.setFieldsValue({
                             "projectDescription": data.Pia.pia.projectDescription,
@@ -127,10 +130,14 @@ export default class NewPia extends React.Component<Props, State>{
                             comments: this.state.comments
                         }
                         if (this.state.isEdit){
+                            var data = {
+                                Pia: newPia,
+                                id: this.state.piaId
+                            }
                             await fetch('/editPia', {
                                 method: 'POST',
                                 headers: {'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
-                                body: JSON.stringify({Pia: newPia})
+                                body: JSON.stringify({data: data})
                             }).then((response) => {
                                 response.json().then((response) => {
                                     if (!response.isSuccess){
