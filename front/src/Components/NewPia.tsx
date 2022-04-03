@@ -439,12 +439,29 @@ export default class NewPia extends React.Component<Props, State>{
                         <Button type="default" onClick={e=>this.onSubmit(e)}
                                 style={{background: "#FFC82C", color: "black"}}>Edit</Button>
                     </div>
-                    <div className="btn" style={{paddingLeft: "15px"}}>
-                        <Link to="/">
-                            <Button type="default" onClick={() => {}}
-                                    style={{background: "#ffffff", color: "black"}}>Back</Button>
-                        </Link>
-                    </div>
+                    {localStorage.getItem("isOfficer") === "true" ?
+                        <div>
+                            <div className="btn" style={{paddingLeft: "15px"}}>
+                                <Button type="default" onClick={() => {
+                                }}
+                                        style={{background: "green", color: "black"}}>Accept</Button>
+                            </div>
+                            <div className="btn" style={{paddingLeft: "15px"}}>
+                                <Button type="default" onClick={() => {
+                                }}
+                                        style={{background: "red", color: "black"}}>Reject</Button>
+                            </div>
+                        </div>
+                        :
+                        null
+                    }
+                            <div className="btn" style={{paddingLeft: "15px"}}>
+                                <Link to="/">
+                                    <Button type="default" onClick={() => {
+                                    }}
+                                            style={{background: "#ffffff", color: "black"}}>Back</Button>
+                                </Link>
+                            </div>
                 </Row>
 
                 :
