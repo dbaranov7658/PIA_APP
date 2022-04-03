@@ -84,7 +84,6 @@ export default class NewPia extends React.Component<Props, State>{
                                 "disclosedInformation": data.Pia.pia.disclosedInfo,
                                 "personalInformation": data.Pia.pia.personalInfo,
                                 "individualsAccountable": data.Pia.pia.individualsInfo
-
                             })
                         }
 
@@ -149,7 +148,7 @@ export default class NewPia extends React.Component<Props, State>{
 
     newPia = () => {
         return (
-            <Form className={"formPia"} style={{paddingTop: "25px", paddingBottom: "40px"}}
+            <Form className={"formPia"} style={{paddingTop: "25px", paddingBottom: "40px", width: "700px"}}
                   onSubmitCapture={(e) => {this.onSubmit(e)} }
                   layout="vertical"
                   scrollToFirstError
@@ -275,7 +274,7 @@ export default class NewPia extends React.Component<Props, State>{
                            rules={[{ required: true, message: 'Please select an option' }]}
                            hasFeedback validateFirst={true}
                 >
-                    <Select style={{width: "675.02px"}} allowClear id="purpose" value={this.state.purpose} onChange={(e) => { this.setState({purpose: e})}} >
+                    <Select allowClear id="purpose" value={this.state.purpose} onChange={(e) => { this.setState({purpose: e})}} >
                         <Select.Option value="To create and maintain an effective business relationship">To create and maintain an effective business relationship</Select.Option>
                         <Select.Option value="For quality assurance purposes such as the recording of telephone calls to our call centers">For quality assurance purposes such as the recording of telephone calls to our call centers</Select.Option>
                         <Select.Option value="To facilitate account, billing, credit, collections and customer services, this may include the collection of contact information, emergency contact information, consent to complete a credit check for new customers">To facilitate account, billing, credit, collections and customer services, this may include the collection of contact information, emergency contact information, consent to complete a credit check for new customers</Select.Option>
