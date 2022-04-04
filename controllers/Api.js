@@ -4,31 +4,6 @@ const existingPia = require("../models/piaSchema");
 const {sendEmail, getPrivacyOfficers} = require("../Emails/emails");
 
 
-exports.getPiaById = (req, res, ) => {
-    const token = req.headers["x-access-token"]
-    const id = req.body.id
-    jwt.verify(token, process.env.JWT_VAR, (err, decoded) => {
-        if (decoded.id){
-            existingPia.findById(id, (err, result) => {
-                if (err){
-                    res.json({
-                        isSuccess: false,
-                        error: err,
-                        message: "Can not get pia from db",
-                    })
-                }
-                else{
-                    if (result){
-                        res.json({
-                            isSuccess: true,
-                            Pia: result
-                        })
-                    }
-                }
-            })
-        }
-    })
-}
 
 
 exports.getPiaById = (req, res, ) => {

@@ -225,6 +225,7 @@ export default class NewPia extends React.Component<Props, State>{
                 >
 
                     <CKEditor
+                        value={this.state.projectDescription}
                         data={this.state.projectDescription}
                         config={{
                             toolbar: ['heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList']
