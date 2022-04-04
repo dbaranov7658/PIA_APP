@@ -1,5 +1,4 @@
-
-import { LoginOutlined } from '@ant-design/icons';
+import {LoginOutlined} from '@ant-design/icons';
 import '../CSS/App.css';
 import '../CSS/Main.css';
 // @ts-ignore
@@ -10,19 +9,30 @@ import PTable from "../Components/PTable.tsx";
 // @ts-ignore
 import PageNotFound from '../Components/PageNotFound.tsx';
 import {Button, Col, Row, Tooltip} from "antd";
-import {Routes, Route} from 'react-router-dom'
+import {Route, Routes} from 'react-router-dom'
 
 // @ts-ignore
 import NewPia from "../Components/NewPia.tsx";
 import {PublicClientApplication} from "@azure/msal-browser";
-import {config } from '../azure/Config';
+import {config} from '../azure/Config';
 // @ts-ignore
 import {fortisLogoForMain} from "../consts/Photos.tsx";
+import CryptoJS from "crypto-js"
 
 
 interface State {
     email: string
     pcl: PublicClientApplication
+}
+
+export function encrypted(encryptdeString: string){
+    return encodeURIComponent(CryptoJS.AES.encrypt(encryptdeString, process.env.REACT_APP_EncryptedPass).toString())
+}
+
+export function decrypted(decryptedString: string){
+    let newDecryptedString = decodeURIComponent(decryptedString)
+    const decrypted = CryptoJS.AES.decrypt(newDecryptedString, process.env.REACT_APP_EncryptedPass);
+    return decrypted.toString(CryptoJS.enc.Utf8)
 }
 
 export function deleteAllCookies() {
@@ -35,6 +45,8 @@ export function deleteAllCookies() {
         document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
     }
 }
+
+
 
 export default  class Main extends React.Component<any, State> {
 
@@ -107,23 +119,25 @@ export default  class Main extends React.Component<any, State> {
             <div>
                 <Row style={{height: "100px", width: "100%", position: "fixed", top: 0, boxShadow: "0 2px 8px #f0f1f2",zIndex: 1000, backgroundColor: "white"}}>
                     <Col span={12} style={{paddingTop: "20px", paddingLeft: "25px", height: "80px"}}>
-                       {fortisLogoForMain}
+                        {fortisLogoForMain}
                     </Col>
                     <Col span={12}>
                         <Row style={{paddingRight: "25px", justifyContent: "flex-end", alignItems: "center", height: "80px", paddingTop: "10px"}}>
                             <div className={'text'} style={{paddingRight: "20px"}}>{this.state.email}</div>
                             <Tooltip placement="bottom" title={"Log out"}>
-                            <Button ghost={true} type="link" onClick={this.logOut} shape="circle"><LoginOutlined  style={{color: "#000000"}} /></Button>
+                                <Button ghost={true} type="link" onClick={this.logOut} shape="circle"><LoginOutlined  style={{color: "#000000"}} /></Button>
                             </Tooltip>
                         </Row>
                     </Col>
                 </Row>
 
                 <Routes>
-                    <Route path="/addNew" element={localStorage.getItem("isOfficer") === "true" ? <PageNotFound /> : <NewPia email={this.state.email}/>}/>
+                    <Route path="/addNew:id" element={<NewPia email={this.state.email}/>}/>
+                    <Route path="/addNew" element={<NewPia email={this.state.email}/>}/>
                     <Route path="/" element={<PTable email={this.state.email} />}/>
                     <Route path="/editPia:id" element={<PTable email={this.state.email} />}/>
-                    <Route path="*" element={<PageNotFound />}/> 
+                    <Route path="*" element={<PageNotFound />}/>
+                    <Route path="/pageNotFound" element={<PageNotFound />}/>
                 </Routes>
             </div>
         )
@@ -132,14 +146,14 @@ export default  class Main extends React.Component<any, State> {
 
 
     render() {
-       return (
+        return (
 
-          localStorage.getItem("token") === null ?
-         <Login setEmail={this.setEmail} pcl={this.state.pcl}/>
-               :
-         this.renderMenu()
+            localStorage.getItem("token") === null ?
+                <Login setEmail={this.setEmail} pcl={this.state.pcl}/>
+                :
+                this.renderMenu()
 
-       )
+        )
     }
 
 
