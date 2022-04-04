@@ -13,7 +13,6 @@ import {encrypted} from "./Main.tsx";
 // @ts-ignore
 import {apiCall} from "../API/api.tsx";
 import Search from "antd/es/input/Search";
-import FileSaver from 'file-saver';
 
 
 const LoadingButton = () => {message.loading('Downloading PIA..', 0)};
@@ -149,7 +148,7 @@ class PTable extends React.Component<Props, State> {
                             }
 
                                 <Tooltip placement="bottom" title={"Print"} style={{flex: "1"}}>
-                                    <Button type={"link"}  onClick={() => {this.onPrint(key)}}><PrinterOutlined /></Button>
+                                    <Button type={"link"} style={{paddingLeft: "5px", paddingRight: "5px"}} onClick={() => {this.onPrint(key)}}><PrinterOutlined /></Button>
                                 </Tooltip>
 
                         </div>
