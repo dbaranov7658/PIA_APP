@@ -321,7 +321,7 @@ exports.editPia = (req, res, ) => {
                         isSuccess: true,
                         message: "Successfully submitted",
                     })
-                    setUpEdit(updatedObject, decoded.id, updatedPia.creatorId);
+                    setUpEdit(updatedObject, decoded.id, updatedPia.creatorId.toString());
                 }
             })
         }

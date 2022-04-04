@@ -44,17 +44,11 @@ async function setUpEdit(updatedObject, triggerUserId, creatorId) {
 
     try {
         // get email of creator
-        User.findById(creatorId, (error, result) => {
-            if (error) {
-                res.json({
-                    isSuccess: false,
-                    error: error,
-                    message: "Can not find user",
-                })
-            } else {
-                creatorEmail = result.email;
-            }
-        })
+        let result = await User.findById(creatorId)     
+        // creatorEmail.push(result.email);
+        creatorEmail = result.email;
+            
+       
 
         switch(updatedObject.status) {
             case 'PENDING':
@@ -75,16 +69,25 @@ async function setUpEdit(updatedObject, triggerUserId, creatorId) {
                         } else {
                             console.log('user')
                             // notify po
-                            let res = await getPrivacyOfficers();
-                            console.log(res);
-                            setUpEmail( res, `New Edit Made to ${piaName}`, `${result.email} has made an edit to ${piaName}.`, `/editPia:${piaId}`, false)
+                
+                            setUpEmail( await getPrivacyOfficers(), `New Edit Made to ${piaName}`, `${result.email} has made an edit to ${piaName}.`, `/editPia:${piaId}`, false)
                         }
                     }
                 })            
                 break;
             case 'APPROVED':
+                // generate pdf
+        
+                recipients.push(creatorEmail)
+                console.log(recipients)
+                setUpEmail( recipients, `APPROVED: ${piaName}`, `${piaName} has been approved.`, `/editPia:${piaId}`, false);
                 break;
-            case 'DENIED':
+            case 'REJECTED':
+                console.log('rejected')
+                console.log(creatorEmail)
+                recipients.push(creatorEmail)
+                console.log(recipients)
+                setUpEmail( recipients, `REJECTED: ${piaName}`, `${piaName} has been rejected.`, `/editPia:${piaId}`, false);
                 break;
             default:
                 console.log(updatedObject);
