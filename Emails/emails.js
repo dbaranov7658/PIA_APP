@@ -35,6 +35,69 @@ transporter.verify(function (error, success) {
     }
 });
 
+async function setUpEdit(updatedObject, triggerUserId, creatorId) {
+    // console.log(`new obj: ${updatedObject}`);
+    let creatorEmail = "";
+    let recipients = [];
+    let piaName = updatedObject.pia.projectName;
+    let piaId = updatedObject.encryptedId;
+
+    try {
+        // get email of creator
+        User.findById(creatorId, (error, result) => {
+            if (error) {
+                res.json({
+                    isSuccess: false,
+                    error: error,
+                    message: "Can not find user",
+                })
+            } else {
+                creatorEmail = result.email;
+            }
+        })
+
+        switch(updatedObject.status) {
+            case 'PENDING':
+                // find user, check if PO
+                User.findById(triggerUserId, async (error, result) => {
+                    if (error) {
+                        res.json({
+                            isSuccess: false,
+                            error: error,
+                            message: "Can not find user",
+                        })
+                    } else {
+                        if (result.isOfficer) {
+                            // notify pia author
+                            recipients.push(creatorEmail)
+                            setUpEmail(recipients, `New Edit Made to ${piaName}`, `${result.email} has made an edit to ${piaName}.`, `/editPia:${piaId}`)
+                            
+                        } else {
+                            console.log('user')
+                            // notify po
+                            let res = await getPrivacyOfficers();
+                            console.log(res);
+                            setUpEmail( res, `New Edit Made to ${piaName}`, `${result.email} has made an edit to ${piaName}.`, `/editPia:${piaId}`)
+                        }
+                    }
+                })            
+                break;
+            case 'APPROVED':
+                break;
+            case 'DENIED':
+                break;
+            default:
+                console.log(updatedObject);
+        }
+
+    } catch (error) {
+        res.json({
+            isSuccess: false,
+            error: error,
+        })
+    }
+    
+}
 
 async function getPrivacyOfficers() {
     try {
@@ -55,15 +118,14 @@ async function getPrivacyOfficers() {
     }
 }
 
-async function setUpEmail(recipients, subject, event_msg) {
+
+async function setUpEmail(recipients, subject, event_msg, pia_url) {
     let recipientNames = [];
     
     // get username of each recipient
     recipients.forEach(email => {
         recipientNames.push(email.substring(0, email.indexOf('@')));
     });
-
-    console.log(recipientNames)
 
     const options = {
         from: process.env.NOTIF_EMAIL_USER,
@@ -74,7 +136,7 @@ async function setUpEmail(recipients, subject, event_msg) {
 
     try {
         recipientNames.forEach(name => {
-            sendEmail(name, event_msg, options).then((result) => {
+            sendEmail(name, event_msg, options, pia_url).then((result) => {
                 console.log(result)
             })
         });
@@ -89,7 +151,7 @@ async function setUpEmail(recipients, subject, event_msg) {
     
 }
 
-async function sendEmail(recipient_name, event_msg, options) {
+async function sendEmail(recipient_name, event_msg, options, pia_url) {
     try {
         // remove controllers from __dirname
         // let _dirnames_arr = __dirname.split("/")
@@ -101,7 +163,7 @@ async function sendEmail(recipient_name, event_msg, options) {
 
 
         // render email template
-        let data = await ejs.renderFile(path.join(__dirname + "/../views/email_template.ejs"), { recipient: recipient_name, event_msg: event_msg});
+        let data = await ejs.renderFile(path.join(__dirname + "/../views/email_template.ejs"), { recipient: recipient_name, event_msg: event_msg, pia_url: "http://localhost:3000" + pia_url});
         options.html = data;
 
         // send email
@@ -120,6 +182,7 @@ async function sendEmail(recipient_name, event_msg, options) {
 
 module.exports = {
     getPrivacyOfficers,
+    setUpEdit,
     setUpEmail,
     sendEmail
 }

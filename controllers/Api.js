@@ -1,8 +1,13 @@
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const existingPia = require("../models/piaSchema");
-const {setUpEmail, sendEmail, getPrivacyOfficers} = require("../Emails/emails");
+const {setUpEdit, setUpEmail, sendEmail, getPrivacyOfficers} = require("../Emails/emails");
+const CryptoJS =  require("crypto-js");
 
+
+function encrypted(encryptedString){
+    return encodeURIComponent(CryptoJS.AES.encrypt(encryptedString, process.env.EncryptedPass).toString())
+}
 
 
 
@@ -265,7 +270,7 @@ exports.addNew = (req, res, ) => {
                                 res.json({
                                     isSuccess: true,
                                     message: "Successfully submitted",
-                                })
+                                });
                             
                                 setUpEmail(await getPrivacyOfficers(), "New PIA", `A new Privacy Impact Assessment has been submitted by ${user.email}.`);
                                 
@@ -283,16 +288,22 @@ exports.editPia = (req, res, ) => {
     const updatedId = req.body.data.id
     const newStatus = req.body.data.status
     const token = req.headers["x-access-token"]
+    const encryptedId = encrypted(updatedId)
     let updatedObject
     if (newStatus === undefined){
          updatedObject = {
-            pia: editPia
+            pia: editPia,
+            status: 'PENDING',
+            piaId: updatedId, 
+            encryptedId: encryptedId
         }
     }
     else{
          updatedObject = {
             pia: editPia,
-            status: newStatus
+            status: newStatus,
+            piaId: updatedId,
+            encryptedId: encryptedId
         }
     }
     jwt.verify(token, process.env.JWT_VAR, (err, decoded) => {
@@ -310,6 +321,7 @@ exports.editPia = (req, res, ) => {
                         isSuccess: true,
                         message: "Successfully submitted",
                     })
+                    setUpEdit(updatedObject, decoded.id, updatedPia.creatorId);
                 }
             })
         }

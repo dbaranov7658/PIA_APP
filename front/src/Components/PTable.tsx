@@ -312,7 +312,9 @@ class PTable extends React.Component<Props, State> {
                                 null
                             }
                         </Col>
-                    </Row>
+                    </Row>User.findById(decoded.id, async (error, user) => {
+                        if (error){
+                     
 
                     <Table
                         className='table'

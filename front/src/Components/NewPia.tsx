@@ -130,7 +130,7 @@ export default class NewPia extends React.Component<Props, State>{
                     var data = {
                         Pia: newPia,
                         id: this.state.piaId,
-                        status: newStatus
+                        status: newStatus,
                     }
                     apiCall('/editPia', 'POST', {data: data}).then((response) => {
                         if (!response.isSuccess){
