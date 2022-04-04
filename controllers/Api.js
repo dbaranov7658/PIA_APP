@@ -346,8 +346,12 @@ exports.printPia = (req, res, ) => {
                     disclosedInfo: printedPia.pia.disclosedInfo ? printedPia.pia.disclosedInfo.replace(/['"]+/g, '')    : '',
                 },{async:true});
                 
-                var options = { height: '842px', width: '595px', type: "pdf", ppi: '72' };
-                options = { format: 'A4', type: "pdf", ppi: '72', "header": {"height": "0mm"}, "footer": {"height": "10mm"} };
+                var options = { 
+                    // height: '11.69in', width: '8.27in', 
+                    width: '210mm', height: '297mm',
+                    //format: 'A4', 
+                    type: "pdf", "header": {"height": "0mm"}, "footer": {"height": "10mm"}  
+                };
 
                 pdf.create(dataForPDF, options).toFile('./test.pdf', async (err, user) => {
                     if (err) {
