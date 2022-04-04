@@ -72,7 +72,7 @@ export default class NewPia extends React.Component<Props, State>{
     async getPiaById(isCopy: boolean){
         let id = window.location.pathname.substring(isCopy ? 8 : 9, window.location.pathname.length)
         try {
-           apiCall(`/getPiaById`, 'POST', {id: decrypted(id)})
+            apiCall(`/getPiaById`, 'POST', {id: decrypted(id)})
                 .then((data) => {
                     if (!data.isSuccess){
                         console.log(data.message)
@@ -114,55 +114,56 @@ export default class NewPia extends React.Component<Props, State>{
         e.preventDefault();
         if (e){
             this.formRef.current.validateFields().then(async (er) => {
-                        var newPia: pia = {
-                            projectName: this.state.projectName,
-                            sponsoringBusinessUnit: this.state.sponsoringBusinessUnit,
-                            projectDescription: this.state.projectDescription,
-                            isCollected: this.state.isCollected,
-                            personalInfo: this.state.personalInfo,
-                            purpose: this.state.purpose,
-                            individualsInfo: this.state.individualsInfo,
-                            isDisclosed: this.state.isDisclosed,
-                            disclosedInfo: this.state.disclosedInfo,
-                            comments: this.state.comments
+                var newPia: pia = {
+                    projectName: this.state.projectName,
+                    sponsoringBusinessUnit: this.state.sponsoringBusinessUnit,
+                    projectDescription: this.state.projectDescription,
+                    isCollected: this.state.isCollected,
+                    personalInfo: this.state.personalInfo,
+                    purpose: this.state.purpose,
+                    individualsInfo: this.state.individualsInfo,
+                    isDisclosed: this.state.isDisclosed,
+                    disclosedInfo: this.state.disclosedInfo,
+                    comments: this.state.comments
+                }
+                if (this.state.isEdit){
+                    var data = {
+                        Pia: newPia,
+                        id: this.state.piaId,
+                        status: newStatus
+                    }
+                    apiCall('/editPia', 'POST', {data: data}).then((response) => {
+                        if (!response.isSuccess){
+                            console.log(response.error)
+                            message.error(response.message)
                         }
-                        if (this.state.isEdit){
-                            var data = {
-                                Pia: newPia,
-                                id: this.state.piaId,
-                                status: newStatus
-                            }
-                                apiCall('/editPia', 'POST', {data: data}).then((response) => {
-                                    if (!response.isSuccess){
-                                        console.log(response.error)
-                                        message.error(response.message)
-                                    }
-                                    else {
-                                        console.log(response.message)
-                                        message.success(response.message)
-                                        window.location.href = window.location.origin
-
-                                    }
-                                })
-                        }
-                        else{
-
-                                apiCall('/addNew', 'POST', {Pia: newPia}).then((response) => {
-                                    if (!response.isSuccess){
-                                        console.log(response.error)
-                                        message.error(response.message)
-                                    }
-                                    else {
-                                        console.log(response.message)
-                                        message.success(response.message)
-                                        window.location.href = window.location.origin
-
-                                    }
-                                })
+                        else {
+                            console.log(response.message)
+                            message.success(response.message)
+                            window.location.href = window.location.origin
 
                         }
+                    })
+                }
+                else{
+
+                    apiCall('/addNew', 'POST', {Pia: newPia}).then((response) => {
+                        if (!response.isSuccess){
+                            console.log(response.error)
+                            message.error(response.message)
+                        }
+                        else {
+                            console.log(response.message)
+                            message.success(response.message)
+                            window.location.href = window.location.origin
+
+                        }
+                    })
+
+                }
 
             }).catch((er) => {
+                console.log(er)
                 message.error("Please correct the mistake in form")
             })
         }
@@ -218,10 +219,10 @@ export default class NewPia extends React.Component<Props, State>{
                                             return Promise.resolve();
                                         }
                                         throw new Error("test")
-                                    },
+                                    }
                                 },
                             ]}
-                             >
+                >
 
                     <CKEditor
                         data={this.state.projectDescription}
@@ -267,14 +268,11 @@ export default class NewPia extends React.Component<Props, State>{
                                            if (value !== "") {
                                                return Promise.resolve();
                                            }
-                                           else{
-                                               return Promise.reject(new Error('test'));
-                                           }
-
-                                       },
+                                           throw new Error("test")
+                                       }
                                    },
                                ]}
-                                >
+                    >
 
                         <CKEditor
                             data={this.state.personalInfo}
@@ -331,7 +329,7 @@ export default class NewPia extends React.Component<Props, State>{
                                            return Promise.resolve();
                                        }
                                        throw new Error("test")
-                                   },
+                                   }
                                },
                            ]}>
 
@@ -381,10 +379,10 @@ export default class NewPia extends React.Component<Props, State>{
                                                return Promise.resolve();
                                            }
                                            throw new Error("test")
-                                       },
+                                       }
                                    },
                                ]}
-                                >
+                    >
 
                         <CKEditor
                             config={{
@@ -421,27 +419,27 @@ export default class NewPia extends React.Component<Props, State>{
     getFormFooter = () => {
         return (
             this.state.isEdit && localStorage.getItem("isOfficer") === "true" ?
-                    <Row style={{paddingTop: "5px"}}>
-                            <div className="btn">
-                                <Button type="default" onClick={e=>this.onSubmit(e)}
-                                        style={{background: "#FFC82C", color: "black"}}>Edit</Button>
-                            </div>
-                            <div className="btn" style={{paddingLeft: "15px"}}>
-                                <Button type="default" onClick={e=>this.onSubmit(e, "APPROVED")}
-                                        style={{background: "green", color: "black"}}>Approve</Button>
-                            </div>
-                            <div className="btn" style={{paddingLeft: "15px"}}>
-                                <Button type="default" onClick={e=>this.onSubmit(e, "REJECTED")}
-                                        style={{background: "red", color: "black"}}>Reject</Button>
-                            </div>
-                            <div className="btn" style={{paddingLeft: "15px"}}>
-                                <Link to="/">
-                                    <Button type="default" onClick={() => {
-                                    }}
-                                            style={{background: "#ffffff", color: "black"}}>Back</Button>
-                                </Link>
-                            </div>
-                    </Row>
+                <Row style={{paddingTop: "5px"}}>
+                    <div className="btn">
+                        <Button type="default" onClick={e=>this.onSubmit(e)}
+                                style={{background: "#FFC82C", color: "black"}}>Edit</Button>
+                    </div>
+                    <div className="btn" style={{paddingLeft: "15px"}}>
+                        <Button type="default" onClick={e=>this.onSubmit(e, "APPROVED")}
+                                style={{background: "green", color: "black"}}>Approve</Button>
+                    </div>
+                    <div className="btn" style={{paddingLeft: "15px"}}>
+                        <Button type="default" onClick={e=>this.onSubmit(e, "REJECTED")}
+                                style={{background: "red", color: "black"}}>Reject</Button>
+                    </div>
+                    <div className="btn" style={{paddingLeft: "15px"}}>
+                        <Link to="/">
+                            <Button type="default" onClick={() => {
+                            }}
+                                    style={{background: "#ffffff", color: "black"}}>Back</Button>
+                        </Link>
+                    </div>
+                </Row>
 
                 :
                 this.state.isEdit ?
@@ -479,20 +477,20 @@ export default class NewPia extends React.Component<Props, State>{
 
             <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "calc(100% - 100px)", width: "100%", paddingTop: "100px", zIndex: 1}}>
                 <Skeleton style={{padding: this.state.isSkeleton ? "10rem" : ""}} loading={this.state.isSkeleton}>
-                <Col span={16} style={{display: "flex", justifyContent: "center", alignItems: "center", width: "100%"}}>
-                    {this.newPia()}
-                </Col>
-                        <Draggable
-                            bounds="parent"
-                            axis="both"
-                            onStart={() => {}}
-                            onDrag={() => {}}
-                            onStop={() => {}}>
-                            <div>
-                                <CommentInterface author={this.props.email} onComment={this.onComment} comments={this.state.comments}/>
-                            </div>
+                    <Col span={16} style={{display: "flex", justifyContent: "center", alignItems: "center", width: "100%"}}>
+                        {this.newPia()}
+                    </Col>
+                    <Draggable
+                        bounds="parent"
+                        axis="both"
+                        onStart={() => {}}
+                        onDrag={() => {}}
+                        onStop={() => {}}>
+                        <div>
+                            <CommentInterface author={this.props.email} onComment={this.onComment} comments={this.state.comments}/>
+                        </div>
 
-                        </Draggable>
+                    </Draggable>
                 </Skeleton>
             </div>
 
