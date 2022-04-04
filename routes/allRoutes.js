@@ -1,8 +1,8 @@
 
-  
+
 const express = require('express')
 const {emailNewPia, emailCommentPia, emailEditPia, emailApprovePia, emailRejectPia, emailDeletePia} = require('../controllers/email_controller')
-const {login, getAllPia, isUserAuth, deletePia, addNew} = require('../controllers/Api')
+const {login, getAllPia, isUserAuth, deletePia, addNew, getPiaById, editPia} = require('../controllers/Api')
 const jwt = require("jsonwebtoken");
 const _r = express.Router()
 
@@ -36,9 +36,11 @@ _r.post('/emailApprovePia', emailApprovePia)
 _r.post('/emailRejectPia', emailRejectPia)
 _r.post('/emailDeletePia', emailDeletePia)
 _r.post('/login', login)
+_r.post('/getPiaById', verifyJWT, getPiaById)
 _r.post('/getAllPia', verifyJWT, getAllPia)
 _r.post('/isUserAuth', isUserAuth)
 _r.post('/deletePia', verifyJWT, deletePia)
 _r.post('/addNew', verifyJWT, addNew)
+_r.post('/editPia', verifyJWT, editPia)
 
 module.exports = _r
