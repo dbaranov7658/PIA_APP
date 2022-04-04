@@ -118,7 +118,12 @@ class PTable extends React.Component<Props, State> {
                 render: (status, key) => {
                     return (
                         <div style={{display: "flex", flexDirection: "row", height: "100%", width: "100%", justifyContent:"left"}}>
+                            <Tooltip placement="bottom" title={"Copy"} style={{flex: "1"}}>
+                                <Link to={"/addNew:" + encrypted(this.state.allPia[parseInt(key.key)]._id)}>
+                                    <Button style={{paddingLeft: "5px", paddingRight: "5px"}} type={"link"} ><CopyOutlined /></Button>
+                                </Link>
 
+                            </Tooltip>
                             {localStorage.getItem("isOfficer") === "true" ?
                                 <Tooltip placement="bottom" title={"Delete"}>
                                     <Popconfirm
@@ -144,12 +149,6 @@ class PTable extends React.Component<Props, State> {
                                 :
                                 null
                             }
-                            <Tooltip placement="bottom" title={"Copy"} style={{flex: "1"}}>
-                                <Link to={"/addNew:" + encrypted(this.state.allPia[parseInt(key.key)]._id)}>
-                                    <Button style={{paddingLeft: "5px", paddingRight: "5px"}} type={"link"} ><CopyOutlined /></Button>
-                                </Link>
-
-                            </Tooltip>
                         </div>
 
 
