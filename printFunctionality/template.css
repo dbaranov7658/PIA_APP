@@ -2,7 +2,6 @@ body{
     width: 1587px;
     height: 2245px;
     margin: 0px;
-    /* font-family: 'Roboto', sans-serif; */
     font-family: 'Lato', sans-serif;
 }
 
@@ -25,7 +24,6 @@ body{
     text-align: center;
     font-size: 60px;
     margin-bottom: 20px;
-    /* font-family: 'URW DIN'; */
     font-family: 'Roboto', sans-serif;
     font-family: 'Lato', sans-serif;
 }
@@ -62,6 +60,7 @@ body{
 
 #text-content{
     margin: auto;
+    margin-bottom: 0;
     width: 85%;
     font-size: 40px;
 }

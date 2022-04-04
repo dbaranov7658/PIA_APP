@@ -276,7 +276,7 @@ exports.addNew = (req, res, ) => {
 exports.printPia = (req, res, ) => {
     const printedPia = req.body.Pia
     const token = req.headers["x-access-token"]
-    //console.log(printedPia);
+    console.log(printedPia);
 
     jwt.verify(token, process.env.JWT_VAR, async (err, decoded) => {
         if (decoded.id && printedPia){
@@ -289,12 +289,12 @@ exports.printPia = (req, res, ) => {
                     sponsoringBusinessUnit: printedPia.pia.sponsoringBusinessUnit, 
                     projectDescription: printedPia.pia.projectDescription ? printedPia.pia.projectDescription.replace(/['"]+/g, '') : '', 
                     isCollected: Boolean(printedPia.pia.isCollected),
-                    personalInfo: printedPia.pia.personalInfo ?  printedPia.pia.personalInfo.replace(/['"]+/g, '') : '',
+                    personalInfo: printedPia.pia.personalInfo ?  printedPia.pia.personalInfo.replace(/['"]+/g, '')  : '',
                     purpose: printedPia.pia.purpose,
-                    individualsInfo: printedPia.pia.individualsInfo ? printedPia.pia.individualsInfo.replace(/['"]+/g, ''): '',
+                    individualsInfo: printedPia.pia.individualsInfo ? printedPia.pia.individualsInfo.replace(/['"]+/g, '')  : '',
                     date: printedPia.createdAt.slice(0, 10).toString(),
                     isDisclosed: printedPia.pia.isDisclosed,
-                    disclosedInfo: printedPia.pia.disclosedInfo
+                    disclosedInfo: printedPia.pia.disclosedInfo ? printedPia.pia.disclosedInfo.replace(/['"]+/g, '')    : '',
                 },{async:true});
                 
                 var options = { height: '842px', width: '595px', type: "pdf", ppi: '72' };
