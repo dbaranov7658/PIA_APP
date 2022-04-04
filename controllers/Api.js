@@ -1,7 +1,7 @@
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const existingPia = require("../models/piaSchema");
-const {sendEmail, getPrivacyOfficers} = require("../Emails/emails");
+const {setUpEmail, sendEmail, getPrivacyOfficers} = require("../Emails/emails");
 
 
 
@@ -203,23 +203,16 @@ exports.deletePia = (req, res,) => {
                                     }
                                     else {
                                         if (result) {
-                                            const recipients = result.email
+                                            const recipients = [result.email]
                                             existingPia.deleteOne({ _id: id }).then((result) => {
                                                 if (result.deletedCount === 1) {
                                                     res.json({
                                                         isSuccess: true,
                                                         message: "Successfully deleting Pia",
                                                     })
-                                                    const event_msg = `${pia_name} has been deleted.`
-                                                    const options = {
-                                                        from: process.env.NOTIF_EMAIL_USER,
-                                                        to: recipients,
-                                                        subject: `DELETED: ${pia_name}`,
-                                                        text: `${event_msg}`, // Fallback message
-                                                    }
-                                                    sendEmail("friend", event_msg, options).then((result) => {
-                                                        console.log(result)
-                                                    })
+                                                    
+                                                    setUpEmail(recipients, `DELETED: ${pia_name}`, `${pia_name} has been deleted.` )
+                                                    
                                                 }
                                                 else {
                                                     res.json({
@@ -273,18 +266,9 @@ exports.addNew = (req, res, ) => {
                                     isSuccess: true,
                                     message: "Successfully submitted",
                                 })
-                                const userMail = user.email
-                                const event_msg = `A new Privacy Impact Assessment has been submitted by ${userMail}.`
-                                const recipients = await getPrivacyOfficers()
-                                const options = {
-                                    from: process.env.NOTIF_EMAIL_USER,
-                                    to: recipients,
-                                    subject: "New PIA",
-                                    text: `${event_msg}`, // Fallback message
-                                }
-                                sendEmail("friend", event_msg, options).then((result) => {
-                                    console.log(result)
-                                })
+                            
+                                setUpEmail(await getPrivacyOfficers(), "New PIA", `A new Privacy Impact Assessment has been submitted by ${user.email}.`);
+                                
                             }
                         }
                     })
