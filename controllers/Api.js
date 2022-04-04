@@ -216,7 +216,7 @@ exports.deletePia = (req, res,) => {
                                                         message: "Successfully deleting Pia",
                                                     })
                                                     
-                                                    setUpEmail(recipients, `DELETED: ${pia_name}`, `${pia_name} has been deleted.` )
+                                                    setUpEmail(recipients, `DELETED: ${pia_name}`, `${pia_name} has been deleted.`, '', true)
                                                     
                                                 }
                                                 else {
@@ -272,7 +272,7 @@ exports.addNew = (req, res, ) => {
                                     isSuccess: true,
                                     message: "Successfully submitted",
                                 });                                                       
-                                setUpEmail(await getPrivacyOfficers(), "New PIA", `A new Privacy Impact Assessment has been submitted by ${user.email}.`, `/editPia:${encryptedId}`);
+                                setUpEmail(await getPrivacyOfficers(), "New PIA", `A new Privacy Impact Assessment has been submitted by ${user.email}.`, `/editPia:${encryptedId}`, false);
                                 
                             }
                         }

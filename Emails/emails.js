@@ -70,14 +70,14 @@ async function setUpEdit(updatedObject, triggerUserId, creatorId) {
                         if (result.isOfficer) {
                             // notify pia author
                             recipients.push(creatorEmail)
-                            setUpEmail(recipients, `New Edit Made to ${piaName}`, `${result.email} has made an edit to ${piaName}.`, `/editPia:${piaId}`)
+                            setUpEmail(recipients, `New Edit Made to ${piaName}`, `${result.email} has made an edit to ${piaName}.`, `/editPia:${piaId}`, false)
                             
                         } else {
                             console.log('user')
                             // notify po
                             let res = await getPrivacyOfficers();
                             console.log(res);
-                            setUpEmail( res, `New Edit Made to ${piaName}`, `${result.email} has made an edit to ${piaName}.`, `/editPia:${piaId}`)
+                            setUpEmail( res, `New Edit Made to ${piaName}`, `${result.email} has made an edit to ${piaName}.`, `/editPia:${piaId}`, false)
                         }
                     }
                 })            
@@ -119,7 +119,7 @@ async function getPrivacyOfficers() {
 }
 
 
-async function setUpEmail(recipients, subject, event_msg, pia_url) {
+async function setUpEmail(recipients, subject, event_msg, pia_url, deleted) {
     let recipientNames = [];
     
     // get username of each recipient
@@ -136,7 +136,7 @@ async function setUpEmail(recipients, subject, event_msg, pia_url) {
 
     try {
         recipientNames.forEach(name => {
-            sendEmail(name, event_msg, options, pia_url).then((result) => {
+            sendEmail(name, event_msg, options, pia_url, deleted).then((result) => {
                 console.log(result)
             })
         });
@@ -151,7 +151,7 @@ async function setUpEmail(recipients, subject, event_msg, pia_url) {
     
 }
 
-async function sendEmail(recipient_name, event_msg, options, pia_url) {
+async function sendEmail(recipient_name, event_msg, options, pia_url, deleted) {
     try {
         // remove controllers from __dirname
         // let _dirnames_arr = __dirname.split("/")
@@ -163,7 +163,7 @@ async function sendEmail(recipient_name, event_msg, options, pia_url) {
 
 
         // render email template
-        let data = await ejs.renderFile(path.join(__dirname + "/../views/email_template.ejs"), { recipient: recipient_name, event_msg: event_msg, pia_url: "http://localhost:3000" + pia_url});
+        let data = await ejs.renderFile(path.join(__dirname + "/../views/email_template.ejs"), { recipient: recipient_name, event_msg: event_msg, pia_url: "http://localhost:3000" + pia_url, deleted: deleted});
         options.html = data;
 
         // send email
