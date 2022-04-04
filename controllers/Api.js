@@ -258,6 +258,7 @@ exports.addNew = (req, res, ) => {
                     })
                 }
                 else{
+                    let encryptedId = encrypted(user._id.toString());
                     User.findById(decoded.id, async (error, user) => {
                         if (error){
                             res.json({
@@ -270,9 +271,8 @@ exports.addNew = (req, res, ) => {
                                 res.json({
                                     isSuccess: true,
                                     message: "Successfully submitted",
-                                });
-                            
-                                setUpEmail(await getPrivacyOfficers(), "New PIA", `A new Privacy Impact Assessment has been submitted by ${user.email}.`);
+                                });                                                       
+                                setUpEmail(await getPrivacyOfficers(), "New PIA", `A new Privacy Impact Assessment has been submitted by ${user.email}.`, `/editPia:${encryptedId}`);
                                 
                             }
                         }
