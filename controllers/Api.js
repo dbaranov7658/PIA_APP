@@ -2,9 +2,15 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const existingPia = require("../models/piaSchema");
 const {setUpEmail, sendEmail, getPrivacyOfficers} = require("../Emails/emails");
+const Path = require("path");
+const ejs = require("ejs");
+const pdf = require('html-pdf');
 
+const fs = require('fs');
 
-
+var myCss = {
+    style : fs.readFileSync('./printFunctionality/template.css','utf8'),
+};
 
 exports.getPiaById = (req, res, ) => {
     const token = req.headers["x-access-token"]
@@ -31,7 +37,6 @@ exports.getPiaById = (req, res, ) => {
                     }
     })
 }
-
 
 
 exports.login = async  (req, res) => {
@@ -312,6 +317,62 @@ exports.editPia = (req, res, ) => {
                     })
                 }
             })
+        }
+    })
+}
+
+
+
+exports.printPia = (req, res, ) => {
+    const printedPia = req.body.Pia
+    const token = req.headers["x-access-token"]
+
+    jwt.verify(token, process.env.JWT_VAR, async (err, decoded) => {
+        if (decoded.id && printedPia){
+            try{
+                const htmlPath = Path.join(__dirname, "../printFunctionality/printTemplate.ejs")
+                
+                let dataForPDF = await ejs.renderFile(htmlPath,{ 
+                    myCss: myCss,
+                    projectName: printedPia.pia.projectName, 
+                    sponsoringBusinessUnit: printedPia.pia.sponsoringBusinessUnit, 
+                    projectDescription: printedPia.pia.projectDescription ? printedPia.pia.projectDescription.replace(/['"]+/g, '') : '', 
+                    isCollected: Boolean(printedPia.pia.isCollected),
+                    personalInfo: printedPia.pia.personalInfo ?  printedPia.pia.personalInfo.replace(/['"]+/g, '')  : '',
+                    purpose: printedPia.pia.purpose,
+                    individualsInfo: printedPia.pia.individualsInfo ? printedPia.pia.individualsInfo.replace(/['"]+/g, '')  : '',
+                    date: printedPia.createdAt.slice(0, 10).toString(),
+                    isDisclosed: printedPia.pia.isDisclosed,
+                    disclosedInfo: printedPia.pia.disclosedInfo ? printedPia.pia.disclosedInfo.replace(/['"]+/g, '')    : '',
+                },{async:true});
+                
+                var options = { height: '842px', width: '595px', type: "pdf", ppi: '72' };
+                options = { format: 'A4', type: "pdf", ppi: '72', "header": {"height": "0mm"}, "footer": {"height": "10mm"} };
+
+                pdf.create(dataForPDF, options).toFile('./test.pdf', async (err, user) => {
+                    if (err) {
+                        res.json({
+                            isSuccess: false,
+                            message: "Issue with printing Pia",
+                        })
+                    }
+                    else{
+                        var file = fs.createReadStream('./test.pdf');
+                        var stat = fs.statSync('./test.pdf');
+                        res.setHeader('Content-Length', stat.size);
+                        res.setHeader('Content-Type', 'application/pdf');
+                        res.setHeader('Content-Disposition', 'attachment; filename=test.pdf');
+                        file.pipe(res);                        
+                    }
+                });
+
+            } catch(error){
+                console.log(error);
+                res.json({
+                    isSuccess: false,
+                    message: "Issue with printing Pia",
+                })
+            }
         }
     })
 }
