@@ -76,6 +76,9 @@ a:hover{
     color: #40a9ff!important;
 }
 
-
+.approveButton:hover{
+    background: #8fbf54!important;
+    border-color: #8fbf54!important;
+}
 
 

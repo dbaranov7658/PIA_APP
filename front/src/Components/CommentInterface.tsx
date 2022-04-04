@@ -1,7 +1,8 @@
 import * as React from 'react';
-import {Comment, Form, Button, List, message} from 'antd';
+import {Comment, Form, Button, List, message, Row, Tooltip} from 'antd';
 import TextArea from "antd/es/input/TextArea";
 import {comment} from "../interfaces";
+import { WechatOutlined } from '@ant-design/icons';
 
 
 
@@ -9,12 +10,14 @@ interface Props{
     author: string
     onComment: (value:comment) => void,
     comments: comment[]
+    isReadOnly: boolean
 
 }
 
 interface State{
     submitting: boolean,
     value: string,
+    isOpen: boolean
 }
 
 export default class commentInterface extends React.Component<Props,State> {
@@ -23,6 +26,7 @@ export default class commentInterface extends React.Component<Props,State> {
         this.state = {
             submitting: false,
             value: "",
+            isOpen: true
 
         }
         
@@ -38,7 +42,7 @@ export default class commentInterface extends React.Component<Props,State> {
                 return <Comment
                     author={<div>{props.author}</div>}
                     content={
-                        <p style={{ width: "fit-content", textAlign: this.props.author !== props.author ? "right":"left",
+                        <p style={{maxWidth: "60%" ,width: "fit-content", textAlign: this.props.author !== props.author ? "left":"right",
                             backgroundColor: this.props.author !== props.author ? "#eee": "#163a64",
                             color: this.props.author !== props.author ? "black":"#eee",
                             borderRadius:"10px",
@@ -61,12 +65,15 @@ export default class commentInterface extends React.Component<Props,State> {
             <Form.Item>
                 <TextArea rows={4} onChange={onChange} value={value} placeholder="Add a comment..."/>
             </Form.Item>
-            <Form.Item>
-                <Button className={"commentButton"} htmlType="submit" loading={submitting} onClick={onSubmit} type="primary"
+            <Row>
+                <Button disabled={this.props.isReadOnly} className={"commentButton"} htmlType="submit" loading={submitting} onClick={onSubmit} type="primary"
                         style={{color:"black", marginLeft:"4px", backgroundColor: "rgb(255, 200, 44)", borderColor: "rgb(255, 200, 44)"}}>
                     Add Comment
                 </Button>
-            </Form.Item>
+                <Button onClick={() => {this.setState({isOpen: !this.state.isOpen})}} type={"link"}>
+                    <WechatOutlined style={{fontSize: "27px"}} />
+                </Button>
+            </Row>
         </>
     );
 
@@ -99,20 +106,30 @@ export default class commentInterface extends React.Component<Props,State> {
 
   render() {
     return (
-      <div style={{width: "300px"}}>
-          {this.props.comments.length > 0 && <this.CommentList comments={this.props.comments} />}
-          <Comment
-       content={
-        <this.Editor
-          onChange={(e) => { this.handleChange(e)}}
-          onSubmit={() => {this.handleSubmit()}}
-          submitting={this.state.submitting}
-          value={this.state.value}
+        <div>
+            {this.state.isOpen ?
+                <Button onDoubleClick={() => {this.setState({isOpen: !this.state.isOpen})}} type={"link"}>
+                    <WechatOutlined style={{fontSize: "27px"}} />
+                </Button>
+                :
+                <div style={{width: "400px"}}>
+                    {this.props.comments.length > 0 && <this.CommentList comments={this.props.comments} />}
+                    <Comment
+                        content={
+                            <this.Editor
+                                onChange={(e) => { this.handleChange(e)}}
+                                onSubmit={() => {this.handleSubmit()}}
+                                submitting={this.state.submitting}
+                                value={this.state.value}
+                            />
+                        }
+                    />
+                </div>
+            }
+        </div>
 
-        />
-       }
-      />
-      </div>
+
+
     )
   }
 }
