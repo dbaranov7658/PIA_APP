@@ -37,12 +37,6 @@ class PTable extends React.Component<Props, State> {
                 searchValue: "",
                 isSearch: false
             };
-        this.emailNewPia = this.emailNewPia.bind(this);
-        this.emailCommentPia = this.emailCommentPia.bind(this);
-        this.emailEditPia = this.emailEditPia.bind(this);
-        this.emailApprovePia = this.emailApprovePia.bind(this);
-        this.emailRejectPia = this.emailRejectPia.bind(this);
-        this.emailDeletePia = this.emailDeletePia.bind(this);
 
         this.columnsForOfficer = [
             {
