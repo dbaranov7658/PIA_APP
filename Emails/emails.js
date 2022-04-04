@@ -58,8 +58,9 @@ async function getPrivacyOfficers() {
 async function setUpEmail(recipients, subject, event_msg) {
     let recipientNames = [];
     
-    recipients.forEach(element => {
-        recipientNames.push(element.substring(0, element.indexOf('@')));
+    // get username of each recipient
+    recipients.forEach(email => {
+        recipientNames.push(email.substring(0, email.indexOf('@')));
     });
 
     console.log(recipientNames)
