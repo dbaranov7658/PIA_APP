@@ -1,5 +1,6 @@
 <html lang="en">
 <head>
+    <meta name="viewport" content="width=595px, height=842px">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
@@ -46,9 +47,8 @@
             <%- projectDescription %>
 
         <p><strong>Is it necessary for the purpose of the project that
-            personal information be collected, used or disclosed?  </strong><br>
-            <% if (isCollected) {%> Yes <% } %> <% if (!isCollected) {%> No <% } %>
-        </p>
+            personal information be collected, used or disclosed?  </strong></p>
+            <p><% if (isCollected) {%> Yes <% } %> <% if (!isCollected) {%> No <% } %></p>
 
         <% if(Boolean(isCollected)){ %><p><strong>If yes, what?</strong></p> <p><%- personalInfo %></p>
         <% } else{ %> <% } %>
@@ -58,8 +58,8 @@
 
         <p><strong>Which "purpose" in S2.3 of the FortisBC Privacy Policy applies to this project?</strong> <br> <%= purpose %></p>
 
-        <p><strong>Is any information being disclosed or stored outside of Canada as part of this project?</strong> <br> 
-        <% if (isDisclosed) {%> Yes <% } %> <% if (!isDisclosed) {%> No <% } %></p>
+        <p><strong>Is any information being disclosed or stored outside of Canada as part of this project?</strong> <br> </p>
+        <p><% if (isDisclosed) {%> Yes <% } %> <% if (!isDisclosed) {%> No <% } %></p>
 
             <% if(Boolean(isDisclosed)){ %>
                 <p><strong>If yes, what?</strong></p> 
