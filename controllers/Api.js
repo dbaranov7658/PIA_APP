@@ -31,6 +31,33 @@ exports.getPiaById = (req, res, ) => {
 }
 
 
+exports.getPiaById = (req, res, ) => {
+    const token = req.headers["x-access-token"]
+    const id = req.body.id
+    jwt.verify(token, process.env.JWT_VAR, (err, decoded) => {
+        if (decoded.id){
+                        existingPia.findById(id, (err, result) => {
+                            if (err){
+                                res.json({
+                                    isSuccess: false,
+                                    error: err,
+                                    message: "Can not get pia from db",
+                                })
+                            }
+                            else{
+                                if (result){
+                                    res.json({
+                                        isSuccess: true,
+                                        Pia: result
+                                    })
+                                }
+                            }
+                        })
+                    }
+    })
+}
+
+
 
 exports.login = async  (req, res) => {
     const mail = req.body.email
@@ -285,6 +312,44 @@ exports.addNew = (req, res, ) => {
                                 })
                             }
                         }
+                    })
+                }
+            })
+        }
+    })
+}
+
+exports.editPia = (req, res, ) => {
+    const editPia = req.body.data.Pia
+    const updatedId = req.body.data.id
+    const newStatus = req.body.data.status
+    const token = req.headers["x-access-token"]
+    let updatedObject
+    if (newStatus === undefined){
+         updatedObject = {
+            pia: editPia
+        }
+    }
+    else{
+         updatedObject = {
+            pia: editPia,
+            status: newStatus
+        }
+    }
+    jwt.verify(token, process.env.JWT_VAR, (err, decoded) => {
+        if (decoded.id ){
+            existingPia.findByIdAndUpdate(updatedId, updatedObject, (err, updatedPia) => {
+                if (err) {
+                    res.json({
+                        isSuccess: false,
+                        error: err,
+                        message: "Can not save it in db",
+                    })
+                }
+                else{
+                    res.json({
+                        isSuccess: true,
+                        message: "Successfully submitted",
                     })
                 }
             })

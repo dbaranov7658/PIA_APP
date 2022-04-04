@@ -4,12 +4,15 @@ import '../CSS/PTable.css';
 import {Row, Table, Button, Tag, Tooltip, Popconfirm, message, Skeleton, Col, Input} from 'antd';
 // @ts-ignore
 import {Link} from "react-router-dom";
-import {piaInfo} from "../consts/interfaces";
-import {tableData} from "../consts/interfaces";
+import {piaInfo} from "../interfaces";
+import {tableData} from "../interfaces";
 import {DeleteOutlined, PrinterOutlined} from "@ant-design/icons";
 import { SearchOutlined, CopyOutlined } from '@ant-design/icons';
 // @ts-ignore
 import {encrypted} from "./Main.tsx";
+// @ts-ignore
+import {apiCall} from "../API/api.tsx";
+
 
 
 interface Props{
@@ -37,14 +40,23 @@ class PTable extends React.Component<Props, State> {
                 searchValue: "",
                 isSearch: false
             };
-
+        this.emailNewPia = this.emailNewPia.bind(this);
+        this.emailCommentPia = this.emailCommentPia.bind(this);
+        this.emailEditPia = this.emailEditPia.bind(this);
+        this.emailApprovePia = this.emailApprovePia.bind(this);
+        this.emailRejectPia = this.emailRejectPia.bind(this);
+        this.emailDeletePia = this.emailDeletePia.bind(this);
         this.columnsForOfficer = [
             {
                 title: 'Name',
                 dataIndex: 'name',
                 key: 'name',
-                render: name => {
-                    return <a style={{color: "black", fontWeight: "500"}}>{ name }</a>
+                render: (name, key) => {
+                    return (
+                        <Link style={{color: "black", fontWeight: "500"}}  to={"/editPia:" + encrypted(this.state.allPia[parseInt(key.key)]._id)}>
+                        { name }
+                        </Link>
+                    )
                 },
                 sorter: (a, b) => {
                     if (a.name > b.name) {
@@ -106,7 +118,12 @@ class PTable extends React.Component<Props, State> {
                 render: (status, key) => {
                     return (
                         <div style={{display: "flex", flexDirection: "row", height: "100%", width: "100%", justifyContent:"left"}}>
+                            <Tooltip placement="bottom" title={"Copy"} style={{flex: "1"}}>
+                                <Link to={"/addNew:" + encrypted(this.state.allPia[parseInt(key.key)]._id)}>
+                                    <Button style={{paddingLeft: "5px", paddingRight: "5px"}} type={"link"} ><CopyOutlined /></Button>
+                                </Link>
 
+                            </Tooltip>
                             {localStorage.getItem("isOfficer") === "true" ?
                                 <Tooltip placement="bottom" title={"Delete"}>
                                     <Popconfirm
@@ -116,7 +133,7 @@ class PTable extends React.Component<Props, State> {
                                         okText="Yes"
                                         cancelText="No"
                                     >
-                                        <Button type={"link"} onClick={() => {
+                                        <Button style={{paddingLeft: "5px", paddingRight: "5px"}} type={"link"} onClick={() => {
 
                                         }}><DeleteOutlined /></Button>
                                     </Popconfirm>
@@ -127,19 +144,12 @@ class PTable extends React.Component<Props, State> {
 
                             {status.status === 'APPROVED' ?
                                 <Tooltip placement="bottom" title={"Print"} style={{flex: "1"}}>
-                                    <Button type={"link"}  onClick={() => {alert("Download PIA Function")}}><PrinterOutlined /></Button>
+                                    <Button type={"link"} style={{paddingLeft: "5px", paddingRight: "5px"}}  onClick={() => {alert("Download PIA Function")}}><PrinterOutlined /></Button>
                                 </Tooltip>
                                 :
                                 null
                             }
-                            <Tooltip placement="bottom" title={"Copy"} style={{flex: "1"}}>
-                                <Link to={"/addNew:" + encrypted(this.state.allPia[parseInt(key.key)]._id)}>
-                                    <Button type={"link"} ><CopyOutlined /></Button>
-                                </Link>
-
-                            </Tooltip>
                         </div>
-
 
 
                     );
@@ -239,11 +249,7 @@ class PTable extends React.Component<Props, State> {
 
     async getAllPia() {
         try {
-            await fetch(`/getAllPia`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
-            })
-                .then(response => response.json())
+            apiCall(`/getAllPia`, 'POST', {})
                 .then((data) => {
                     if (!data.isSuccess){
                         console.log(data.error)
@@ -270,12 +276,7 @@ class PTable extends React.Component<Props, State> {
     async deletePia(key: any) {
             let arrIndex = parseInt(key.key)
         try {
-            await fetch(`/deletePia`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
-                body: JSON.stringify({id: this.state.allPia[arrIndex]._id})
-            })
-                .then(response => response.json())
+            apiCall(`/deletePia`, 'POST', {id: this.state.allPia[arrIndex]._id})
                 .then((data) => {
                     if (!data.isSuccess){
                         console.log(data.message)

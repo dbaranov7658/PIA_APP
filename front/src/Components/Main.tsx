@@ -18,6 +18,8 @@ import {config} from '../azure/Config';
 // @ts-ignore
 import {fortisLogoForMain} from "../consts/Photos.tsx";
 import CryptoJS from "crypto-js"
+// @ts-ignore
+import {apiCall} from "../API/api.tsx";
 
 
 interface State {
@@ -85,11 +87,7 @@ export default  class Main extends React.Component<any, State> {
     }
 
     async isAuth() {
-        await fetch('/isUserAuth', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
-        }).then((response) => {
-            response.json().then((res) => {
+            apiCall('/isUserAuth', 'POST', {}).then((res) => {
                 if (!res.auth){
                     console.log(res.status)
                     this.logOut()
@@ -98,7 +96,6 @@ export default  class Main extends React.Component<any, State> {
                     this.setState({email: res.email})
                 }
             })
-        })
     }
 
     setEmail = (newEmail: string) => {
@@ -119,7 +116,7 @@ export default  class Main extends React.Component<any, State> {
             <div>
                 <Row style={{height: "100px", width: "100%", position: "fixed", top: 0, boxShadow: "0 2px 8px #f0f1f2",zIndex: 1000, backgroundColor: "white"}}>
                     <Col span={12} style={{paddingTop: "20px", paddingLeft: "25px", height: "80px"}}>
-                        {fortisLogoForMain}
+                       {fortisLogoForMain}
                     </Col>
                     <Col span={12}>
                         <Row style={{paddingRight: "25px", justifyContent: "flex-end", alignItems: "center", height: "80px", paddingTop: "10px"}}>
@@ -135,7 +132,7 @@ export default  class Main extends React.Component<any, State> {
                     <Route path="/addNew:id" element={<NewPia email={this.state.email}/>}/>
                     <Route path="/addNew" element={<NewPia email={this.state.email}/>}/>
                     <Route path="/" element={<PTable email={this.state.email} />}/>
-                    <Route path="/editPia:id" element={<PTable email={this.state.email} />}/>
+                    <Route path="/editPia:id" element={<NewPia email={this.state.email}/>}/>
                     <Route path="*" element={<PageNotFound />}/>
                     <Route path="/pageNotFound" element={<PageNotFound />}/>
                 </Routes>
