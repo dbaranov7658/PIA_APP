@@ -66,8 +66,8 @@ export default class commentInterface extends React.Component<Props,State> {
                 <TextArea rows={4} onChange={onChange} value={value} placeholder="Add a comment..."/>
             </Form.Item>
             <Row>
-                <Button disabled={this.props.isReadOnly} className={"commentButton"} htmlType="submit" loading={submitting} onClick={onSubmit} type="primary"
-                        style={{color:"black", marginLeft:"4px", backgroundColor: "rgb(255, 200, 44)", borderColor: "rgb(255, 200, 44)"}}>
+                <Button disabled={this.props.isReadOnly} className={"commentButton"} htmlType="submit" loading={submitting} onClick={onSubmit} type="default"
+                        style={{marginLeft:"4px", color: this.props.isReadOnly? "rgba(0,0,0,.25)" : "black", borderColor: this.props.isReadOnly ? "#d9d9d9!important" : "rgb(255, 200, 44)!important", background: this.props.isReadOnly ? "#f5f5f5!important" : "rgb(255, 200, 44)"}}>
                     Add Comment
                 </Button>
                 <Button onClick={() => {this.setState({isOpen: !this.state.isOpen})}} type={"link"}>

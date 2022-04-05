@@ -95,7 +95,7 @@ export default class NewPia extends React.Component<Props, State>{
                             comments: isCopy ? [] : data.Pia.pia.comments,
                             isEdit: !isCopy,
                             piaId: isCopy ? "" : decrypted(id),
-                            isReadOnly: data.Pia.status === "APPROVED" && !isCopy
+                            isReadOnly: (data.Pia.status === "APPROVED" || data.Pia.status === "REJECTED") && !isCopy
                         })
                         this.formRef.current.setFieldsValue({
                             "projectDescription": data.Pia.pia.projectDescription,
