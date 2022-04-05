@@ -214,25 +214,25 @@ export default class NewPia extends React.Component<Props, State>{
                         <Select.Option value="Energy Supply">Energy Supply</Select.Option>
                         <Select.Option value="Engineering">Engineering</Select.Option>
                         <Select.Option value="Environment, Health & Safety">Environment, Health & Safety</Select.Option>
-                    <Select.Option value="External Relations">External Relations</Select.Option>
-                    <Select.Option value="Facilities">Facilities</Select.Option>
-                    <Select.Option value="Finance">Finance</Select.Option>
-                    <Select.Option value="Fleet Services">Fleet Services</Select.Option>
-                    <Select.Option value="Generation">Generation</Select.Option>
-                    <Select.Option value="Human Resources">Human Resources</Select.Option>
-                    <Select.Option value="Information Systems">Information Systems</Select.Option>
-                    <Select.Option value="Integrity Management">Integrity Management</Select.Option>
-                    <Select.Option value="Internal Audit">Internal Audit</Select.Option>
-                    <Select.Option value="Legal">Legal</Select.Option>
-                    <Select.Option value="Major Projects">Major Projects</Select.Option>
-                    <Select.Option value="Market Development">Market Development</Select.Option>
-                    <Select.Option value= "Measurement"> Measurement</Select.Option>
-                    <Select.Option value="Plant Operations">Plant Operations</Select.Option>
-                    <Select.Option value="Procurement">Procurement</Select.Option>
-                    <Select.Option value="Regulatory Affairs">Regulatory Affairs</Select.Option>
-                    <Select.Option value="Resource Planning">Resource Planning</Select.Option>
-                    <Select.Option value="Safety & Training">Safety & Training</Select.Option>
-                    </Select>
+                        <Select.Option value="External Relations">External Relations</Select.Option>
+                        <Select.Option value="Facilities">Facilities</Select.Option>
+                        <Select.Option value="Finance">Finance</Select.Option>
+                        <Select.Option value="Fleet Services">Fleet Services</Select.Option>
+                        <Select.Option value="Generation">Generation</Select.Option>
+                        <Select.Option value="Human Resources">Human Resources</Select.Option>
+                        <Select.Option value="Information Systems">Information Systems</Select.Option>
+                        <Select.Option value="Integrity Management">Integrity Management</Select.Option>
+                        <Select.Option value="Internal Audit">Internal Audit</Select.Option>
+                        <Select.Option value="Legal">Legal</Select.Option>
+                        <Select.Option value="Major Projects">Major Projects</Select.Option>
+                        <Select.Option value="Market Development">Market Development</Select.Option>
+                        <Select.Option value= "Measurement"> Measurement</Select.Option>
+                        <Select.Option value="Plant Operations">Plant Operations</Select.Option>
+                        <Select.Option value="Procurement">Procurement</Select.Option>
+                        <Select.Option value="Regulatory Affairs">Regulatory Affairs</Select.Option>
+                        <Select.Option value="Resource Planning">Resource Planning</Select.Option>
+                        <Select.Option value="Safety & Training">Safety & Training</Select.Option>
+                        </Select>
                 </Form.Item>
 
 
