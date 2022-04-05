@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Comment, Form, Button, List, message, Row, Tooltip} from 'antd';
+import {Comment, Form, Button, List, message, Row} from 'antd';
 import TextArea from "antd/es/input/TextArea";
 import {comment} from "../interfaces";
 import { WechatOutlined } from '@ant-design/icons';

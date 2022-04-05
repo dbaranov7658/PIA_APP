@@ -12,7 +12,6 @@ import { SearchOutlined, CopyOutlined } from '@ant-design/icons';
 import {encrypted} from "./Main.tsx";
 // @ts-ignore
 import {apiCall} from "../API/api.tsx";
-import Search from "antd/es/input/Search";
 
 
 const LoadingButton = () => {message.loading('Downloading PIA..', 0)};
@@ -169,7 +168,7 @@ class PTable extends React.Component<Props, State> {
             try {
                 this.setState({loadingDocument: true})
                 LoadingButton();
-                const response = await fetch(`/printPIA`, {
+                await fetch(`/printPIA`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
                     body: JSON.stringify({Pia: this.state.allPia[parseInt(key.key)]}),
