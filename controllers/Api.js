@@ -16,25 +16,49 @@ exports.getPiaById = (req, res, ) => {
     const token = req.headers["x-access-token"]
     const id = req.body.id
     jwt.verify(token, process.env.JWT_VAR, (err, decoded) => {
-        if (decoded.id){
-                        existingPia.findById(id, (err, result) => {
-                            if (err){
+        if (decoded.id) {
+            User.findById(decoded.id, (error, user) => {
+                let isOfficer = user.isOfficer
+                if (!isOfficer){
+                    existingPia.findById(id, (err, result) => {
+                        if (err || decoded.id.toString() !== result.creatorId.toString()) {
+                            res.json({
+                                isSuccess: false,
+                                error: err,
+                                message: "Can not get pia from db",
+                            })
+                        } else {
+                            if (result) {
                                 res.json({
-                                    isSuccess: false,
-                                    error: err,
-                                    message: "Can not get pia from db",
+                                    isSuccess: true,
+                                    Pia: result
                                 })
                             }
-                            else{
-                                if (result){
-                                    res.json({
-                                        isSuccess: true,
-                                        Pia: result
-                                    })
-                                }
+                        }
+                    })
+                }
+                else{
+                    existingPia.findById(id, (err, result) => {
+                        if (err) {
+                            res.json({
+                                isSuccess: false,
+                                error: err,
+                                message: "Can not get pia from db",
+                            })
+                        } else {
+                            if (result) {
+                                res.json({
+                                    isSuccess: true,
+                                    Pia: result
+                                })
                             }
-                        })
-                    }
+                        }
+                    })
+                }
+
+            })
+        }
+
     })
 }
 

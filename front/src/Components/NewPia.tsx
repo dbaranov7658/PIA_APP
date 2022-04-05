@@ -427,9 +427,6 @@ export default class NewPia extends React.Component<Props, State>{
                     :
                     null
                 }
-
-
-
                 {this.getFormFooter()}
             </Form>
         )
@@ -440,8 +437,10 @@ export default class NewPia extends React.Component<Props, State>{
             this.state.isEdit && localStorage.getItem("isOfficer") === "true" ?
                 <Row style={{paddingTop: "5px"}}>
                     <div className="btn">
-                        <Button disabled={this.state.isReadOnly} type="default" onClick={e=>this.onSubmit(e)}
-                                style={{background: "#FFC82C", color: "black", borderColor: "#FFC82C!important"}}>Edit</Button>
+                        <Button disabled={this.state.isReadOnly}
+                                style={{color: this.state.isReadOnly? "rgba(0,0,0,.25)" : "black", borderColor: this.state.isReadOnly ? "#d9d9d9!important" : "#FFC82C!important", background: this.state.isReadOnly ? "#f5f5f5!important" : "#FFC82C"}}
+                                type="default" onClick={e=>this.onSubmit(e)}
+                                >Save</Button>
                     </div>
                     <div className="btn" style={{paddingLeft: "15px"}}>
                         <Link to="/">
@@ -454,7 +453,8 @@ export default class NewPia extends React.Component<Props, State>{
                         <Button disabled={this.state.isReadOnly} type="primary" danger onClick={e=>this.onSubmit(e, "REJECTED")}>Reject</Button>
                     </div>
                     <div style={{paddingLeft: "15px"}}>
-                        <Button className="approveButton" disabled={this.state.isReadOnly} style={{borderColor: "#4e8a00", background: "#4e8a00"}} type="primary" onClick={e=>this.onSubmit(e, "APPROVED")}>Approve</Button>
+                        <Button className={this.state.isReadOnly ? "" : "approveButton"} disabled={this.state.isReadOnly} style={{color: this.state.isReadOnly? "rgba(0,0,0,.25)" : "", borderColor: this.state.isReadOnly ? "#d9d9d9!important" : "#4e8a00", background: this.state.isReadOnly ? "#f5f5f5!important" : "#4e8a00"}}
+                                type="primary" onClick={e=>this.onSubmit(e, "APPROVED")}>Approve</Button>
                     </div>
                 </Row>
                 :
@@ -463,7 +463,8 @@ export default class NewPia extends React.Component<Props, State>{
                     <Row style={{paddingTop: "5px"}}>
                         <div className="btn">
                             <Button disabled={this.state.isReadOnly} type="default" onClick={e=>this.onSubmit(e)}
-                                    style={{background: "#FFC82C", color: "black", borderColor: "#FFC82C!important"}}>Edit</Button>
+                                    style={{color: this.state.isReadOnly? "rgba(0,0,0,.25)" : "black", borderColor: this.state.isReadOnly ? "#d9d9d9!important" : "#FFC82C!important", background: this.state.isReadOnly ? "#f5f5f5!important" : "#FFC82C"}}
+                            >Save</Button>
                         </div>
                         <div className="btn" style={{paddingLeft: "15px"}}>
                             <Link to="/">

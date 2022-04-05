@@ -146,11 +146,13 @@ class PTable extends React.Component<Props, State> {
                                 :
                                 null
                             }
-
+                            {status.status === 'APPROVED' ?
                                 <Tooltip placement="bottom" title={"Print"} style={{flex: "1"}}>
                                     <Button type={"link"} style={{paddingLeft: "5px", paddingRight: "5px"}} onClick={() => {this.onPrint(key)}}><PrinterOutlined /></Button>
                                 </Tooltip>
-
+                                :
+                                null
+                            }
                         </div>
 
 
