@@ -32,6 +32,7 @@ interface State{
     isSkeleton: boolean
     isEdit: boolean
     piaId: string
+    isReadOnly: boolean
 }
 
 
@@ -52,7 +53,8 @@ export default class NewPia extends React.Component<Props, State>{
             comments: [],
             isSkeleton: true,
             isEdit: false,
-            piaId: ""
+            piaId: "",
+            isReadOnly: false
         }
 
     }
@@ -92,7 +94,8 @@ export default class NewPia extends React.Component<Props, State>{
                             isDisclosed: data.Pia.pia.isDisclosed,
                             comments: isCopy ? [] : data.Pia.pia.comments,
                             isEdit: !isCopy,
-                            piaId: isCopy ? "" : decrypted(id)
+                            piaId: isCopy ? "" : decrypted(id),
+                            isReadOnly: (data.Pia.status === "APPROVED" || data.Pia.status === "REJECTED") && !isCopy
                         })
                         this.formRef.current.setFieldsValue({
                             "projectDescription": data.Pia.pia.projectDescription,
@@ -188,13 +191,14 @@ export default class NewPia extends React.Component<Props, State>{
                            onChange={e=>this.setState({projectName :e.target.value})}
                            type="text" name="ProjName"
                            placeholder="Project Name"
+                           disabled={this.state.isReadOnly}
                     />
 
                 </Form.Item>
 
 
                 <Form.Item initialValue={this.state.sponsoringBusinessUnit} label="Sponsoring Business Unit" rules={[{required: true, message: 'Please enter Sponsoring Business Unit!' }]} name="sponsors"  hasFeedback >
-                    <Select allowClear={true} id="sponsors" value={this.state.sponsoringBusinessUnit}
+                    <Select disabled={this.state.isReadOnly} allowClear={true} id="sponsors" value={this.state.sponsoringBusinessUnit}
                             onChange={(e) => {this.setState({sponsoringBusinessUnit: e})} }
 
                             placeholder="Select Sponsoring Business Unit">
@@ -218,13 +222,16 @@ export default class NewPia extends React.Component<Props, State>{
                                         if (value !== "") {
                                             return Promise.resolve();
                                         }
-                                        throw new Error("test")
+                                        else{
+                                            return Promise.reject()
+                                        }
                                     }
                                 },
                             ]}
                 >
 
                     <CKEditor
+                        disabled={this.state.isReadOnly}
                         value={this.state.projectDescription}
                         data={this.state.projectDescription}
                         config={{
@@ -237,6 +244,9 @@ export default class NewPia extends React.Component<Props, State>{
                         }}
                         onChange={ ( event, editor ) => {
                             this.setState({projectDescription: editor.getData()})
+                            this.formRef.current.setFieldsValue({
+                                "projectDescription": editor.getData()
+                            })
                         }
                         }
                     />
@@ -246,7 +256,7 @@ export default class NewPia extends React.Component<Props, State>{
                 <Form.Item initialValue={window.location.pathname.includes(":") ?  this.state.isCollected ? '1' : '2' : undefined} label="Is it necessary for the purpose of the project that personal information be collected, used or disclosed?" rules={[{required:true, message:"Please select an option"}]}
                            name="isCollected">
 
-                    <Radio.Group style={{fontWeight: "400"}} onChange={(e) => {
+                    <Radio.Group disabled={this.state.isReadOnly} style={{fontWeight: "400"}} onChange={(e) => {
                         this.setState({isCollected: e.target.value === "1"})
                     }}>
                         <Radio style={{fontSize: "15px"}} value={'1'}> <div>Yes </div>  </Radio>
@@ -269,13 +279,16 @@ export default class NewPia extends React.Component<Props, State>{
                                            if (value !== "") {
                                                return Promise.resolve();
                                            }
-                                           throw new Error("test")
+                                           else{
+                                               return Promise.reject()
+                                           }
                                        }
                                    },
                                ]}
                     >
 
                         <CKEditor
+                            disabled={this.state.isReadOnly}
                             data={this.state.personalInfo}
                             config={{
                                 toolbar: ['heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList']
@@ -287,6 +300,9 @@ export default class NewPia extends React.Component<Props, State>{
                             }}
                             onChange={ ( event, editor ) => {
                                 this.setState({personalInfo: editor.getData()})
+                                this.formRef.current.setFieldsValue({
+                                    "personalInformation": editor.getData()
+                                })
                             }
                             }
 
@@ -296,12 +312,12 @@ export default class NewPia extends React.Component<Props, State>{
                     null
                 }
 
-                <Form.Item initialValue={this.state.purpose} label="Which “purpose” in S2.3 of the FortisBC Privacy Policy applies to this project?"
+                <Form.Item  initialValue={this.state.purpose} label="Which “purpose” in S2.3 of the FortisBC Privacy Policy applies to this project?"
                            name="purpose"
                            rules={[{ required: true, message: 'Please select an option' }]}
                            hasFeedback validateFirst={true}
                 >
-                    <Select allowClear id="purpose" value={this.state.purpose} onChange={(e) => { this.setState({purpose: e})}} >
+                    <Select disabled={this.state.isReadOnly} allowClear id="purpose" value={this.state.purpose} onChange={(e) => { this.setState({purpose: e})}} >
                         <Select.Option value="To create and maintain an effective business relationship">To create and maintain an effective business relationship</Select.Option>
                         <Select.Option value="For quality assurance purposes such as the recording of telephone calls to our call centers">For quality assurance purposes such as the recording of telephone calls to our call centers</Select.Option>
                         <Select.Option value="To facilitate account, billing, credit, collections and customer services, this may include the collection of contact information, emergency contact information, consent to complete a credit check for new customers">To facilitate account, billing, credit, collections and customer services, this may include the collection of contact information, emergency contact information, consent to complete a credit check for new customers</Select.Option>
@@ -329,12 +345,15 @@ export default class NewPia extends React.Component<Props, State>{
                                        if (value !== "") {
                                            return Promise.resolve();
                                        }
-                                       throw new Error("test")
+                                       else{
+                                           return Promise.reject()
+                                       }
                                    }
                                },
                            ]}>
 
                     <CKEditor
+                        disabled={this.state.isReadOnly}
                         config={{
                             toolbar: ['heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList']
                         }}
@@ -346,19 +365,17 @@ export default class NewPia extends React.Component<Props, State>{
                         }}
                         onChange={(event, editor) => {
                             this.setState({individualsInfo: editor.getData()})
+                            this.formRef.current.setFieldsValue({
+                                "individualsAccountable": editor.getData()
+                            })
                         }}
                     />
                 </Form.Item>
 
-                {this.state.individualsInfo === "" ?
-                    <div style={{color: "red", marginBottom: "24px"}}>Please list individuals</div>
-                    :
-                    null
-                }
 
                 <Form.Item initialValue={window.location.pathname.includes(":") ? this.state.isDisclosed ? '1' : '2' : undefined} label="Is any information being disclosed or stored outside of Canada as part of this project?" name="isDisclosed"
                            rules={[{ required: true, message: 'Please select an option' }]}>
-                    <Radio.Group style={{fontWeight: "400"}} onChange={(e) => { this.setState({isDisclosed: e.target.value === '1'})} }>
+                    <Radio.Group disabled={this.state.isReadOnly} style={{fontWeight: "400"}} onChange={(e) => { this.setState({isDisclosed: e.target.value === '1'})} }>
                         <Radio style={{fontSize: "15px"}}  value={'1'}>Yes</Radio>
                         <Radio style={{fontSize: "15px"}} value={'2'}>No</Radio>
                     </Radio.Group>
@@ -376,16 +393,19 @@ export default class NewPia extends React.Component<Props, State>{
                                    },
                                    {
                                        validator(_, value) {
-                                           if (value !== "") {
-                                               return Promise.resolve();
-                                           }
-                                           throw new Error("test")
+                                               if (value !== "") {
+                                                   return Promise.resolve();
+                                               }
+                                               else{
+                                                   return Promise.reject()
+                                               }
                                        }
                                    },
                                ]}
                     >
 
                         <CKEditor
+                            disabled={this.state.isReadOnly}
                             config={{
                                 toolbar: ['heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList']
                             }}
@@ -397,6 +417,9 @@ export default class NewPia extends React.Component<Props, State>{
                             }}
                             onChange={(event, editor) => {
                                 this.setState({disclosedInfo: editor.getData()})
+                                this.formRef.current.setFieldsValue({
+                                    "disclosedInformation": editor.getData()
+                                })
                             }}
 
                         />
@@ -404,14 +427,6 @@ export default class NewPia extends React.Component<Props, State>{
                     :
                     null
                 }
-
-                {this.state.disclosedInfo === "" && this.state.isDisclosed ?
-                    <div style={{color: "red", marginBottom: "24px"}}>Please enter the disclosed information</div>
-                    :
-                    null
-                }
-
-
                 {this.getFormFooter()}
             </Form>
         )
@@ -422,16 +437,10 @@ export default class NewPia extends React.Component<Props, State>{
             this.state.isEdit && localStorage.getItem("isOfficer") === "true" ?
                 <Row style={{paddingTop: "5px"}}>
                     <div className="btn">
-                        <Button type="default" onClick={e=>this.onSubmit(e)}
-                                style={{background: "#FFC82C", color: "black"}}>Edit</Button>
-                    </div>
-                    <div className="btn" style={{paddingLeft: "15px"}}>
-                        <Button type="default" onClick={e=>this.onSubmit(e, "APPROVED")}
-                                style={{background: "green", color: "black"}}>Approve</Button>
-                    </div>
-                    <div className="btn" style={{paddingLeft: "15px"}}>
-                        <Button type="default" onClick={e=>this.onSubmit(e, "REJECTED")}
-                                style={{background: "red", color: "black"}}>Reject</Button>
+                        <Button disabled={this.state.isReadOnly}
+                                style={{color: this.state.isReadOnly? "rgba(0,0,0,.25)" : "black", borderColor: this.state.isReadOnly ? "#d9d9d9!important" : "#FFC82C!important", background: this.state.isReadOnly ? "#f5f5f5!important" : "#FFC82C"}}
+                                type="default" onClick={e=>this.onSubmit(e)}
+                                >Save</Button>
                     </div>
                     <div className="btn" style={{paddingLeft: "15px"}}>
                         <Link to="/">
@@ -440,15 +449,22 @@ export default class NewPia extends React.Component<Props, State>{
                                     style={{background: "#ffffff", color: "black"}}>Back</Button>
                         </Link>
                     </div>
+                    <div className="btn" style={{paddingLeft: "15px"}}>
+                        <Button disabled={this.state.isReadOnly} type="primary" danger onClick={e=>this.onSubmit(e, "REJECTED")}>Reject</Button>
+                    </div>
+                    <div style={{paddingLeft: "15px"}}>
+                        <Button className={this.state.isReadOnly ? "" : "approveButton"} disabled={this.state.isReadOnly} style={{color: this.state.isReadOnly? "rgba(0,0,0,.25)" : "", borderColor: this.state.isReadOnly ? "#d9d9d9!important" : "#4e8a00", background: this.state.isReadOnly ? "#f5f5f5!important" : "#4e8a00"}}
+                                type="primary" onClick={e=>this.onSubmit(e, "APPROVED")}>Approve</Button>
+                    </div>
                 </Row>
-
                 :
                 this.state.isEdit ?
 
                     <Row style={{paddingTop: "5px"}}>
                         <div className="btn">
-                            <Button type="default" onClick={e=>this.onSubmit(e)}
-                                    style={{background: "#FFC82C", color: "black"}}>Edit</Button>
+                            <Button disabled={this.state.isReadOnly} type="default" onClick={e=>this.onSubmit(e)}
+                                    style={{color: this.state.isReadOnly? "rgba(0,0,0,.25)" : "black", borderColor: this.state.isReadOnly ? "#d9d9d9!important" : "#FFC82C!important", background: this.state.isReadOnly ? "#f5f5f5!important" : "#FFC82C"}}
+                            >Save</Button>
                         </div>
                         <div className="btn" style={{paddingLeft: "15px"}}>
                             <Link to="/">
@@ -461,7 +477,7 @@ export default class NewPia extends React.Component<Props, State>{
                     <Row style={{paddingTop: "5px"}}>
                         <div className="btn">
                             <Button type="default" onClick={e=>this.onSubmit(e)}
-                                    style={{background: "#FFC82C", color: "black"}}>Submit</Button>
+                                    style={{background: "#FFC82C", color: "black", borderColor: "#FFC82C!important"}}>Submit</Button>
                         </div>
                         <div className="btn" style={{paddingLeft: "15px"}}>
                             <Link to="/">
@@ -488,7 +504,7 @@ export default class NewPia extends React.Component<Props, State>{
                         onDrag={() => {}}
                         onStop={() => {}}>
                         <div>
-                            <CommentInterface author={this.props.email} onComment={this.onComment} comments={this.state.comments}/>
+                            <CommentInterface isReadOnly={this.state.isReadOnly} author={this.props.email} onComment={this.onComment} comments={this.state.comments}/>
                         </div>
 
                     </Draggable>

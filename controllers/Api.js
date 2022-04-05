@@ -3,40 +3,70 @@ const jwt = require("jsonwebtoken");
 const existingPia = require("../models/piaSchema");
 const {setUpEdit, setUpEmail, sendEmail, getPrivacyOfficers} = require("../Emails/emails");
 const CryptoJS =  require("crypto-js");
+const Path = require("path");
+const ejs = require("ejs");
+const pdf = require('html-pdf');
 
+const fs = require('fs');
 
 function encrypted(encryptedString){
     return encodeURIComponent(CryptoJS.AES.encrypt(encryptedString, process.env.EncryptedPass).toString())
 }
 
 
+var myCss = {
+    style : fs.readFileSync('./printFunctionality/template.css','utf8'),
+};
 
 exports.getPiaById = (req, res, ) => {
     const token = req.headers["x-access-token"]
     const id = req.body.id
     jwt.verify(token, process.env.JWT_VAR, (err, decoded) => {
-        if (decoded.id){
-                        existingPia.findById(id, (err, result) => {
-                            if (err){
+        if (decoded.id) {
+            User.findById(decoded.id, (error, user) => {
+                let isOfficer = user.isOfficer
+                if (!isOfficer){
+                    existingPia.findById(id, (err, result) => {
+                        if (err || decoded.id.toString() !== result.creatorId.toString()) {
+                            res.json({
+                                isSuccess: false,
+                                error: err,
+                                message: "Can not get pia from db",
+                            })
+                        } else {
+                            if (result) {
                                 res.json({
-                                    isSuccess: false,
-                                    error: err,
-                                    message: "Can not get pia from db",
+                                    isSuccess: true,
+                                    Pia: result
                                 })
                             }
-                            else{
-                                if (result){
-                                    res.json({
-                                        isSuccess: true,
-                                        Pia: result
-                                    })
-                                }
+                        }
+                    })
+                }
+                else{
+                    existingPia.findById(id, (err, result) => {
+                        if (err) {
+                            res.json({
+                                isSuccess: false,
+                                error: err,
+                                message: "Can not get pia from db",
+                            })
+                        } else {
+                            if (result) {
+                                res.json({
+                                    isSuccess: true,
+                                    Pia: result
+                                })
                             }
-                        })
-                    }
+                        }
+                    })
+                }
+
+            })
+        }
+
     })
 }
-
 
 
 exports.login = async  (req, res) => {
@@ -324,6 +354,66 @@ exports.editPia = (req, res, ) => {
                     setUpEdit(updatedObject, decoded.id, updatedPia.creatorId.toString());
                 }
             })
+        }
+    })
+}
+
+
+
+exports.printPia = (req, res, ) => {
+    const printedPia = req.body.Pia
+    const token = req.headers["x-access-token"]
+
+    jwt.verify(token, process.env.JWT_VAR, async (err, decoded) => {
+        if (decoded.id && printedPia){
+            try{
+                const htmlPath = Path.join(__dirname, "../printFunctionality/printTemplate.ejs")
+                
+                let dataForPDF = await ejs.renderFile(htmlPath,{ 
+                    myCss: myCss,
+                    projectName: printedPia.pia.projectName, 
+                    sponsoringBusinessUnit: printedPia.pia.sponsoringBusinessUnit, 
+                    projectDescription: printedPia.pia.projectDescription ? printedPia.pia.projectDescription.replace(/['"]+/g, '') : '', 
+                    isCollected: Boolean(printedPia.pia.isCollected),
+                    personalInfo: printedPia.pia.personalInfo ?  printedPia.pia.personalInfo.replace(/['"]+/g, '')  : '',
+                    purpose: printedPia.pia.purpose,
+                    individualsInfo: printedPia.pia.individualsInfo ? printedPia.pia.individualsInfo.replace(/['"]+/g, '')  : '',
+                    date: printedPia.createdAt.slice(0, 10).toString(),
+                    isDisclosed: printedPia.pia.isDisclosed,
+                    disclosedInfo: printedPia.pia.disclosedInfo ? printedPia.pia.disclosedInfo.replace(/['"]+/g, '')    : '',
+                },{async:true});
+                
+                var options = { 
+                    // height: '842px', width: '595px', 
+                    format: 'A4', type: "pdf",
+                    // "header": {"height": "10mm"}, 
+                    "footer": {"height": "10mm"} 
+                };
+
+                pdf.create(dataForPDF, options).toFile('./test.pdf', async (err, user) => {
+                    if (err) {
+                        res.json({
+                            isSuccess: false,
+                            message: "Issue with printing Pia",
+                        })
+                    }
+                    else{
+                        var file = fs.createReadStream('./test.pdf');
+                        var stat = fs.statSync('./test.pdf');
+                        res.setHeader('Content-Length', stat.size);
+                        res.setHeader('Content-Type', 'application/pdf');
+                        res.setHeader('Content-Disposition', 'attachment; filename=test.pdf');
+                        file.pipe(res);                        
+                    }
+                });
+
+            } catch(error){
+                console.log(error);
+                res.json({
+                    isSuccess: false,
+                    message: "Issue with printing Pia",
+                })
+            }
         }
     })
 }

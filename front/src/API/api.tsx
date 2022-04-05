@@ -1,5 +1,3 @@
-import {decrypted} from "../Components/Main";
-import {resolve} from "dns";
 
 
 export async function apiCall(url: string, method: string, data: any): Promise<any>{

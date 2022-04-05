@@ -14,6 +14,7 @@ import {encrypted} from "./Main.tsx";
 import {apiCall} from "../API/api.tsx";
 
 
+const LoadingButton = () => {message.loading('Downloading PIA..', 0)};
 
 interface Props{
     email: string
@@ -25,7 +26,9 @@ interface State{
     isSkeleton: boolean
     searchValue: string
     isSearch: boolean
+    loadingDocument: boolean
 }
+
 
 
 class PTable extends React.Component<Props, State> {
@@ -38,7 +41,8 @@ class PTable extends React.Component<Props, State> {
                 tableData: [],
                 isSkeleton: true,
                 searchValue: "",
-                isSearch: false
+                isSearch: false,
+                loadingDocument: false
             };
         this.emailNewPia = this.emailNewPia.bind(this);
         this.emailCommentPia = this.emailCommentPia.bind(this);
@@ -141,10 +145,9 @@ class PTable extends React.Component<Props, State> {
                                 :
                                 null
                             }
-
                             {status.status === 'APPROVED' ?
                                 <Tooltip placement="bottom" title={"Print"} style={{flex: "1"}}>
-                                    <Button type={"link"} style={{paddingLeft: "5px", paddingRight: "5px"}}  onClick={() => {alert("Download PIA Function")}}><PrinterOutlined /></Button>
+                                    <Button type={"link"} style={{paddingLeft: "5px", paddingRight: "5px"}} onClick={() => {this.onPrint(key)}}><PrinterOutlined /></Button>
                                 </Tooltip>
                                 :
                                 null
@@ -157,6 +160,38 @@ class PTable extends React.Component<Props, State> {
                 },
             },
         ];
+    }
+
+
+    async onPrint(key: tableData){
+        if(!this.state.loadingDocument){
+            try {
+                this.setState({loadingDocument: true})
+                LoadingButton();
+                await fetch(`/printPIA`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
+                    body: JSON.stringify({Pia: this.state.allPia[parseInt(key.key)]}),
+                })
+            .then(function(resp){
+                return resp.blob();
+            }).then(function(blob){
+                    var url = window.URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.download = "PIA.pdf";
+                    document.body.appendChild(a);
+                    a.click();    
+                    a.remove();
+                    message.destroy();
+                    message.success('PIA downloaded', 2);
+                    this.setState({loadingDocument: false})
+            })
+            } catch(err) {
+                console.log(err);
+                this.setState({loadingDocument: false})
+            }
+        }
     }
 
     async emailNewPia() {
@@ -334,4 +369,5 @@ class PTable extends React.Component<Props, State> {
         );
     }
 }
+
 export default PTable;
