@@ -56,7 +56,8 @@
         <p><strong>List the individuals accountable for the personal information: </strong></p> 
         <%- individualsInfo %>
 
-        <p><strong>Which "purpose" in S2.3 of the FortisBC Privacy Policy applies to this project?</strong> <br> <%= purpose %></p>
+        <p><strong>Which "purpose" in S2.3 of the FortisBC Privacy Policy applies to this project?</strong></p>
+        <p><%= purpose %></p>
 
         <p><strong>Is any information being disclosed or stored outside of Canada as part of this project?</strong> <br> </p>
         <p><% if (isDisclosed) {%> Yes <% } %> <% if (!isDisclosed) {%> No <% } %></p>

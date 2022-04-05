@@ -371,10 +371,10 @@ exports.printPia = (req, res, ) => {
                 },{async:true});
                 
                 var options = { 
-                    // height: '11.69in', width: '8.27in', 
-                    width: '210mm', height: '297mm',
-                    //format: 'A4', 
-                    type: "pdf", "header": {"height": "0mm"}, "footer": {"height": "10mm"}  
+                    // height: '842px', width: '595px', 
+                    format: 'A4', type: "pdf",
+                    // "header": {"height": "10mm"}, 
+                    "footer": {"height": "10mm"} 
                 };
 
                 pdf.create(dataForPDF, options).toFile('./test.pdf', async (err, user) => {
