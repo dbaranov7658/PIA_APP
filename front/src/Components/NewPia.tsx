@@ -178,6 +178,7 @@ export default class NewPia extends React.Component<Props, State>{
         this.setState({comments: newArr})
     }
 
+
     newPia = () => {
         return (
             <Form className={"formPia"} style={{paddingTop: "25px", paddingBottom: "40px", width: "700px"}}
@@ -201,11 +202,36 @@ export default class NewPia extends React.Component<Props, State>{
                     <Select disabled={this.state.isReadOnly} allowClear={true} id="sponsors" value={this.state.sponsoringBusinessUnit}
                             onChange={(e) => {this.setState({sponsoringBusinessUnit: e})} }
                             placeholder="Select Sponsoring Business Unit">
-                        <Select.Option value="Demo1">Demo1</Select.Option>
-                        <Select.Option value="Demo2">Demo2</Select.Option>
-                        <Select.Option value="Demo3">Demo3</Select.Option>
-                        <Select.Option value="Demo4">Demo4</Select.Option>
-                    </Select>
+                        <Select.Option value="Business Innovation">Business Innovation</Select.Option>
+                        <Select.Option value="Business Performance">Business Performance</Select.Option>
+                        <Select.Option value="Communications">Communications</Select.Option>
+                        <Select.Option value="Corporate Security & Business Continuity">Corporate Security & Business Continuity</Select.Option>
+                        <Select.Option value="Customer Energy & Forecasting">Customer Energy & Forecasting</Select.Option>
+                        <Select.Option value="Customer Service">Customer Service</Select.Option>
+                        <Select.Option value="Energy Management">Energy Management</Select.Option>
+                        <Select.Option value= "Energy Solutions"> Energy Solutions</Select.Option>
+                        <Select.Option value="Energy Supply">Energy Supply</Select.Option>
+                        <Select.Option value="Engineering">Engineering</Select.Option>
+                        <Select.Option value="Environment, Health & Safety">Environment, Health & Safety</Select.Option>
+                        <Select.Option value="External Relations">External Relations</Select.Option>
+                        <Select.Option value="Facilities">Facilities</Select.Option>
+                        <Select.Option value="Finance">Finance</Select.Option>
+                        <Select.Option value="Fleet Services">Fleet Services</Select.Option>
+                        <Select.Option value="Generation">Generation</Select.Option>
+                        <Select.Option value="Human Resources">Human Resources</Select.Option>
+                        <Select.Option value="Information Systems">Information Systems</Select.Option>
+                        <Select.Option value="Integrity Management">Integrity Management</Select.Option>
+                        <Select.Option value="Internal Audit">Internal Audit</Select.Option>
+                        <Select.Option value="Legal">Legal</Select.Option>
+                        <Select.Option value="Major Projects">Major Projects</Select.Option>
+                        <Select.Option value="Market Development">Market Development</Select.Option>
+                        <Select.Option value= "Measurement"> Measurement</Select.Option>
+                        <Select.Option value="Plant Operations">Plant Operations</Select.Option>
+                        <Select.Option value="Procurement">Procurement</Select.Option>
+                        <Select.Option value="Regulatory Affairs">Regulatory Affairs</Select.Option>
+                        <Select.Option value="Resource Planning">Resource Planning</Select.Option>
+                        <Select.Option value="Safety & Training">Safety & Training</Select.Option>
+                        </Select>
                 </Form.Item>
 
 

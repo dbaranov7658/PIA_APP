@@ -1,26 +1,28 @@
-html {
+html{
     zoom: 0.55;
 }
-
 body{
-    width: 100%;
-    height: 2245px;
+    /* width: 1587px;
+    height: 2245px; */
     margin: 0px;
     font-family: 'Lato', sans-serif;
 }
 
 #imgheadercontainer{
-    height:300px;
+    height:290px;
     width: 100%;
     margin: auto;
-    background-color: rgb(23, 58, 100);
+    /* background-color: rgb(23, 58, 100);  */
+    background-color: rgb(27, 84, 128); 
 }
 
 #imgheader{
-    width: 1587px;
-    height: 200px;
-    margin: auto;
+    /* width: 1587px;
+    height: 200px; */
+    width: 100%;
+    height: 70%;
     margin-top: 50px;
+    margin-right: auto; margin-left: auto;
 }
 
 #PIA{
@@ -65,14 +67,8 @@ body{
 #text-content{
     margin: auto;
     margin-bottom: 0;
-    width: 85%;
-    font-size: 40px;
-}
-
-p{
-    font-size: 40px;
-    margin-bottom: 30px;
-    text-align: left;
+    width: 90%;
+    font-size: 35px;
 }
 
 strong{
@@ -83,3 +79,4 @@ i{
     font-style: italic;
     font-family: 'Lato', sans-serif;
 }
+
