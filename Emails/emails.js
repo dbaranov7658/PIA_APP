@@ -27,7 +27,7 @@ const mailConfig2 = {
 };
 
 
-let transporter = nodemailer.createTransport(mailConfig1);
+let transporter = nodemailer.createTransport(mailConfig2);
 
 // verify connection configuration
 transporter.verify(function (error, success) {
