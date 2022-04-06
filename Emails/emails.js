@@ -4,12 +4,8 @@ const User = require('../models/user')
 const existingPia = require("../models/piaSchema");
 const pdf = require('html-pdf');
 const fs = require('fs');
-const { setUpPdf } = require('../controllers/Api');
+const { setUpPdf } = require('../printFunctionality/pdfSetup');
 path = require('path')
-
-var myCss = {
-    style : fs.readFileSync('./printFunctionality/template.css','utf8'),
-};
 
 // Set up email transporter
 const mailConfig1 = {
@@ -102,36 +98,14 @@ async function setUpEdit(updatedObject, triggerUserId, creatorId, createdAt) {
                 break;
             case 'APPROVED':
                 // generate pdf
-                // const htmlPath = path.join(__dirname, "../printFunctionality/printTemplate.ejs")
-                
-                // let dataForPDF = await ejs.renderFile(htmlPath,{
-                //     myCss: myCss,
-                //     projectName: updatedObject.pia.projectName,
-                //     sponsoringBusinessUnit: updatedObject.pia.sponsoringBusinessUnit,
-                //     projectDescription: updatedObject.pia.projectDescription ? updatedObject.pia.projectDescription.replace(/['"]+/g, '') : '',
-                //     isCollected: Boolean(updatedObject.pia.isCollected),
-                //     personalInfo: updatedObject.pia.personalInfo ?  updatedObject.pia.personalInfo.replace(/['"]+/g, '')  : '',
-                //     purpose: updatedObject.pia.purpose,
-                //     individualsInfo: updatedObject.pia.individualsInfo ? updatedObject.pia.individualsInfo.replace(/['"]+/g, '')  : '',
-                //     date: createdAt.slice(0, 10).toString(),
-                //     isDisclosed: updatedObject.pia.isDisclosed,
-                //     disclosedInfo: updatedObject.pia.disclosedInfo ? updatedObject.pia.disclosedInfo.replace(/['"]+/g, '')    : '',
-                // },{async:true});
+                let specs = await setUpPdf(updatedObject);
 
-                
-                // var pdfOptions = {
-                //     // height: '842px', width: '595px',
-                //     format: 'A4', type: "pdf",
-                //     // "header": {"height": "10mm"},
-                //     "footer": {"height": "10mm"}
-                // };
-                let pdfSpecs = setUpPdf(updatedObject);
-
-                await pdf.create(pdfSpecs.dataForPDF, pdfSpecs.pdfOptions).toFile('./Emails/pia.pdf', async (err, user) => {
+                await pdf.create(specs.dataForPDF, specs.pdfOptions).toFile('./Emails/pia.pdf', async (err, user) => {
                     if (err) {
                         console.log(err);
                     }
                     else {
+                        // attach to email
                         console.log(`user: ${user}`);
                         var file = fs.createReadStream('./Emails/pia.pdf');
                         // path: path.join(__dirname, "/pia.pdf"),
@@ -195,11 +169,6 @@ async function setUpEdit(updatedObject, triggerUserId, creatorId, createdAt) {
         }
 
     } catch (error) {
-        // res.json({
-        //     isSuccess: false,
-        //     error: error,
-        // })
-        // return error;
         console.log(error);
     }
     
@@ -216,10 +185,6 @@ async function getPrivacyOfficers() {
 
         return officer_emails;
     } catch (err) {
-        // res.json({
-        //     status: false,
-        //     message: 'Something went wrong'
-        // })
         // console.log(err);
         return err;
     }
@@ -252,10 +217,6 @@ async function setUpEmail(recipients, subject, event_msg, pia_url, deleted, emai
             })
         });
     } catch (error) {
-        // res.json({
-        //     status: false,
-        //     message: 'Something went wrong'
-        // })
         // console.log(error);
         return error;
     }

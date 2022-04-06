@@ -6,6 +6,7 @@ const CryptoJS =  require("crypto-js");
 const Path = require("path");
 const ejs = require("ejs");
 const pdf = require('html-pdf');
+const { setUpPdf } = require('../printFunctionality/pdfSetup');
 
 const fs = require('fs');
 
@@ -13,45 +14,6 @@ function encrypted(encryptedString){
     return encodeURIComponent(CryptoJS.AES.encrypt(encryptedString, process.env.EncryptedPass).toString())
 }
 
-
-var myCss = {
-    style : fs.readFileSync('./printFunctionality/template.css','utf8'),
-};
-
-async function setUpPdf(piaObject) {
-    const htmlPath = Path.join(__dirname, "../printFunctionality/printTemplate.ejs")
-    try {
-        let dataForPDF = await ejs.renderFile(htmlPath,{ 
-            myCss: myCss,
-            projectName: piaObject.pia.projectName, 
-            sponsoringBusinessUnit: piaObject.pia.sponsoringBusinessUnit, 
-            projectDescription: piaObject.pia.projectDescription ? piaObject.pia.projectDescription.replace(/['"]+/g, '') : '', 
-            isCollected: Boolean(piaObject.pia.isCollected),
-            personalInfo: piaObject.pia.personalInfo ?  piaObject.pia.personalInfo.replace(/['"]+/g, '')  : '',
-            purpose: piaObject.pia.purpose,
-            individualsInfo: piaObject.pia.individualsInfo ? piaObject.pia.individualsInfo.replace(/['"]+/g, '')  : '',
-            date: piaObject.createdAt.slice(0, 10).toString(),
-            isDisclosed: piaObject.pia.isDisclosed,
-            disclosedInfo: piaObject.pia.disclosedInfo ? piaObject.pia.disclosedInfo.replace(/['"]+/g, '')    : '',
-        },{async:true});
-        
-        var options = { 
-            // height: '842px', width: '595px', 
-            format: 'A4', type: "pdf",
-            // "header": {"height": "10mm"}, 
-            "footer": {"height": "10mm"} 
-        };
-    
-        let pdfSpecs = {
-            dataForPDF: dataForPDF,
-            options: options
-        }
-    
-        return pdfSpecs;
-    } catch (err) {
-        return err;
-    }  
-}
 
 exports.getPiaById = (req, res, ) => {
     const token = req.headers["x-access-token"]
@@ -389,6 +351,8 @@ exports.editPia = (req, res, ) => {
                         isSuccess: true,
                         message: "Successfully submitted",
                     })
+                    updatedObject.createdAt = updatedPia.createdAt.toString();
+                    console.log(`updated: ${updatedObject.createdAt}`);
                     setUpEdit(updatedObject, decoded.id, updatedPia.creatorId.toString(), updatedPia.createdAt.toString());
                 }
             })
@@ -405,29 +369,6 @@ exports.printPia = (req, res, ) => {
     jwt.verify(token, process.env.JWT_VAR, async (err, decoded) => {
         if (decoded.id && printedPia){
             try{
-                const htmlPath = Path.join(__dirname, "../printFunctionality/printTemplate.ejs")
-                
-                // let dataForPDF = await ejs.renderFile(htmlPath,{ 
-                //     myCss: myCss,
-                //     projectName: printedPia.pia.projectName,
-                //     sponsoringBusinessUnit: printedPia.pia.sponsoringBusinessUnit,
-                //     projectDescription: printedPia.pia.projectDescription ? printedPia.pia.projectDescription.replace(/['"]+/g, '') : '',
-                //     isCollected: Boolean(printedPia.pia.isCollected),
-                //     personalInfo: printedPia.pia.personalInfo ?  printedPia.pia.personalInfo.replace(/['"]+/g, '')  : '',
-                //     purpose: printedPia.pia.purpose,
-                //     individualsInfo: printedPia.pia.individualsInfo ? printedPia.pia.individualsInfo.replace(/['"]+/g, '')  : '',
-                //     date: printedPia.createdAt.slice(0, 10).toString(),
-                //     isDisclosed: printedPia.pia.isDisclosed,
-                //     disclosedInfo: printedPia.pia.disclosedInfo ? printedPia.pia.disclosedInfo.replace(/['"]+/g, '')    : '',
-                // },{async:true});
-                
-                // var options = {
-                //     // height: '842px', width: '595px',
-                //     format: 'A4', type: "pdf",
-                //     // "header": {"height": "10mm"},
-                //     "footer": {"height": "10mm"}
-                // };
-
                 let pdfSpecs = await setUpPdf(printedPia);
                 
 
@@ -459,6 +400,3 @@ exports.printPia = (req, res, ) => {
     })
 }
 
-module.exports = {
-    setUpPdf
-}
