@@ -27,7 +27,7 @@ const mailConfig2 = {
 };
 
 
-let transporter = nodemailer.createTransport(mailConfig2);
+let transporter = nodemailer.createTransport(mailConfig1);
 
 // verify connection configuration
 transporter.verify(function (error, success) {
@@ -39,8 +39,7 @@ transporter.verify(function (error, success) {
     }
 });
 
-async function setUpEdit(updatedObject, triggerUserId, creatorId, createdAt) {
-    // console.log(`new obj: ${updatedObject}`);
+async function setUpEdit(updatedObject, triggerUserId, creatorId) {
     let creatorEmail = "";
     let recipients = [];
     let piaName = updatedObject.pia.projectName;
@@ -74,7 +73,6 @@ async function setUpEdit(updatedObject, triggerUserId, creatorId, createdAt) {
             // if PO notify user, else notify POs
             if (triggerUser === 'privacyOfficer') {
                 // notify pia author
-                // recipients.push(creatorEmail)
                 setUpEmail(recipients, `New comment on ${piaName}`, `${triggerUserEmail} has left a comment on ${piaName}.`, `/editPia:${piaId}`, false, {})
             } else {
                 console.log('user')
@@ -88,7 +86,6 @@ async function setUpEdit(updatedObject, triggerUserId, creatorId, createdAt) {
                 // if PO notify user, else notify POs
                 if (triggerUser === 'privacyOfficer') {
                     // notify pia author
-                    // recipients.push(creatorEmail)
                     setUpEmail(recipients, `New Edit Made to ${piaName}`, `${triggerUserEmail} has made an edit to ${piaName}.`, `/editPia:${piaId}`, false, {})
                 } else {
                     console.log('user')
@@ -100,68 +97,22 @@ async function setUpEdit(updatedObject, triggerUserId, creatorId, createdAt) {
                 // generate pdf
                 let specs = await setUpPdf(updatedObject);
 
-                await pdf.create(specs.dataForPDF, specs.pdfOptions).toFile('./Emails/pia.pdf', async (err, user) => {
+                pdf.create(specs.dataForPDF, specs.pdfOptions).toFile('./Emails/pia.pdf', async (err, user) => {
                     if (err) {
                         console.log(err);
                     }
                     else {
                         // attach to email
-                        console.log(`user: ${user}`);
-                        var file = fs.createReadStream('./Emails/pia.pdf');
-                        // path: path.join(__dirname, "/pia.pdf"),
-                        file.on('open', function () {
-                            let emailOptions = {
-                                attachments: [{
-                                    filename: "pia.pdf",
-                                    content: file
-                                }]
-                            }
-                            // recipients.push(creatorEmail)
-                            setUpEmail(recipients, `APPROVED: ${piaName}`, `${piaName} has been approved.`, `/editPia:${piaId}`, false, emailOptions);
-                        });
-                        // fs.readFile(('./Emails/pia.pdf'), (err, data) => {
-                        //     if (err) {
-                        //       // do something with the error
-                        //         console.log(err);
-                        //     }
-                        //     if (data) {
-                        //         let emailOptions = {
-                        //             attachments: [{
-                        //                 encoding: 'base64',
-                        //                 content: data.toString('base64'),
-                        //                 contentType: 'application/pdf',
-                        //                 contentDisposition: 'attachment',
-                        //                 filename: 'pia.pdf'
-                        //             }]
-                        //         }
-                        //         recipients.push(creatorEmail)
-                        //         setUpEmail(recipients, `APPROVED: ${piaName}`, `${piaName} has been approved.`, `/editPia:${piaId}`, false, emailOptions);
-                        //     }
-                        // });
-                        // let emailOptions = {
-                        //     attachments: [{
-                        //         filename: "pia.pdf",
-                        //         path: path.join(__dirname, "pia.pdf"),
-                        //         contentType: 'application/pdf'
-                        //     }]
-                        // }
-                        // let emailOptions = {
-                        //     attachments: [{
-                        //         path: path.join(__dirname, "pia.pdf"),
-                        //         contentDisposition: 'attachment; filename=test.pdf'
-                        //     }]
-                        // }
-                        // console.log(emailOptions);
-
-                        // recipients.push(creatorEmail)
-                        // await setUpEmail(recipients, `APPROVED: ${piaName}`, `${piaName} has been approved.`, `/editPia:${piaId}`, false, emailOptions);
+                        let emailOptions = {
+                            attachments: [{
+                                path: path.join(__dirname, "pia.pdf"),
+                            }]
+                        }
+                        await setUpEmail(recipients, `APPROVED: ${piaName}`, `${piaName} has been approved.`, `/editPia:${piaId}`, false, emailOptions);
                     }
                 });
                 break;
             case 'REJECTED':
-                console.log('rejected')
-                // recipients.push(creatorEmail)
-                console.log(recipients)
                 setUpEmail( recipients, `REJECTED: ${piaName}`, `${piaName} has been rejected.`, `/editPia:${piaId}`, false, {});
                 break;
             default:

@@ -353,7 +353,7 @@ exports.editPia = (req, res, ) => {
                     })
                     updatedObject.createdAt = updatedPia.createdAt.toString();
                     console.log(`updated: ${updatedObject.createdAt}`);
-                    setUpEdit(updatedObject, decoded.id, updatedPia.creatorId.toString(), updatedPia.createdAt.toString());
+                    setUpEdit(updatedObject, decoded.id, updatedPia.creatorId.toString());
                 }
             })
         }
