@@ -29,6 +29,7 @@ interface State{
     isDisclosed: boolean
     disclosedInfo: string
     comments: comment[]
+    newComment: boolean
     isSkeleton: boolean
     isEdit: boolean
     piaId: string
@@ -51,6 +52,7 @@ export default class NewPia extends React.Component<Props, State>{
             individualsInfo: undefined,
             isDisclosed: null,
             comments: [],
+            newComment: false,
             isSkeleton: true,
             isEdit: false,
             piaId: "",
@@ -133,7 +135,8 @@ export default class NewPia extends React.Component<Props, State>{
                     var data = {
                         Pia: newPia,
                         id: this.state.piaId,
-                        status: newStatus
+                        status: newStatus,
+                        newComment: this.state.newComment
                     }
                     apiCall('/editPia', 'POST', {data: data}).then((response) => {
                         if (!response.isSuccess){
@@ -175,7 +178,8 @@ export default class NewPia extends React.Component<Props, State>{
     onComment = (newComment: comment) => {
         let newArr = this.state.comments
         newArr.push(newComment)
-        this.setState({comments: newArr})
+        this.setState({ comments: newArr })
+        this.setState({newComment: true})
     }
 
 

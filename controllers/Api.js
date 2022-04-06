@@ -1,16 +1,19 @@
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const existingPia = require("../models/piaSchema");
-const {setUpEmail, sendEmail, getPrivacyOfficers} = require("../Emails/emails");
+const {setUpEdit, setUpEmail, sendEmail, getPrivacyOfficers} = require("../Emails/emails");
+const CryptoJS =  require("crypto-js");
 const Path = require("path");
 const ejs = require("ejs");
 const pdf = require('html-pdf');
+const { setUpPdf } = require('../printFunctionality/pdfSetup');
 
 const fs = require('fs');
 
-var myCss = {
-    style : fs.readFileSync('./printFunctionality/template.css','utf8'),
-};
+function encrypted(encryptedString){
+    return encodeURIComponent(CryptoJS.AES.encrypt(encryptedString, process.env.EncryptedPass).toString())
+}
+
 
 exports.getPiaById = (req, res, ) => {
     const token = req.headers["x-access-token"]
@@ -240,7 +243,7 @@ exports.deletePia = (req, res,) => {
                                                         message: "Successfully deleting Pia",
                                                     })
                                                     
-                                                    setUpEmail(recipients, `DELETED: ${pia_name}`, `${pia_name} has been deleted.` )
+                                                    setUpEmail(recipients, `DELETED: ${pia_name}`, `${pia_name} has been deleted.`, '', true, {})
                                                     
                                                 }
                                                 else {
@@ -282,6 +285,7 @@ exports.addNew = (req, res, ) => {
                     })
                 }
                 else{
+                    let encryptedId = encrypted(user._id.toString());
                     User.findById(decoded.id, async (error, user) => {
                         if (error){
                             res.json({
@@ -294,9 +298,8 @@ exports.addNew = (req, res, ) => {
                                 res.json({
                                     isSuccess: true,
                                     message: "Successfully submitted",
-                                })
-                            
-                                setUpEmail(await getPrivacyOfficers(), "New PIA", `A new Privacy Impact Assessment has been submitted by ${user.email}.`);
+                                });                                                       
+                                setUpEmail(await getPrivacyOfficers(), "New PIA", `A new Privacy Impact Assessment has been submitted by ${user.email}.`, `/editPia:${encryptedId}`, false, {});
                                 
                             }
                         }
@@ -311,17 +314,26 @@ exports.editPia = (req, res, ) => {
     const editPia = req.body.data.Pia
     const updatedId = req.body.data.id
     const newStatus = req.body.data.status
+    const newComment = req.body.data.newComment
     const token = req.headers["x-access-token"]
+    const encryptedId = encrypted(updatedId)
     let updatedObject
     if (newStatus === undefined){
          updatedObject = {
-            pia: editPia
+            pia: editPia,
+            status: 'PENDING',
+            piaId: updatedId, 
+            encryptedId: encryptedId,
+            newComment: newComment
         }
     }
     else{
          updatedObject = {
             pia: editPia,
-            status: newStatus
+            status: newStatus,
+            piaId: updatedId,
+            encryptedId: encryptedId,
+            newComment: newComment
         }
     }
     jwt.verify(token, process.env.JWT_VAR, (err, decoded) => {
@@ -339,6 +351,9 @@ exports.editPia = (req, res, ) => {
                         isSuccess: true,
                         message: "Successfully submitted",
                     })
+                    updatedObject.createdAt = updatedPia.createdAt.toString();
+                    console.log(`updated: ${updatedObject.createdAt}`);
+                    setUpEdit(updatedObject, decoded.id, updatedPia.creatorId.toString());
                 }
             })
         }
@@ -354,30 +369,10 @@ exports.printPia = (req, res, ) => {
     jwt.verify(token, process.env.JWT_VAR, async (err, decoded) => {
         if (decoded.id && printedPia){
             try{
-                const htmlPath = Path.join(__dirname, "../printFunctionality/printTemplate.ejs")
+                let pdfSpecs = await setUpPdf(printedPia);
                 
-                let dataForPDF = await ejs.renderFile(htmlPath,{ 
-                    myCss: myCss,
-                    projectName: printedPia.pia.projectName, 
-                    sponsoringBusinessUnit: printedPia.pia.sponsoringBusinessUnit, 
-                    projectDescription: printedPia.pia.projectDescription ? printedPia.pia.projectDescription.replace(/['"]+/g, '') : '', 
-                    isCollected: Boolean(printedPia.pia.isCollected),
-                    personalInfo: printedPia.pia.personalInfo ?  printedPia.pia.personalInfo.replace(/['"]+/g, '')  : '',
-                    purpose: printedPia.pia.purpose,
-                    individualsInfo: printedPia.pia.individualsInfo ? printedPia.pia.individualsInfo.replace(/['"]+/g, '')  : '',
-                    date: printedPia.createdAt.slice(0, 10).toString(),
-                    isDisclosed: printedPia.pia.isDisclosed,
-                    disclosedInfo: printedPia.pia.disclosedInfo ? printedPia.pia.disclosedInfo.replace(/['"]+/g, '')    : '',
-                },{async:true});
-                
-                var options = { 
-                    // height: '842px', width: '595px', 
-                    format: 'A4', type: "pdf",
-                    // "header": {"height": "10mm"}, 
-                    "footer": {"height": "10mm"} 
-                };
 
-                pdf.create(dataForPDF, options).toFile('./test.pdf', async (err, user) => {
+                pdf.create(pdfSpecs.dataForPDF, pdfSpecs.options).toFile('./test.pdf', async (err, user) => {
                     if (err) {
                         res.json({
                             isSuccess: false,
@@ -404,3 +399,4 @@ exports.printPia = (req, res, ) => {
         }
     })
 }
+
