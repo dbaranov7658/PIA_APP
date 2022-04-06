@@ -69,13 +69,11 @@ async function setUpEdit(updatedObject, triggerUserId, creatorId) {
 
         // check if there's new comments
         if (updatedObject.newComment) {
-            console.log("new comment");
             // if PO notify user, else notify POs
             if (triggerUser === 'privacyOfficer') {
                 // notify pia author
                 setUpEmail(recipients, `New comment on ${piaName}`, `${triggerUserEmail} has left a comment on ${piaName}.`, `/editPia:${piaId}`, false, {})
             } else {
-                console.log('user')
                 // notify po
                 setUpEmail( await getPrivacyOfficers(), `New comment to ${piaName}`, `${triggerUserEmail} has left a comment on ${piaName}.`, `/editPia:${piaId}`, false, {})
             }     
@@ -88,7 +86,6 @@ async function setUpEdit(updatedObject, triggerUserId, creatorId) {
                     // notify pia author
                     setUpEmail(recipients, `New Edit Made to ${piaName}`, `${triggerUserEmail} has made an edit to ${piaName}.`, `/editPia:${piaId}`, false, {})
                 } else {
-                    console.log('user')
                     // notify po
                     setUpEmail( await getPrivacyOfficers(), `New Edit Made to ${piaName}`, `${triggerUserEmail} has made an edit to ${piaName}.`, `/editPia:${piaId}`, false, {})
                 }                        
@@ -158,7 +155,6 @@ async function setUpEmail(recipients, subject, event_msg, pia_url, deleted, emai
     }
 
     Object.assign(options, emailOptions);
-    console.log(`options: ${options}`);
 
 
     try {

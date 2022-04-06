@@ -364,14 +364,16 @@ exports.editPia = (req, res, ) => {
 
 exports.printPia = (req, res, ) => {
     const printedPia = req.body.Pia
+    // console.log(JSON.stringify(printedPia));
+    console.dir(printedPia, { depth: null });
     const token = req.headers["x-access-token"]
 
     jwt.verify(token, process.env.JWT_VAR, async (err, decoded) => {
         if (decoded.id && printedPia){
             try{
                 let pdfSpecs = await setUpPdf(printedPia);
+                console.log(pdfSpecs);
                 
-
                 pdf.create(pdfSpecs.dataForPDF, pdfSpecs.options).toFile('./test.pdf', async (err, user) => {
                     if (err) {
                         res.json({
