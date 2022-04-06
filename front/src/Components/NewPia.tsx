@@ -205,7 +205,6 @@ export default class NewPia extends React.Component<Props, State>{
                 <Form.Item initialValue={this.state.sponsoringBusinessUnit} label="Sponsoring Business Unit" rules={[{required: true, message: 'Please enter Sponsoring Business Unit!' }]} name="sponsors"  hasFeedback >
                     <Select disabled={this.state.isReadOnly} allowClear={true} id="sponsors" value={this.state.sponsoringBusinessUnit}
                             onChange={(e) => {this.setState({sponsoringBusinessUnit: e})} }
-
                             placeholder="Select Sponsoring Business Unit">
                         <Select.Option value="Business Innovation">Business Innovation</Select.Option>
                         <Select.Option value="Business Performance">Business Performance</Select.Option>

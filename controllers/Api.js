@@ -334,10 +334,28 @@ exports.editPia = (req, res, ) => {
             piaId: updatedId,
             encryptedId: encryptedId,
             newComment: newComment
-        }
+         }
     }
     jwt.verify(token, process.env.JWT_VAR, (err, decoded) => {
-        if (decoded.id ){
+        if (decoded.id) {
+            if (newStatus === "APPROVED" || newStatus === "DENIED") {
+                // verify that user is privacy officer
+                User.findById(decoded.id, (error, result) => {
+                    if (result === null) {
+                        res.json({
+                            isSuccess: false,
+                            error: error,
+                            message: "Can not get user from db",
+                        })
+                    } else if (!result.isOfficer) {
+                        res.json({
+                            isSuccess: false,
+                            error: "PermissionError",
+                            message: "User does not have delete permissions",
+                        })
+                    }
+                })
+            }
             existingPia.findByIdAndUpdate(updatedId, updatedObject, (err, updatedPia) => {
                 if (err) {
                     res.json({

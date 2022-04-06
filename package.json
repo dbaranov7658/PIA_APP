@@ -25,6 +25,7 @@
     "events": "^3.3.0",
     "fs": "^0.0.1-security",
     "html-pdf": "^3.0.1",
+    "html-pdf-node": "^1.0.8",
     "jsonwebtoken": "^8.5.1",
     "jspdf": "^2.5.1",
     "mocha": "^9.2.2",
