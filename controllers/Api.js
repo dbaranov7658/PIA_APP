@@ -338,40 +338,39 @@ exports.editPia = (req, res, ) => {
     }
     jwt.verify(token, process.env.JWT_VAR, (err, decoded) => {
         if (decoded.id) {
-            if (newStatus === "APPROVED" || newStatus === "DENIED") {
-                // verify that user is privacy officer
-                User.findById(decoded.id, (error, result) => {
-                    if (result === null) {
-                        res.json({
-                            isSuccess: false,
-                            error: error,
-                            message: "Can not get user from db",
-                        })
-                    } else if (!result.isOfficer) {
-                        res.json({
-                            isSuccess: false,
-                            error: "PermissionError",
-                            message: "User does not have delete permissions",
-                        })
-                    }
-                })
-            }
-            existingPia.findByIdAndUpdate(updatedId, updatedObject, (err, updatedPia) => {
-                if (err) {
+             // verify that user has correct permissions
+             User.findById(decoded.id, (error, result) => {
+                if (result === null) {
                     res.json({
                         isSuccess: false,
-                        error: err,
-                        message: "Can not save it in db",
+                        error: error,
+                        message: "Can not get user from db",
                     })
-                }
-                else{
-                    res.json({
-                        isSuccess: true,
-                        message: "Successfully submitted",
+                } else if (!result.isOfficer && newStatus === 'APPROVED' || !result.isOfficer && newStatus === 'REJECTED') {
+                    return res.json({
+                        isSuccess: false,
+                        error: "PermissionError",
+                        message: "User does not have delete permissions",
                     })
-                    updatedObject.createdAt = updatedPia.createdAt.toString();
-                    console.log(`updated: ${updatedObject.createdAt}`);
-                    setUpEdit(updatedObject, decoded.id, updatedPia.creatorId.toString());
+                } else {
+                    existingPia.findByIdAndUpdate(updatedId, updatedObject, (err, updatedPia) => {
+                        if (err) {
+                            res.json({
+                                isSuccess: false,
+                                error: err,
+                                message: "Can not save it in db",
+                            })
+                        }
+                        else{
+                            res.json({
+                                isSuccess: true,
+                                message: "Successfully submitted",
+                            })
+                            updatedObject.createdAt = updatedPia.createdAt.toString();
+                            console.log(`updated: ${updatedObject.createdAt}`);
+                            setUpEdit(updatedObject, decoded.id, updatedPia.creatorId.toString());
+                        }
+                    })
                 }
             })
         }
