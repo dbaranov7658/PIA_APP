@@ -18,6 +18,41 @@ var myCss = {
     style : fs.readFileSync('./printFunctionality/template.css','utf8'),
 };
 
+async function setUpPdf(piaObject) {
+    const htmlPath = Path.join(__dirname, "../printFunctionality/printTemplate.ejs")
+    try {
+        let dataForPDF = await ejs.renderFile(htmlPath,{ 
+            myCss: myCss,
+            projectName: piaObject.pia.projectName, 
+            sponsoringBusinessUnit: piaObject.pia.sponsoringBusinessUnit, 
+            projectDescription: piaObject.pia.projectDescription ? piaObject.pia.projectDescription.replace(/['"]+/g, '') : '', 
+            isCollected: Boolean(piaObject.pia.isCollected),
+            personalInfo: piaObject.pia.personalInfo ?  piaObject.pia.personalInfo.replace(/['"]+/g, '')  : '',
+            purpose: piaObject.pia.purpose,
+            individualsInfo: piaObject.pia.individualsInfo ? piaObject.pia.individualsInfo.replace(/['"]+/g, '')  : '',
+            date: piaObject.createdAt.slice(0, 10).toString(),
+            isDisclosed: piaObject.pia.isDisclosed,
+            disclosedInfo: piaObject.pia.disclosedInfo ? piaObject.pia.disclosedInfo.replace(/['"]+/g, '')    : '',
+        },{async:true});
+        
+        var options = { 
+            // height: '842px', width: '595px', 
+            format: 'A4', type: "pdf",
+            // "header": {"height": "10mm"}, 
+            "footer": {"height": "10mm"} 
+        };
+    
+        let pdfSpecs = {
+            dataForPDF: dataForPDF,
+            options: options
+        }
+    
+        return pdfSpecs;
+    } catch (err) {
+        return err;
+    }  
+}
+
 exports.getPiaById = (req, res, ) => {
     const token = req.headers["x-access-token"]
     const id = req.body.id
@@ -372,28 +407,31 @@ exports.printPia = (req, res, ) => {
             try{
                 const htmlPath = Path.join(__dirname, "../printFunctionality/printTemplate.ejs")
                 
-                let dataForPDF = await ejs.renderFile(htmlPath,{ 
-                    myCss: myCss,
-                    projectName: printedPia.pia.projectName, 
-                    sponsoringBusinessUnit: printedPia.pia.sponsoringBusinessUnit, 
-                    projectDescription: printedPia.pia.projectDescription ? printedPia.pia.projectDescription.replace(/['"]+/g, '') : '', 
-                    isCollected: Boolean(printedPia.pia.isCollected),
-                    personalInfo: printedPia.pia.personalInfo ?  printedPia.pia.personalInfo.replace(/['"]+/g, '')  : '',
-                    purpose: printedPia.pia.purpose,
-                    individualsInfo: printedPia.pia.individualsInfo ? printedPia.pia.individualsInfo.replace(/['"]+/g, '')  : '',
-                    date: printedPia.createdAt.slice(0, 10).toString(),
-                    isDisclosed: printedPia.pia.isDisclosed,
-                    disclosedInfo: printedPia.pia.disclosedInfo ? printedPia.pia.disclosedInfo.replace(/['"]+/g, '')    : '',
-                },{async:true});
+                // let dataForPDF = await ejs.renderFile(htmlPath,{ 
+                //     myCss: myCss,
+                //     projectName: printedPia.pia.projectName,
+                //     sponsoringBusinessUnit: printedPia.pia.sponsoringBusinessUnit,
+                //     projectDescription: printedPia.pia.projectDescription ? printedPia.pia.projectDescription.replace(/['"]+/g, '') : '',
+                //     isCollected: Boolean(printedPia.pia.isCollected),
+                //     personalInfo: printedPia.pia.personalInfo ?  printedPia.pia.personalInfo.replace(/['"]+/g, '')  : '',
+                //     purpose: printedPia.pia.purpose,
+                //     individualsInfo: printedPia.pia.individualsInfo ? printedPia.pia.individualsInfo.replace(/['"]+/g, '')  : '',
+                //     date: printedPia.createdAt.slice(0, 10).toString(),
+                //     isDisclosed: printedPia.pia.isDisclosed,
+                //     disclosedInfo: printedPia.pia.disclosedInfo ? printedPia.pia.disclosedInfo.replace(/['"]+/g, '')    : '',
+                // },{async:true});
                 
-                var options = { 
-                    // height: '842px', width: '595px', 
-                    format: 'A4', type: "pdf",
-                    // "header": {"height": "10mm"}, 
-                    "footer": {"height": "10mm"} 
-                };
+                // var options = {
+                //     // height: '842px', width: '595px',
+                //     format: 'A4', type: "pdf",
+                //     // "header": {"height": "10mm"},
+                //     "footer": {"height": "10mm"}
+                // };
 
-                pdf.create(dataForPDF, options).toFile('./test.pdf', async (err, user) => {
+                let pdfSpecs = await setUpPdf(printedPia);
+                
+
+                pdf.create(pdfSpecs.dataForPDF, pdfSpecs.options).toFile('./test.pdf', async (err, user) => {
                     if (err) {
                         res.json({
                             isSuccess: false,
@@ -419,4 +457,8 @@ exports.printPia = (req, res, ) => {
             }
         }
     })
+}
+
+module.exports = {
+    setUpPdf
 }

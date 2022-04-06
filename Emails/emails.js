@@ -4,6 +4,7 @@ const User = require('../models/user')
 const existingPia = require("../models/piaSchema");
 const pdf = require('html-pdf');
 const fs = require('fs');
+const { setUpPdf } = require('../controllers/Api');
 path = require('path')
 
 var myCss = {
@@ -101,31 +102,32 @@ async function setUpEdit(updatedObject, triggerUserId, creatorId, createdAt) {
                 break;
             case 'APPROVED':
                 // generate pdf
-                const htmlPath = path.join(__dirname, "../printFunctionality/printTemplate.ejs")
+                // const htmlPath = path.join(__dirname, "../printFunctionality/printTemplate.ejs")
                 
-                let dataForPDF = await ejs.renderFile(htmlPath,{ 
-                    myCss: myCss,
-                    projectName: updatedObject.pia.projectName, 
-                    sponsoringBusinessUnit: updatedObject.pia.sponsoringBusinessUnit, 
-                    projectDescription: updatedObject.pia.projectDescription ? updatedObject.pia.projectDescription.replace(/['"]+/g, '') : '', 
-                    isCollected: Boolean(updatedObject.pia.isCollected),
-                    personalInfo: updatedObject.pia.personalInfo ?  updatedObject.pia.personalInfo.replace(/['"]+/g, '')  : '',
-                    purpose: updatedObject.pia.purpose,
-                    individualsInfo: updatedObject.pia.individualsInfo ? updatedObject.pia.individualsInfo.replace(/['"]+/g, '')  : '',
-                    date: createdAt.slice(0, 10).toString(),
-                    isDisclosed: updatedObject.pia.isDisclosed,
-                    disclosedInfo: updatedObject.pia.disclosedInfo ? updatedObject.pia.disclosedInfo.replace(/['"]+/g, '')    : '',
-                },{async:true});
+                // let dataForPDF = await ejs.renderFile(htmlPath,{
+                //     myCss: myCss,
+                //     projectName: updatedObject.pia.projectName,
+                //     sponsoringBusinessUnit: updatedObject.pia.sponsoringBusinessUnit,
+                //     projectDescription: updatedObject.pia.projectDescription ? updatedObject.pia.projectDescription.replace(/['"]+/g, '') : '',
+                //     isCollected: Boolean(updatedObject.pia.isCollected),
+                //     personalInfo: updatedObject.pia.personalInfo ?  updatedObject.pia.personalInfo.replace(/['"]+/g, '')  : '',
+                //     purpose: updatedObject.pia.purpose,
+                //     individualsInfo: updatedObject.pia.individualsInfo ? updatedObject.pia.individualsInfo.replace(/['"]+/g, '')  : '',
+                //     date: createdAt.slice(0, 10).toString(),
+                //     isDisclosed: updatedObject.pia.isDisclosed,
+                //     disclosedInfo: updatedObject.pia.disclosedInfo ? updatedObject.pia.disclosedInfo.replace(/['"]+/g, '')    : '',
+                // },{async:true});
 
                 
-                var pdfOptions = { 
-                    // height: '842px', width: '595px', 
-                    format: 'A4', type: "pdf",
-                    // "header": {"height": "10mm"}, 
-                    "footer": {"height": "10mm"} 
-                };
+                // var pdfOptions = {
+                //     // height: '842px', width: '595px',
+                //     format: 'A4', type: "pdf",
+                //     // "header": {"height": "10mm"},
+                //     "footer": {"height": "10mm"}
+                // };
+                let pdfSpecs = setUpPdf(updatedObject);
 
-                await pdf.create(dataForPDF, pdfOptions).toFile('./Emails/pia.pdf', async (err, user) => {
+                await pdf.create(pdfSpecs.dataForPDF, pdfSpecs.pdfOptions).toFile('./Emails/pia.pdf', async (err, user) => {
                     if (err) {
                         console.log(err);
                     }
