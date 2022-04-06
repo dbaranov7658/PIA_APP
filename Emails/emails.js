@@ -75,7 +75,7 @@ async function setUpEdit(updatedObject, triggerUserId, creatorId) {
                 setUpEmail(recipients, `New comment on ${piaName}`, `${triggerUserEmail} has left a comment on ${piaName}.`, `/editPia:${piaId}`, false, {})
             } else {
                 // notify po
-                setUpEmail( await getPrivacyOfficers(), `New comment to ${piaName}`, `${triggerUserEmail} has left a comment on ${piaName}.`, `/editPia:${piaId}`, false, {})
+                setUpEmail( await getPrivacyOfficers(), `New comment on ${piaName}`, `${triggerUserEmail} has left a comment on ${piaName}.`, `/editPia:${piaId}`, false, {})
             }     
         }
 
