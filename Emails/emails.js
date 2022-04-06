@@ -97,7 +97,7 @@ async function setUpEdit(updatedObject, triggerUserId, creatorId) {
                 // generate pdf
                 let specs = await setUpPdf(updatedObject);
 
-                pdf.create(specs.dataForPDF, specs.pdfOptions).toFile('./Emails/pia.pdf', async (err, user) => {
+                pdf.create(specs.dataForPDF, specs.pdfOptions).toFile(`./Emails/${piaName}.pdf`, async (err, user) => {
                     if (err) {
                         console.log(err);
                     }
@@ -105,7 +105,7 @@ async function setUpEdit(updatedObject, triggerUserId, creatorId) {
                         // attach to email
                         let emailOptions = {
                             attachments: [{
-                                path: path.join(__dirname, "pia.pdf"),
+                                path: path.join(__dirname, `${piaName}.pdf`),
                             }]
                         }
                         await setUpEmail(recipients, `APPROVED: ${piaName}`, `${piaName} has been approved.`, `/editPia:${piaId}`, false, emailOptions);
