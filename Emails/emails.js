@@ -1,7 +1,14 @@
 const nodemailer = require('nodemailer')
 const ejs = require('ejs')
 const User = require('../models/user')
+const existingPia = require("../models/piaSchema");
+const pdf = require('html-pdf');
+const fs = require('fs');
 path = require('path')
+
+var myCss = {
+    style : fs.readFileSync('./printFunctionality/template.css','utf8'),
+};
 
 // Set up email transporter
 const mailConfig1 = {
@@ -35,69 +42,163 @@ transporter.verify(function (error, success) {
     }
 });
 
-async function setUpEdit(updatedObject, triggerUserId, creatorId) {
+async function setUpEdit(updatedObject, triggerUserId, creatorId, createdAt) {
     // console.log(`new obj: ${updatedObject}`);
     let creatorEmail = "";
     let recipients = [];
     let piaName = updatedObject.pia.projectName;
     let piaId = updatedObject.encryptedId;
+    let triggerUser = "";
+    let triggerUserEmail = "";
+     // find user, check if PO
+     User.findById(triggerUserId, async (error, result) => {
+        if (error) {
+            return error;
+        } else {
+            triggerUserEmail = result.email;
+            if (result.isOfficer) {
+                triggerUser = 'privacyOfficer';
+                
+            } else {
+                triggerUser = 'generalUser'
+            }
+        }
+    })          
 
     try {
         // get email of creator
         let result = await User.findById(creatorId)     
-        // creatorEmail.push(result.email);
         creatorEmail = result.email;
-            
-       
+        recipients.push(creatorEmail);
+
+        // check if there's new comments
+        if (updatedObject.newComment) {
+            console.log("new comment");
+            // if PO notify user, else notify POs
+            if (triggerUser === 'privacyOfficer') {
+                // notify pia author
+                // recipients.push(creatorEmail)
+                setUpEmail(recipients, `New comment on ${piaName}`, `${triggerUserEmail} has left a comment on ${piaName}.`, `/editPia:${piaId}`, false, {})
+            } else {
+                console.log('user')
+                // notify po
+                setUpEmail( await getPrivacyOfficers(), `New comment to ${piaName}`, `${triggerUserEmail} has left a comment on ${piaName}.`, `/editPia:${piaId}`, false, {})
+            }     
+        }
 
         switch(updatedObject.status) {
             case 'PENDING':
-                // find user, check if PO
-                User.findById(triggerUserId, async (error, result) => {
-                    if (error) {
-                        res.json({
-                            isSuccess: false,
-                            error: error,
-                            message: "Can not find user",
-                        })
-                    } else {
-                        if (result.isOfficer) {
-                            // notify pia author
-                            recipients.push(creatorEmail)
-                            setUpEmail(recipients, `New Edit Made to ${piaName}`, `${result.email} has made an edit to ${piaName}.`, `/editPia:${piaId}`, false)
-                            
-                        } else {
-                            console.log('user')
-                            // notify po
-                
-                            setUpEmail( await getPrivacyOfficers(), `New Edit Made to ${piaName}`, `${result.email} has made an edit to ${piaName}.`, `/editPia:${piaId}`, false)
-                        }
-                    }
-                })            
+                // if PO notify user, else notify POs
+                if (triggerUser === 'privacyOfficer') {
+                    // notify pia author
+                    // recipients.push(creatorEmail)
+                    setUpEmail(recipients, `New Edit Made to ${piaName}`, `${triggerUserEmail} has made an edit to ${piaName}.`, `/editPia:${piaId}`, false, {})
+                } else {
+                    console.log('user')
+                    // notify po
+                    setUpEmail( await getPrivacyOfficers(), `New Edit Made to ${piaName}`, `${triggerUserEmail} has made an edit to ${piaName}.`, `/editPia:${piaId}`, false, {})
+                }                        
                 break;
             case 'APPROVED':
                 // generate pdf
-        
-                recipients.push(creatorEmail)
-                console.log(recipients)
-                setUpEmail( recipients, `APPROVED: ${piaName}`, `${piaName} has been approved.`, `/editPia:${piaId}`, false);
+                const htmlPath = path.join(__dirname, "../printFunctionality/printTemplate.ejs")
+                
+                let dataForPDF = await ejs.renderFile(htmlPath,{ 
+                    myCss: myCss,
+                    projectName: updatedObject.pia.projectName, 
+                    sponsoringBusinessUnit: updatedObject.pia.sponsoringBusinessUnit, 
+                    projectDescription: updatedObject.pia.projectDescription ? updatedObject.pia.projectDescription.replace(/['"]+/g, '') : '', 
+                    isCollected: Boolean(updatedObject.pia.isCollected),
+                    personalInfo: updatedObject.pia.personalInfo ?  updatedObject.pia.personalInfo.replace(/['"]+/g, '')  : '',
+                    purpose: updatedObject.pia.purpose,
+                    individualsInfo: updatedObject.pia.individualsInfo ? updatedObject.pia.individualsInfo.replace(/['"]+/g, '')  : '',
+                    date: createdAt.slice(0, 10).toString(),
+                    isDisclosed: updatedObject.pia.isDisclosed,
+                    disclosedInfo: updatedObject.pia.disclosedInfo ? updatedObject.pia.disclosedInfo.replace(/['"]+/g, '')    : '',
+                },{async:true});
+
+                
+                var pdfOptions = { 
+                    // height: '842px', width: '595px', 
+                    format: 'A4', type: "pdf",
+                    // "header": {"height": "10mm"}, 
+                    "footer": {"height": "10mm"} 
+                };
+
+                await pdf.create(dataForPDF, pdfOptions).toFile('./Emails/pia.pdf', async (err, user) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                    else {
+                        console.log(`user: ${user}`);
+                        var file = fs.createReadStream('./Emails/pia.pdf');
+                        // path: path.join(__dirname, "/pia.pdf"),
+                        file.on('open', function () {
+                            let emailOptions = {
+                                attachments: [{
+                                    filename: "pia.pdf",
+                                    content: file
+                                }]
+                            }
+                            // recipients.push(creatorEmail)
+                            setUpEmail(recipients, `APPROVED: ${piaName}`, `${piaName} has been approved.`, `/editPia:${piaId}`, false, emailOptions);
+                        });
+                        // fs.readFile(('./Emails/pia.pdf'), (err, data) => {
+                        //     if (err) {
+                        //       // do something with the error
+                        //         console.log(err);
+                        //     }
+                        //     if (data) {
+                        //         let emailOptions = {
+                        //             attachments: [{
+                        //                 encoding: 'base64',
+                        //                 content: data.toString('base64'),
+                        //                 contentType: 'application/pdf',
+                        //                 contentDisposition: 'attachment',
+                        //                 filename: 'pia.pdf'
+                        //             }]
+                        //         }
+                        //         recipients.push(creatorEmail)
+                        //         setUpEmail(recipients, `APPROVED: ${piaName}`, `${piaName} has been approved.`, `/editPia:${piaId}`, false, emailOptions);
+                        //     }
+                        // });
+                        // let emailOptions = {
+                        //     attachments: [{
+                        //         filename: "pia.pdf",
+                        //         path: path.join(__dirname, "pia.pdf"),
+                        //         contentType: 'application/pdf'
+                        //     }]
+                        // }
+                        // let emailOptions = {
+                        //     attachments: [{
+                        //         path: path.join(__dirname, "pia.pdf"),
+                        //         contentDisposition: 'attachment; filename=test.pdf'
+                        //     }]
+                        // }
+                        // console.log(emailOptions);
+
+                        // recipients.push(creatorEmail)
+                        // await setUpEmail(recipients, `APPROVED: ${piaName}`, `${piaName} has been approved.`, `/editPia:${piaId}`, false, emailOptions);
+                    }
+                });
                 break;
             case 'REJECTED':
                 console.log('rejected')
-                console.log(creatorEmail)
-                recipients.push(creatorEmail)
+                // recipients.push(creatorEmail)
                 console.log(recipients)
-                setUpEmail( recipients, `REJECTED: ${piaName}`, `${piaName} has been rejected.`, `/editPia:${piaId}`, false);
+                setUpEmail( recipients, `REJECTED: ${piaName}`, `${piaName} has been rejected.`, `/editPia:${piaId}`, false, {});
                 break;
             default:
                 console.log(updatedObject);
         }
 
     } catch (error) {
-        res.json({
-            isSuccess: false,
-            error: error,
-        })
+        // res.json({
+        //     isSuccess: false,
+        //     error: error,
+        // })
+        // return error;
+        console.log(error);
     }
     
 }
@@ -113,16 +214,17 @@ async function getPrivacyOfficers() {
 
         return officer_emails;
     } catch (err) {
-        res.json({
-            status: false,
-            message: 'Something went wrong'
-        })
-        console.log(err);
+        // res.json({
+        //     status: false,
+        //     message: 'Something went wrong'
+        // })
+        // console.log(err);
+        return err;
     }
 }
 
 
-async function setUpEmail(recipients, subject, event_msg, pia_url, deleted) {
+async function setUpEmail(recipients, subject, event_msg, pia_url, deleted, emailOptions) {
     let recipientNames = [];
     
     // get username of each recipient
@@ -137,6 +239,10 @@ async function setUpEmail(recipients, subject, event_msg, pia_url, deleted) {
         text: `${event_msg}`, // Fallback message
     }
 
+    Object.assign(options, emailOptions);
+    console.log(`options: ${options}`);
+
+
     try {
         recipientNames.forEach(name => {
             sendEmail(name, event_msg, options, pia_url, deleted).then((result) => {
@@ -144,11 +250,12 @@ async function setUpEmail(recipients, subject, event_msg, pia_url, deleted) {
             })
         });
     } catch (error) {
-        res.json({
-            status: false,
-            message: 'Something went wrong'
-        })
-        console.log(error);
+        // res.json({
+        //     status: false,
+        //     message: 'Something went wrong'
+        // })
+        // console.log(error);
+        return error;
     }
 
     

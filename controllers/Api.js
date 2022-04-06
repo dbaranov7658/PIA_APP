@@ -246,7 +246,7 @@ exports.deletePia = (req, res,) => {
                                                         message: "Successfully deleting Pia",
                                                     })
                                                     
-                                                    setUpEmail(recipients, `DELETED: ${pia_name}`, `${pia_name} has been deleted.`, '', true)
+                                                    setUpEmail(recipients, `DELETED: ${pia_name}`, `${pia_name} has been deleted.`, '', true, {})
                                                     
                                                 }
                                                 else {
@@ -302,7 +302,7 @@ exports.addNew = (req, res, ) => {
                                     isSuccess: true,
                                     message: "Successfully submitted",
                                 });                                                       
-                                setUpEmail(await getPrivacyOfficers(), "New PIA", `A new Privacy Impact Assessment has been submitted by ${user.email}.`, `/editPia:${encryptedId}`, false);
+                                setUpEmail(await getPrivacyOfficers(), "New PIA", `A new Privacy Impact Assessment has been submitted by ${user.email}.`, `/editPia:${encryptedId}`, false, {});
                                 
                             }
                         }
@@ -317,6 +317,7 @@ exports.editPia = (req, res, ) => {
     const editPia = req.body.data.Pia
     const updatedId = req.body.data.id
     const newStatus = req.body.data.status
+    const newComment = req.body.data.newComment
     const token = req.headers["x-access-token"]
     const encryptedId = encrypted(updatedId)
     let updatedObject
@@ -325,7 +326,8 @@ exports.editPia = (req, res, ) => {
             pia: editPia,
             status: 'PENDING',
             piaId: updatedId, 
-            encryptedId: encryptedId
+            encryptedId: encryptedId,
+            newComment: newComment
         }
     }
     else{
@@ -333,7 +335,8 @@ exports.editPia = (req, res, ) => {
             pia: editPia,
             status: newStatus,
             piaId: updatedId,
-            encryptedId: encryptedId
+            encryptedId: encryptedId,
+            newComment: newComment
         }
     }
     jwt.verify(token, process.env.JWT_VAR, (err, decoded) => {
@@ -351,7 +354,7 @@ exports.editPia = (req, res, ) => {
                         isSuccess: true,
                         message: "Successfully submitted",
                     })
-                    setUpEdit(updatedObject, decoded.id, updatedPia.creatorId.toString());
+                    setUpEdit(updatedObject, decoded.id, updatedPia.creatorId.toString(), updatedPia.createdAt.toString());
                 }
             })
         }
