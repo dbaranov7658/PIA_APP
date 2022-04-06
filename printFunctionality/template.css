@@ -1,6 +1,8 @@
 html{
     zoom: 0.55;
 }
+
+
 body{
     /* width: 1587px;
     height: 2245px; */
@@ -12,7 +14,6 @@ body{
     height:290px;
     width: 100%;
     margin: auto;
-    /* background-color: rgb(23, 58, 100);  */
     background-color: rgb(27, 84, 128); 
 }
 
@@ -59,9 +60,10 @@ body{
 }
 
 #date{
-    font-family: "Palatino Linotype";  
+    font-family: 'Lato', sans-serif;
     margin:0px;
     text-align: right;
+    font-size: 28px!important;
 }
 
 #text-content{

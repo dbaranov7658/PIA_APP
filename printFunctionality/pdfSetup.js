@@ -26,8 +26,9 @@ async function setUpPdf(piaObject) {
         var options = { 
             // height: '842px', width: '595px', 
             format: 'A4', type: "pdf",
-            // "header": {"height": "10mm"}, 
-            "footer": {"height": "10mm"} 
+            "header": {"height": "0px"},
+            "footer": {"height": "10mm"}
+
         };
     
         let pdfSpecs = {

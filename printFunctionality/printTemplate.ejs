@@ -9,8 +9,7 @@
 </head>
 
 <body>
-    
-    <div id="imgheadercontainer">
+    <div style=" height:300px;width: 100%;background-color: rgb(27, 84, 128); margin: 0; ">
         <svg width="1587" height="150" id="imgheader" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 60">
             <path fill="#ffc82c"  d="M19.4 37.6c2 1.3 11.3 6.1 14.7 7.8-1.4.4-2.9.6-4.4.6-9 0-16.4-7.3-16.4-16.4 0-9 7.3-16.4 16.4-16.4 2 0 4 .4 5.8 1-3.8 3.2-10.4 8.6-14.3 12-2 1.7-5.1 4.4-5.1 6.8-.1 1.9 1.1 3.2 3.3 4.6z"></path>
             <path fill="#ffc82c"  d="M23.8 36.8c1.3.9 8.8 5.7 12.2 7.9l-.9.3c-5.3-3.2-10.1-6-13-7.7-2.9-1.8-3.2-3.2-3.2-4.1.1-1.5 1.8-3.1 6.1-6.1 4.8-3.3 11.8-8 15.1-10.2 1 .8 1.8 1.7 2.6 2.7-1.8 1.1-3.8 2.2-5 2.9-2.8 1.7-6 3.5-9 5.3-1.5.9-3.1 1.9-4 2.5-2.5 1.6-2.9 2.6-2.9 3.3-.2 1.4 1 2.5 2 3.2z"></path>
@@ -37,34 +36,34 @@
     <hr id="yellow-line">
 
     <div id="date-created-container">
-        <p id="date"><strong id="date-created">Date Created:</strong>  <%= date %></p>
+        <p><strong id="date-created">Date Created:</strong><a id="date">  <%= date %></a></p>
     </div>
 
     <div id="text-content">
-        <p><strong>Project Name: </strong> <%= projectName %></p>
-        <p><strong>Sponsoring Business Unit: </strong> <%= sponsoringBusinessUnit %></p>
-        <p><strong>Project Description: </strong></p> 
-            <%- projectDescription %>
+        <p><strong>Project Name: </strong><a style="font-size: 34px"> <%= projectName %></a></p>
+        <p><strong>Sponsoring Business Unit: </strong><a style="font-size: 34px"> <%= sponsoringBusinessUnit %></a></p>
+        <p><strong>Project Description: </strong></p>
+        <a style="font-size: 34px">  <%- projectDescription %> </a>
 
         <p><strong>Is it necessary for the purpose of the project that
             personal information be collected, used or disclosed?  </strong></p>
-            <p><% if (isCollected) {%> Yes <% } %> <% if (!isCollected) {%> No <% } %></p>
+            <p style="font-size: 34px"><% if (isCollected) {%> Yes <% } %> <% if (!isCollected) {%> No <% } %></p>
 
-        <% if(Boolean(isCollected)){ %><p><strong>If yes, what?</strong></p> <p><%- personalInfo %></p>
+        <% if(Boolean(isCollected)){ %><p><strong>What personal information?</strong></p> <p> <a style="font-size: 34px"><%- personalInfo %> </a></p>
         <% } else{ %> <% } %>
 
-        <p><strong>List the individuals accountable for the personal information: </strong></p> 
-        <%- individualsInfo %>
+        <p><strong>List the individuals accountable for the personal information: </strong></p>
+        <a style="font-size: 34px">  <%- individualsInfo %> </a>
 
         <p><strong>Which "purpose" in S2.3 of the FortisBC Privacy Policy applies to this project?</strong></p>
-        <p><%= purpose %></p>
+        <p style="font-size: 34px"><%= purpose %></p>
 
         <p><strong>Is any information being disclosed or stored outside of Canada as part of this project?</strong> <br> </p>
-        <p><% if (isDisclosed) {%> Yes <% } %> <% if (!isDisclosed) {%> No <% } %></p>
+        <p style="font-size: 34px"> <% if (isDisclosed) {%> Yes <% } %> <% if (!isDisclosed) {%> No <% } %></p>
 
             <% if(Boolean(isDisclosed)){ %>
-                <p><strong>If yes, what?</strong></p> 
-                <%- disclosedInfo %>
+                <p><strong>What information?</strong></p>
+            <a style="font-size: 34px">   <%- disclosedInfo %> </a>
             <% } else{ %>  
             <% } %>
     </div>
