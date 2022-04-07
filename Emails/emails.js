@@ -27,7 +27,7 @@ const mailConfig2 = {
 };
 
 
-let transporter = nodemailer.createTransport(mailConfig1);
+let transporter = nodemailer.createTransport(mailConfig2);
 
 // verify connection configuration
 transporter.verify(function (error, success) {
@@ -81,14 +81,18 @@ async function setUpEdit(updatedObject, triggerUserId, creatorId) {
 
         switch(updatedObject.status) {
             case 'PENDING':
-                // if PO notify user, else notify POs
-                if (triggerUser === 'privacyOfficer') {
-                    // notify pia author
-                    setUpEmail(recipients, `New Edit Made to ${piaName}`, `${triggerUserEmail} has made an edit to ${piaName}.`, `/editPia:${piaId}`, false, {})
-                } else {
-                    // notify po
-                    setUpEmail( await getPrivacyOfficers(), `New Edit Made to ${piaName}`, `${triggerUserEmail} has made an edit to ${piaName}.`, `/editPia:${piaId}`, false, {})
-                }                        
+                console.log(updatedObject.isEdit)
+                if (updatedObject.isEdit) {
+                    // if PO notify user, else notify POs
+                    if (triggerUser === 'privacyOfficer') {
+                        // notify pia author
+                        setUpEmail(recipients, `New Edit Made to ${piaName}`, `${triggerUserEmail} has made an edit to ${piaName}.`, `/editPia:${piaId}`, false, {})
+                    } else {
+                        // notify po
+                        setUpEmail( await getPrivacyOfficers(), `New Edit Made to ${piaName}`, `${triggerUserEmail} has made an edit to ${piaName}.`, `/editPia:${piaId}`, false, {})
+                    }    
+                }
+                                    
                 break;
             case 'APPROVED':
                 // generate pdf
@@ -183,7 +187,7 @@ async function sendEmail(recipient_name, event_msg, options, pia_url, deleted) {
 
 
         // render email template
-        let data = await ejs.renderFile(path.join(__dirname + "/../views/email_template.ejs"), { recipient: recipient_name, event_msg: event_msg, pia_url: "https://fortis-bc-pia.herokuapp.com" + pia_url, deleted: deleted});
+        let data = await ejs.renderFile(path.join(__dirname + "/../views/email_template.ejs"), { recipient: recipient_name, event_msg: event_msg, pia_url: "http://localhost:3000" + pia_url, deleted: deleted});
         options.html = data;
 
         // send email

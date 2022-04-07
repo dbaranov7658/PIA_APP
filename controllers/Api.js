@@ -15,6 +15,8 @@ function encrypted(encryptedString){
 }
 
 
+
+
 exports.getPiaById = (req, res, ) => {
     const token = req.headers["x-access-token"]
     const id = req.body.id
@@ -310,6 +312,39 @@ exports.addNew = (req, res, ) => {
     })
 }
 
+heckForEdit = async (updatedId, editPia) => {
+    existingPia.findById(updatedId, (err, oldPia) => {
+        if (err) {
+            return err;
+        } else {
+            console.log(`old: ${oldPia.pia.projectName}`)
+            console.log(`new: ${editPia.projectName}`)
+            
+            if (oldPia.pia.projectName !== editPia.projectName) {
+                return true;
+            } else if (oldPia.pia.sponsoringBusinessUnit !== editPia.sponsoringBusinessUnit) {
+                return true
+            } else if (oldPia.pia.projectDescription !== editPia.projectDescription) {
+                return true
+            } else if (oldPia.pia.isCollected !== editPia.isCollected) {
+                return true
+            } else if (oldPia.pia.personalInfo !== editPia.personalInfo) {
+                return true
+            } else if (oldPia.pia.purpose !== editPia.purpose) {
+                return true
+            } else if (oldPia.pia.individualsInfo !== editPia.individualsInfo) {
+                return true
+            } else if (oldPia.pia.isDisclosed !== editPia.isDisclosed) {
+                return true
+            } else if (oldPia.pia.disclosedInfo !== editPia.disclosedInfo) {
+                return true
+            } else return false
+            
+        }
+    });
+
+}
+
 exports.editPia = (req, res, ) => {
     const editPia = req.body.data.Pia
     const updatedId = req.body.data.id
@@ -317,6 +352,7 @@ exports.editPia = (req, res, ) => {
     const newComment = req.body.data.newComment
     const token = req.headers["x-access-token"]
     const encryptedId = encrypted(updatedId)
+    let isEdit = false;
     let updatedObject
     if (newStatus === undefined){
          updatedObject = {
@@ -353,6 +389,11 @@ exports.editPia = (req, res, ) => {
                         message: "User does not have delete permissions",
                     })
                 } else {
+                    // get PIA and check fields
+                    checkForEdit(updatedId, editPia).then(
+                    (value => {
+                        updatedObject.isEdit = value
+                        console.log(`is edit: ${updatedObject.isEdit}`)
                     existingPia.findByIdAndUpdate(updatedId, updatedObject, (err, updatedPia) => {
                         if (err) {
                             res.json({
@@ -373,6 +414,9 @@ exports.editPia = (req, res, ) => {
                             setUpEdit(updatedObject, decoded.id, updatedPia.creatorId.toString());
                         }
                     })
+                    })
+                    )
+                    
                 }
             })
         }
