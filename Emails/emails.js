@@ -27,7 +27,7 @@ const mailConfig2 = {
 };
 
 
-let transporter = nodemailer.createTransport(mailConfig2);
+let transporter = nodemailer.createTransport(mailConfig1);
 
 // verify connection configuration
 transporter.verify(function (error, success) {
@@ -94,7 +94,7 @@ async function setUpEdit(updatedObject, triggerUserId, creatorId) {
                 // generate pdf
                 let specs = await setUpPdf(updatedObject);
 
-                pdf.create(specs.dataForPDF, specs.pdfOptions).toFile(`./Emails/${piaName}.pdf`, async (err, user) => {
+                pdf.create(specs.dataForPDF, specs.pdfOptions).toFile(`./Emails/pia.pdf`, async (err, user) => {
                     if (err) {
                         console.log(err);
                     }
@@ -102,7 +102,7 @@ async function setUpEdit(updatedObject, triggerUserId, creatorId) {
                         // attach to email
                         let emailOptions = {
                             attachments: [{
-                                path: path.join(__dirname, `${piaName}.pdf`),
+                                path: path.join(__dirname, `pia.pdf`),
                             }]
                         }
                         await setUpEmail(recipients, `APPROVED: ${piaName}`, `${piaName} has been approved.`, `/editPia:${piaId}`, false, emailOptions);
