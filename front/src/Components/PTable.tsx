@@ -173,20 +173,20 @@ class PTable extends React.Component<Props, State> {
                     headers: {'Content-Type': 'application/json', "x-access-token": localStorage.getItem("token")},
                     body: JSON.stringify({Pia: this.state.allPia[parseInt(key.key)]}),
                 })
-            .then(function(resp){
-                return resp.blob();
-            }).then(function(blob){
-                    var url = window.URL.createObjectURL(blob);
-                    var a = document.createElement('a');
-                    a.href = url;
-                    a.download = "PIA.pdf";
-                    document.body.appendChild(a);
-                    a.click();    
-                    a.remove();
-                    message.destroy();
-                    this.setState({loadingDocument: false})
-                    message.success('PIA downloaded', 2);
+            .then(resp => resp.blob()).then(blob => {
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = "PIA.pdf";
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                message.destroy();
+                this.setState({loadingDocument: false})
+                message.success('PIA downloaded', 2);
             })
+
+
             } catch(err) {
                 message.destroy();
                 message.error("Download failed")
