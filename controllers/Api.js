@@ -312,11 +312,7 @@ exports.addNew = (req, res, ) => {
     })
 }
 
-heckForEdit = async (updatedId, editPia) => {
-    existingPia.findById(updatedId, (err, oldPia) => {
-        if (err) {
-            return err;
-        } else {
+checkForEdit = (oldPia, editPia) => {
             console.log(`old: ${oldPia.pia.projectName}`)
             console.log(`new: ${editPia.projectName}`)
             
@@ -339,9 +335,6 @@ heckForEdit = async (updatedId, editPia) => {
             } else if (oldPia.pia.disclosedInfo !== editPia.disclosedInfo) {
                 return true
             } else return false
-            
-        }
-    });
 
 }
 
@@ -390,33 +383,32 @@ exports.editPia = (req, res, ) => {
                     })
                 } else {
                     // get PIA and check fields
-                    checkForEdit(updatedId, editPia).then(
-                    (value => {
-                        updatedObject.isEdit = value
+                    existingPia.findById(updatedId, (err, oldPia) => {
+                        isEdit = checkForEdit(oldPia, editPia)
+                        updatedObject.isEdit = isEdit
                         console.log(`is edit: ${updatedObject.isEdit}`)
-                    existingPia.findByIdAndUpdate(updatedId, updatedObject, (err, updatedPia) => {
-                        if (err) {
-                            res.json({
-                                isSuccess: false,
-                                error: err,
-                                message: "Can not save it in db",
-                            })
-                        }
-                        else{
-                            res.json({
-                                isSuccess: true,
-                                message: "Successfully submitted",
-                            })
-                            // change date to yyyy-mm-dd
-                            let date = updatedPia.createdAt.toString();
-                            let newDate = new Date(date).toISOString().slice(0, 10);
-                            updatedObject.createdAt = newDate;
-                            setUpEdit(updatedObject, decoded.id, updatedPia.creatorId.toString());
-                        }
+                        existingPia.findByIdAndUpdate(updatedId, updatedObject, (err, updatedPia) => {
+                            if (err) {
+                                res.json({
+                                    isSuccess: false,
+                                    error: err,
+                                    message: "Can not save it in db",
+                                })
+                            }
+                            else{
+                                res.json({
+                                    isSuccess: true,
+                                    message: "Successfully submitted",
+                                })
+                                // change date to yyyy-mm-dd
+                                let date = updatedPia.createdAt.toString();
+                                let newDate = new Date(date).toISOString().slice(0, 10);
+                                updatedObject.createdAt = newDate;
+                                setUpEdit(updatedObject, decoded.id, updatedPia.creatorId.toString());
+                            }
+                        })
                     })
-                    })
-                    )
-                    
+
                 }
             })
         }
