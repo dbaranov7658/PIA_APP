@@ -366,8 +366,10 @@ exports.editPia = (req, res, ) => {
                                 isSuccess: true,
                                 message: "Successfully submitted",
                             })
-                            updatedObject.createdAt = updatedPia.createdAt.toString();
-                            console.log(`updated: ${updatedObject.createdAt}`);
+                            // change date to yyyy-mm-dd
+                            let date = updatedPia.createdAt.toString();
+                            let newDate = new Date(date).toISOString().slice(0, 10);
+                            updatedObject.createdAt = newDate;
                             setUpEdit(updatedObject, decoded.id, updatedPia.creatorId.toString());
                         }
                     })
