@@ -334,26 +334,43 @@ exports.editPia = (req, res, ) => {
             piaId: updatedId,
             encryptedId: encryptedId,
             newComment: newComment
-        }
+         }
     }
     jwt.verify(token, process.env.JWT_VAR, (err, decoded) => {
-        if (decoded.id ){
-            existingPia.findByIdAndUpdate(updatedId, updatedObject, (err, updatedPia) => {
-                if (err) {
+        if (decoded.id) {
+             // verify that user has correct permissions
+             User.findById(decoded.id, (error, result) => {
+                if (result === null) {
                     res.json({
                         isSuccess: false,
-                        error: err,
-                        message: "Can not save it in db",
+                        error: error,
+                        message: "Can not get user from db",
                     })
-                }
-                else{
-                    res.json({
-                        isSuccess: true,
-                        message: "Successfully submitted",
+                } else if (!result.isOfficer && newStatus === 'APPROVED' || !result.isOfficer && newStatus === 'REJECTED') {
+                    return res.json({
+                        isSuccess: false,
+                        error: "PermissionError",
+                        message: "User does not have delete permissions",
                     })
-                    updatedObject.createdAt = updatedPia.createdAt.toString();
-                    console.log(`updated: ${updatedObject.createdAt}`);
-                    setUpEdit(updatedObject, decoded.id, updatedPia.creatorId.toString());
+                } else {
+                    existingPia.findByIdAndUpdate(updatedId, updatedObject, (err, updatedPia) => {
+                        if (err) {
+                            res.json({
+                                isSuccess: false,
+                                error: err,
+                                message: "Can not save it in db",
+                            })
+                        }
+                        else{
+                            res.json({
+                                isSuccess: true,
+                                message: "Successfully submitted",
+                            })
+                            updatedObject.createdAt = updatedPia.createdAt.toString();
+                            console.log(`updated: ${updatedObject.createdAt}`);
+                            setUpEdit(updatedObject, decoded.id, updatedPia.creatorId.toString());
+                        }
+                    })
                 }
             })
         }
@@ -364,14 +381,16 @@ exports.editPia = (req, res, ) => {
 
 exports.printPia = (req, res, ) => {
     const printedPia = req.body.Pia
+    // console.log(JSON.stringify(printedPia));
+    console.dir(printedPia, { depth: null });
     const token = req.headers["x-access-token"]
 
     jwt.verify(token, process.env.JWT_VAR, async (err, decoded) => {
         if (decoded.id && printedPia){
             try{
                 let pdfSpecs = await setUpPdf(printedPia);
+                console.log(pdfSpecs);
                 
-
                 pdf.create(pdfSpecs.dataForPDF, pdfSpecs.options).toFile('./test.pdf', async (err, user) => {
                     if (err) {
                         res.json({
