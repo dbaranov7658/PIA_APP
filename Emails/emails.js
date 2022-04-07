@@ -183,7 +183,7 @@ async function sendEmail(recipient_name, event_msg, options, pia_url, deleted) {
 
 
         // render email template
-        let data = await ejs.renderFile(path.join(__dirname + "/../views/email_template.ejs"), { recipient: recipient_name, event_msg: event_msg, pia_url: "http://localhost:3000" + pia_url, deleted: deleted});
+        let data = await ejs.renderFile(path.join(__dirname + "/../views/email_template.ejs"), { recipient: recipient_name, event_msg: event_msg, pia_url: "https://fortis-bc-pia.herokuapp.com" + pia_url, deleted: deleted});
         options.html = data;
 
         // send email
