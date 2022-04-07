@@ -1,0 +1,1867 @@
+{
+	"info": {
+		"_postman_id": "afe785da-324d-42b3-b66d-faa0139d9500",
+		"name": "fortis_tests_dev",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "login as unauthorized user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Test login (unauthorized)\", function() {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.auth).to.eql(false);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"randomemail@gmail.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login as authorized user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Test login (authorized)\", function() {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.auth).to.eql(true);",
+							"    pm.expect(responseJson.isOfficer).to.eql(true);",
+							"    pm.collectionVariables.set(\"response_token\", responseJson.token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"pofortis@outlook.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user authentication (fake token)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"User authentication (fake token)\", function() {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.auth).to.eql(false);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.request.headers.add({ key: \"x-access-token\", value: \"f4k3t0k3n\"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"pofortis@outlook.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/isUserAuth",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"isUserAuth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user authentication (real token)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"User authentication (real token)\", function() {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.auth).to.eql(true);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Add token to headers",
+							"let token = pm.collectionVariables.get(\"response_token\");",
+							"pm.request.headers.add({ key: \"x-access-token\", value: token});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"pofortis@outlook.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/isUserAuth",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"isUserAuth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all pias (authorized user)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get all pias (authorized)\", function() {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.isSuccess).to.eql(true);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Add token to headers",
+							"let token = pm.collectionVariables.get(\"response_token\");",
+							"pm.request.headers.add({ key: \"x-access-token\", value: token});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"pofortis@outlook.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/getAllPia",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"getAllPia"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all pias (unauthorized user)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get all pias (unauthorized)\", function() {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.auth).to.eql(false);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"randomemail@email.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/getAllPia",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"getAllPia"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "new pia (good input)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"pm.test(\"Test new pia\", function () {",
+							"    let postRequest = pm.collectionVariables.get(\"postAllPias\");",
+							"    // add a pia",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.isSuccess).to.eql(true);",
+							"",
+							"    // get all pias, check if count has increased by 1",
+							"    pm.sendRequest(postRequest, (err,res) => {",
+							"        var piaCountBefore = pm.collectionVariables.get(\"piaCount\");",
+							"        let allPias = res.json().allPia",
+							"        var piaCountAfter = allPias.length;",
+							"        pm.expect(piaCountAfter - piaCountBefore).to.eql(1);",
+							"",
+							"        // get the PIA we added",
+							"        let lastPia = allPias[allPias.length - 1];",
+							"        // check that it's a test PIA",
+							"        pm.expect(lastPia.pia.projectName).to.eql(\"Postman\");",
+							"        // save the ID, so we can delete it in the next test",
+							"        pm.collectionVariables.set(\"newPiaId\", lastPia._id);",
+							"    })  ",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// let token = pm.collectionVariables.get(\"response_token\");",
+							"// pm.request.headers.add({key: \"x-access-token\", value: token});",
+							"",
+							"// login as general user, get token",
+							"const login = {",
+							"        url: 'http://localhost:3000/login',",
+							"        method: 'POST',",
+							"        header: {",
+							"            'Content-Type': 'application/json',",
+							"        },",
+							"        body: {",
+							"            mode: 'raw',",
+							"            raw: JSON.stringify({ email: 'userfortisbc@outlook.com' })",
+							"        }",
+							"};",
+							"",
+							"// get all pias and check length",
+							"pm.sendRequest(login, (err,res) => {",
+							"    pm.request.headers.add({key: \"x-access-token\", value: res.json().token});",
+							"})",
+							"",
+							"const postRequest = {",
+							"        url: 'http://localhost:3000/getAllPia',",
+							"        method: 'POST',",
+							"        header: {",
+							"            'Content-Type': 'application/json',",
+							"            'x-access-token': pm.collectionVariables.get(\"response_token\")",
+							"        },",
+							"        body: {",
+							"            mode: 'raw',",
+							"            raw: JSON.stringify({ email: 'pofortis@outlook.com' })",
+							"        }",
+							"};",
+							"pm.collectionVariables.set(\"postAllPias\", postRequest);",
+							"",
+							"// get all pias, save PIA ID, so we can delete it in the next test",
+							"pm.sendRequest(postRequest, (err,res) => {",
+							"    let allPias = res.json().allPia",
+							"    pm.collectionVariables.set(\"piaCount\", allPias.length);   ",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyMjg0OGNkZDc4MjJiYjRhYjliOWY1MyIsImlhdCI6MTY0ODAwOTYzOSwiZXhwIjoxNjQ4MDExNjM5fQ.VyhSZDq_B3G_dxJ1s-k491AVRGL1XqFulpVOd3Rs9g0\"",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"Pia\": {\n                \"projectName\": \"Postman\",\n                \"sponsoringBusinessUnit\": \"Test\",\n                \"projectDescription\": \"Test\",\n                \"isCollected\": true,\n                \"personalInfo\": \"test\",\n                \"purpose\": \"Demo1\",\n                \"individualsInfo\": \"Test\",\n                \"isDisclosed\": false,\n                \"disclosedInfo\": null\n            }\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/addNew",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"addNew"
+					],
+					"query": [
+						{
+							"key": "user_email",
+							"value": "pofortis@outlook.com",
+							"disabled": true
+						}
+					]
+				},
+				"description": "`/emailNewPia`"
+			},
+			"response": []
+		},
+		{
+			"name": "new pia (bad input)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Test new pia\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.isSuccess).to.eql(false);",
+							"    pm.expect(responseJson.error.name).to.eql(\"ValidationError\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let token = pm.collectionVariables.get(\"response_token\");",
+							"pm.request.headers.add({key: \"x-access-token\", value: token});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyMjg0OGNkZDc4MjJiYjRhYjliOWY1MyIsImlhdCI6MTY0ODAwOTYzOSwiZXhwIjoxNjQ4MDExNjM5fQ.VyhSZDq_B3G_dxJ1s-k491AVRGL1XqFulpVOd3Rs9g0\"",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"Pia\": {\n                \n                \"sponsoringBusinessUnit\": \"Test\",\n                \"projectDescription\": \"Test\",\n                \"isCollected\": true,\n                \"personalInfo\": \"test\",\n                \"purpose\": \"Demo1\",\n                \"individualsInfo\": \"Test\",\n                \"isDisclosed\": false,\n                \"disclosedInfo\": null\n            }\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/addNew",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"addNew"
+					],
+					"query": [
+						{
+							"key": "user_email",
+							"value": "pofortis@outlook.com",
+							"disabled": true
+						}
+					]
+				},
+				"description": "`/emailNewPia`"
+			},
+			"response": []
+		},
+		{
+			"name": "delete pia (unauthorized user)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"",
+							"// login as general user, get token",
+							"const postRequest = {",
+							"        url: 'http://localhost:3000/login',",
+							"        method: 'POST',",
+							"        header: {",
+							"            'Content-Type': 'application/json',",
+							"        },",
+							"        body: {",
+							"            mode: 'raw',",
+							"            raw: JSON.stringify({ email: 'userfortisbc@outlook.com' })",
+							"        }",
+							"};",
+							"",
+							"pm.collectionVariables.set(\"generalUserLogin\", postRequest);",
+							"",
+							"pm.sendRequest(postRequest, (err,res) => {",
+							"    pm.request.headers.add({key: \"x-access-token\", value: res.json().token});",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"pm.test(\"Test new pia\", function () {",
+							"    // add a pia",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.isSuccess).to.eql(false);",
+							"    pm.expect(responseJson.error).to.eql(\"PermissionError\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyMjg0OGNkZDc4MjJiYjRhYjliOWY1MyIsImlhdCI6MTY0ODAwOTYzOSwiZXhwIjoxNjQ4MDExNjM5fQ.VyhSZDq_B3G_dxJ1s-k491AVRGL1XqFulpVOd3Rs9g0\"",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"{{newPiaId}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/deletePia",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"deletePia"
+					],
+					"query": [
+						{
+							"key": "user_email",
+							"value": "pofortis@outlook.com",
+							"disabled": true
+						}
+					]
+				},
+				"description": "`/emailNewPia`"
+			},
+			"response": []
+		},
+		{
+			"name": "delete pia (authorized user)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"pm.test(\"Test new pia\", function () {",
+							"    // add pia id to the header",
+							"    let postRequest = pm.collectionVariables.get(\"postAllPias\");",
+							"    // add a pia",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.isSuccess).to.eql(true);",
+							"",
+							"    // get all pias, check if count has decreased by 1",
+							"    pm.sendRequest(postRequest, (err,res) => {",
+							"        var piaCountBefore = pm.collectionVariables.get(\"piaCount\");",
+							"        var piaCountAfter = res.json().allPia.length;",
+							"        pm.expect(piaCountBefore - piaCountAfter).to.eql(1);",
+							"    })  ",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let token = pm.collectionVariables.get(\"response_token\");",
+							"pm.request.headers.add({key: \"x-access-token\", value: token});",
+							"",
+							"// login as privacy officer",
+							"",
+							"var postRequest = pm.collectionVariables.get(\"postAllPias\");",
+							"// get all pias and check length",
+							"pm.sendRequest(postRequest, (err,res) => {",
+							"    pm.collectionVariables.set(\"piaCount\", res.json().allPia.length);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyMjg0OGNkZDc4MjJiYjRhYjliOWY1MyIsImlhdCI6MTY0ODAwOTYzOSwiZXhwIjoxNjQ4MDExNjM5fQ.VyhSZDq_B3G_dxJ1s-k491AVRGL1XqFulpVOd3Rs9g0\"",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"{{newPiaId}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/deletePia",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"deletePia"
+					],
+					"query": [
+						{
+							"key": "user_email",
+							"value": "pofortis@outlook.com",
+							"disabled": true
+						}
+					]
+				},
+				"description": "`/emailNewPia`"
+			},
+			"response": []
+		},
+		{
+			"name": "edit pia (authorized user)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// set up delete request for later",
+							"let token = pm.collectionVariables.get(\"response_token\")",
+							"let piaId = pm.collectionVariables.get(\"newPiaId\");",
+							"let deleteBody = {",
+							"    \"id\": piaId",
+							"}",
+							"let deleteRequest = {",
+							"        url: 'http://localhost:3000/deletePia',",
+							"        method: 'POST',",
+							"        header: {",
+							"            'Content-Type': 'application/json',",
+							"            \"x-access-token\": token",
+							"        },",
+							"        body: {",
+							"            mode: 'raw',",
+							"            raw: JSON.stringify(deleteBody)",
+							"        }",
+							"};",
+							"",
+							"pm.collectionVariables.set(\"deleteRequest\", deleteRequest);",
+							"",
+							"pm.test(\"Test edit pia (authorized)\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.isSuccess).to.eql(true);",
+							"",
+							"    // delete the pia we made",
+							"    pm.sendRequest(deleteRequest, function (err, response) {",
+							"        console.log(response.json().message);",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// add user token to header",
+							"let token = pm.collectionVariables.get(\"response_token\");",
+							"pm.request.headers.add({key: \"x-access-token\", value: token});",
+							"",
+							"var newPia = {",
+							"                    \"Pia\": {",
+							"                                \"projectName\": \"Postman\",",
+							"                                \"sponsoringBusinessUnit\": \"Test\",",
+							"                                \"projectDescription\": \"Test\",",
+							"                                \"isCollected\": true,",
+							"                                \"personalInfo\": \"test\",",
+							"                                \"purpose\": \"Demo1\",",
+							"                                \"individualsInfo\": \"Test\",",
+							"                                \"isDisclosed\": false,",
+							"                                \"disclosedInfo\": null,",
+							"                                \"comments\": []",
+							"                            }",
+							"",
+							"            }",
+							"",
+							"pm.collectionVariables.set(\"newPia\", newPia);",
+							"",
+							"// create a pia",
+							"var createPiaRequest = {",
+							"        url: 'http://localhost:3000/addNew',",
+							"        method: 'POST',",
+							"        header: {",
+							"            'Content-Type': 'application/json',",
+							"            \"x-access-token\": token",
+							"        },",
+							"        body: {",
+							"            mode: 'raw',",
+							"            raw: JSON.stringify(newPia)",
+							"        }",
+							"};",
+							"",
+							"pm.collectionVariables.set(\"createPiaRequest\", createPiaRequest);",
+							"",
+							"pm.sendRequest(createPiaRequest, (err,res) => {",
+							"    if (err) {",
+							"        console.log(err)",
+							"    } else {",
+							"        console.log(res.json().message)",
+							"    }",
+							"})",
+							"",
+							"let postAllPias = pm.collectionVariables.get(\"postAllPias\");",
+							"",
+							"pm.sendRequest(postAllPias, (err,res) => {",
+							"    if (err) {",
+							"        console.log(err)",
+							"    } else {",
+							"        let allPias = res.json().allPia",
+							"        // get the PIA we added",
+							"        let lastPia = allPias[allPias.length - 1];",
+							"        // check that it's a test PIA",
+							"        pm.expect(lastPia.pia.projectName).to.eql(\"Postman\");",
+							"        // save the ID, so we can delete it in the next test",
+							"        pm.collectionVariables.set(\"newPiaId\", lastPia._id);",
+							"        pm.collectionVariables.set(\"newPia\", lastPia);",
+							"    }",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyMjg0OGNkZDc4MjJiYjRhYjliOWY1MyIsImlhdCI6MTY0ODAwOTYzOSwiZXhwIjoxNjQ4MDExNjM5fQ.VyhSZDq_B3G_dxJ1s-k491AVRGL1XqFulpVOd3Rs9g0\"",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"data\": {\n                \"Pia\": {\n                                \"projectName\": \"Postman\",\n                                \"sponsoringBusinessUnit\": \"Changed\",\n                                \"projectDescription\": \"Test\",\n                                \"isCollected\": true,\n                                \"personalInfo\": \"test\",\n                                \"purpose\": \"Demo1\",\n                                \"individualsInfo\": \"Test\",\n                                \"isDisclosed\": false,\n                                \"disclosedInfo\": null,\n                                \"comments\": []\n                        },\n                \"id\": \"{{newPiaId}}\",\n                \"newComment\": false\n            }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/editPia",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"editPia"
+					],
+					"query": [
+						{
+							"key": "user_email",
+							"value": "pofortis@outlook.com",
+							"disabled": true
+						}
+					]
+				},
+				"description": "`/emailNewPia`"
+			},
+			"response": []
+		},
+		{
+			"name": "edit pia (unauthorized user)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// set up delete request for later",
+							"let piaId = pm.collectionVariables.get(\"newPiaId\");",
+							"let deleteBody = {",
+							"    \"id\": piaId",
+							"}",
+							"let deleteRequest = pm.collectionVariables.get(\"deleteRequest\");",
+							"deleteRequest.body.raw = JSON.stringify(deleteBody)",
+							"",
+							"pm.test(\"Test edit pia (unauthorized)\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.auth).to.eql(false);",
+							"",
+							"    // delete the pia we made",
+							"    pm.sendRequest(deleteRequest, function (err, response) {",
+							"        console.log(response.json().message);",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// add user token to header",
+							"let token = pm.collectionVariables.get(\"response_token\");",
+							"",
+							"// create a new pia",
+							"let createPiaRequest = pm.collectionVariables.get(\"createPiaRequest\");",
+							"",
+							"pm.sendRequest(createPiaRequest, (err,res) => {",
+							"    if (err) {",
+							"        console.log(err)",
+							"    } else {",
+							"        console.log(res.json().message)",
+							"    }",
+							"})",
+							"",
+							"let postAllPias = pm.collectionVariables.get(\"postAllPias\");",
+							"",
+							"pm.sendRequest(postAllPias, (err,res) => {",
+							"    if (err) {",
+							"        console.log(err)",
+							"    } else {",
+							"        let allPias = res.json().allPia",
+							"        // get the PIA we added",
+							"        let lastPia = allPias[allPias.length - 1];",
+							"        // check that it's a test PIA",
+							"        pm.expect(lastPia.pia.projectName).to.eql(\"Postman\");",
+							"        // save the ID, so we can delete it in the next test",
+							"        pm.collectionVariables.set(\"newPiaId\", lastPia._id);",
+							"        pm.collectionVariables.set(\"newPia\", lastPia);",
+							"    }",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyMjg0OGNkZDc4MjJiYjRhYjliOWY1MyIsImlhdCI6MTY0ODAwOTYzOSwiZXhwIjoxNjQ4MDExNjM5fQ.VyhSZDq_B3G_dxJ1s-k491AVRGL1XqFulpVOd3Rs9g0\"",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"data\": {\n                \"Pia\": {\n                                \"projectName\": \"Postman\",\n                                \"sponsoringBusinessUnit\": \"Changed\",\n                                \"projectDescription\": \"Test\",\n                                \"isCollected\": true,\n                                \"personalInfo\": \"test\",\n                                \"purpose\": \"Demo1\",\n                                \"individualsInfo\": \"Test\",\n                                \"isDisclosed\": false,\n                                \"disclosedInfo\": null,\n                                \"comments\": []\n                        },\n                \"id\": \"{{newPiaId}}\",\n                \"newComment\": false\n            }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/editPia",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"editPia"
+					],
+					"query": [
+						{
+							"key": "user_email",
+							"value": "pofortis@outlook.com",
+							"disabled": true
+						}
+					]
+				},
+				"description": "`/emailNewPia`"
+			},
+			"response": []
+		},
+		{
+			"name": "approve pia (unauthorized user)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Test edit pia (unauthorized)\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.isSuccess).to.eql(false);",
+							"    pm.expect(responseJson.error).to.eql(\"PermissionError\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// add user token to header",
+							"let token = pm.collectionVariables.get(\"response_token\");",
+							"// create a new pia",
+							"let createPiaRequest = pm.collectionVariables.get(\"createPiaRequest\");",
+							"",
+							"pm.sendRequest(createPiaRequest, (err,res) => {",
+							"    if (err) {",
+							"        console.log(err)",
+							"    } else {",
+							"        console.log(res.json().message)",
+							"    }",
+							"})",
+							"",
+							"let postAllPias = pm.collectionVariables.get(\"postAllPias\");",
+							"",
+							"pm.sendRequest(postAllPias, (err,res) => {",
+							"    if (err) {",
+							"        console.log(err)",
+							"    } else {",
+							"        let allPias = res.json().allPia",
+							"        // get the PIA we added",
+							"        let lastPia = allPias[allPias.length - 1];",
+							"        // check that it's a test PIA",
+							"        pm.expect(lastPia.pia.projectName).to.eql(\"Postman\");",
+							"        // save the ID, so we can delete it in the next test",
+							"        pm.collectionVariables.set(\"newPiaId\", lastPia._id);",
+							"        pm.collectionVariables.set(\"newPia\", lastPia);",
+							"    }",
+							"})",
+							"",
+							"// login as general user",
+							"let generalUserLogin =  pm.collectionVariables.get(\"generalUserLogin\");",
+							"",
+							"pm.sendRequest(generalUserLogin, (err,res) => {",
+							"    if (err) {",
+							"        console.log(err)",
+							"    } else {",
+							"        pm.request.headers.add({key: \"x-access-token\", value: res.json().token});",
+							"    }",
+							"})",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyMjg0OGNkZDc4MjJiYjRhYjliOWY1MyIsImlhdCI6MTY0ODAwOTYzOSwiZXhwIjoxNjQ4MDExNjM5fQ.VyhSZDq_B3G_dxJ1s-k491AVRGL1XqFulpVOd3Rs9g0\"",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"data\": {\n                \"Pia\": {\n                                \"projectName\": \"Postman\",\n                                \"sponsoringBusinessUnit\": \"Changed\",\n                                \"projectDescription\": \"Test\",\n                                \"isCollected\": true,\n                                \"personalInfo\": \"test\",\n                                \"purpose\": \"Demo1\",\n                                \"individualsInfo\": \"Test\",\n                                \"isDisclosed\": false,\n                                \"disclosedInfo\": null,\n                                \"comments\": []\n                        },\n                \"id\": \"{{newPiaId}}\",\n                \"status\": \"APPROVED\",\n                \"newComment\": false\n            }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/editPia",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"editPia"
+					],
+					"query": [
+						{
+							"key": "user_email",
+							"value": "pofortis@outlook.com",
+							"disabled": true
+						}
+					]
+				},
+				"description": "`/emailNewPia`"
+			},
+			"response": []
+		},
+		{
+			"name": "approve pia (authorized user)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// set up delete request for later",
+							"let piaId = pm.collectionVariables.get(\"newPiaId\");",
+							"let deleteBody = {",
+							"    \"id\": piaId",
+							"}",
+							"let deleteRequest = pm.collectionVariables.get(\"deleteRequest\");",
+							"deleteRequest.body.raw = JSON.stringify(deleteBody)",
+							"",
+							"pm.test(\"Test edit pia (authorized)\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.isSuccess).to.eql(true);",
+							"",
+							"    // delete the pia we made in the prev req",
+							"    pm.sendRequest(deleteRequest, function (err, response) {",
+							"        console.log(response.json().message);",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// add user token to header",
+							"let token = pm.collectionVariables.get(\"response_token\");",
+							"pm.request.headers.add({key: \"x-access-token\", value: token});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyMjg0OGNkZDc4MjJiYjRhYjliOWY1MyIsImlhdCI6MTY0ODAwOTYzOSwiZXhwIjoxNjQ4MDExNjM5fQ.VyhSZDq_B3G_dxJ1s-k491AVRGL1XqFulpVOd3Rs9g0\"",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"data\": {\n                \"Pia\": {\n                                \"projectName\": \"Postman\",\n                                \"sponsoringBusinessUnit\": \"Changed\",\n                                \"projectDescription\": \"Test\",\n                                \"isCollected\": true,\n                                \"personalInfo\": \"test\",\n                                \"purpose\": \"Demo1\",\n                                \"individualsInfo\": \"Test\",\n                                \"isDisclosed\": false,\n                                \"disclosedInfo\": null,\n                                \"comments\": []\n                        },\n                \"id\": \"{{newPiaId}}\",\n                \"status\": \"APPROVED\",\n                \"newComment\": false\n            }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/editPia",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"editPia"
+					],
+					"query": [
+						{
+							"key": "user_email",
+							"value": "pofortis@outlook.com",
+							"disabled": true
+						}
+					]
+				},
+				"description": "`/emailNewPia`"
+			},
+			"response": []
+		},
+		{
+			"name": "reject pia (unauthorized user)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Test edit pia (unauthorized)\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.isSuccess).to.eql(false);",
+							"    pm.expect(responseJson.error).to.eql(\"PermissionError\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// add user token to header",
+							"let token = pm.collectionVariables.get(\"response_token\");",
+							"// create a new pia",
+							"let createPiaRequest = pm.collectionVariables.get(\"createPiaRequest\");",
+							"",
+							"pm.sendRequest(createPiaRequest, (err,res) => {",
+							"    if (err) {",
+							"        console.log(err)",
+							"    } else {",
+							"        console.log(res.json().message)",
+							"    }",
+							"})",
+							"",
+							"let postAllPias = pm.collectionVariables.get(\"postAllPias\");",
+							"",
+							"pm.sendRequest(postAllPias, (err,res) => {",
+							"    if (err) {",
+							"        console.log(err)",
+							"    } else {",
+							"        let allPias = res.json().allPia",
+							"        // get the PIA we added",
+							"        let lastPia = allPias[allPias.length - 1];",
+							"        // check that it's a test PIA",
+							"        pm.expect(lastPia.pia.projectName).to.eql(\"Postman\");",
+							"        // save the ID, so we can delete it in the next test",
+							"        pm.collectionVariables.set(\"newPiaId\", lastPia._id);",
+							"        pm.collectionVariables.set(\"newPia\", lastPia);",
+							"    }",
+							"})",
+							"",
+							"// login as general user",
+							"let generalUserLogin =  pm.collectionVariables.get(\"generalUserLogin\");",
+							"",
+							"pm.sendRequest(generalUserLogin, (err,res) => {",
+							"    if (err) {",
+							"        console.log(err)",
+							"    } else {",
+							"        pm.request.headers.add({key: \"x-access-token\", value: res.json().token});",
+							"    }",
+							"})",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyMjg0OGNkZDc4MjJiYjRhYjliOWY1MyIsImlhdCI6MTY0ODAwOTYzOSwiZXhwIjoxNjQ4MDExNjM5fQ.VyhSZDq_B3G_dxJ1s-k491AVRGL1XqFulpVOd3Rs9g0\"",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"data\": {\n                \"Pia\": {\n                                \"projectName\": \"Postman\",\n                                \"sponsoringBusinessUnit\": \"Changed\",\n                                \"projectDescription\": \"Test\",\n                                \"isCollected\": true,\n                                \"personalInfo\": \"test\",\n                                \"purpose\": \"Demo1\",\n                                \"individualsInfo\": \"Test\",\n                                \"isDisclosed\": false,\n                                \"disclosedInfo\": null,\n                                \"comments\": []\n                        },\n                \"id\": \"{{newPiaId}}\",\n                \"status\": \"REJECTED\",\n                \"newComment\": false\n            }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/editPia",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"editPia"
+					],
+					"query": [
+						{
+							"key": "user_email",
+							"value": "pofortis@outlook.com",
+							"disabled": true
+						}
+					]
+				},
+				"description": "`/emailNewPia`"
+			},
+			"response": []
+		},
+		{
+			"name": "reject pia (authorized user)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// set up delete request for later",
+							"let piaId = pm.collectionVariables.get(\"newPiaId\");",
+							"let deleteBody = {",
+							"    \"id\": piaId",
+							"}",
+							"let deleteRequest = pm.collectionVariables.get(\"deleteRequest\");",
+							"deleteRequest.body.raw = JSON.stringify(deleteBody)",
+							"",
+							"pm.test(\"Test edit pia (authorized)\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.isSuccess).to.eql(true);",
+							"",
+							"    // delete the pia we made in the prev req",
+							"    pm.sendRequest(deleteRequest, function (err, response) {",
+							"        console.log(response.json().message);",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// add user token to header",
+							"let token = pm.collectionVariables.get(\"response_token\");",
+							"pm.request.headers.add({key: \"x-access-token\", value: token});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyMjg0OGNkZDc4MjJiYjRhYjliOWY1MyIsImlhdCI6MTY0ODAwOTYzOSwiZXhwIjoxNjQ4MDExNjM5fQ.VyhSZDq_B3G_dxJ1s-k491AVRGL1XqFulpVOd3Rs9g0\"",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"data\": {\n                \"Pia\": {\n                                \"projectName\": \"Postman\",\n                                \"sponsoringBusinessUnit\": \"Changed\",\n                                \"projectDescription\": \"Test\",\n                                \"isCollected\": true,\n                                \"personalInfo\": \"test\",\n                                \"purpose\": \"Demo1\",\n                                \"individualsInfo\": \"Test\",\n                                \"isDisclosed\": false,\n                                \"disclosedInfo\": null,\n                                \"comments\": []\n                        },\n                \"id\": \"{{newPiaId}}\",\n                \"status\": \"REJECTED\",\n                \"newComment\": false\n            }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/editPia",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"editPia"
+					],
+					"query": [
+						{
+							"key": "user_email",
+							"value": "pofortis@outlook.com",
+							"disabled": true
+						}
+					]
+				},
+				"description": "`/emailNewPia`"
+			},
+			"response": []
+		},
+		{
+			"name": "comment on pia (unauthorized user)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// set up delete request for later",
+							"let piaId = pm.collectionVariables.get(\"newPiaId\");",
+							"let deleteBody = {",
+							"    \"id\": piaId",
+							"}",
+							"let deleteRequest = pm.collectionVariables.get(\"deleteRequest\");",
+							"deleteRequest.body.raw = JSON.stringify(deleteBody)",
+							"",
+							"pm.test(\"Test comment pia (unauthorized)\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.auth).to.eql(false);",
+							"",
+							"    // delete the pia we made",
+							"    pm.sendRequest(deleteRequest, function (err, response) {",
+							"        console.log(response.json().message);",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// add user token to header",
+							"let token = pm.collectionVariables.get(\"response_token\");",
+							"",
+							"// create a new pia",
+							"let createPiaRequest = pm.collectionVariables.get(\"createPiaRequest\");",
+							"",
+							"pm.sendRequest(createPiaRequest, (err,res) => {",
+							"    if (err) {",
+							"        console.log(err)",
+							"    } else {",
+							"        console.log(res.json().message)",
+							"    }",
+							"})",
+							"",
+							"let postAllPias = pm.collectionVariables.get(\"postAllPias\");",
+							"",
+							"pm.sendRequest(postAllPias, (err,res) => {",
+							"    if (err) {",
+							"        console.log(err)",
+							"    } else {",
+							"        let allPias = res.json().allPia",
+							"        // get the PIA we added",
+							"        let lastPia = allPias[allPias.length - 1];",
+							"        // check that it's a test PIA",
+							"        pm.expect(lastPia.pia.projectName).to.eql(\"Postman\");",
+							"        // save the ID, so we can delete it in the next test",
+							"        pm.collectionVariables.set(\"newPiaId\", lastPia._id);",
+							"        pm.collectionVariables.set(\"newPia\", lastPia);",
+							"    }",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyMjg0OGNkZDc4MjJiYjRhYjliOWY1MyIsImlhdCI6MTY0ODAwOTYzOSwiZXhwIjoxNjQ4MDExNjM5fQ.VyhSZDq_B3G_dxJ1s-k491AVRGL1XqFulpVOd3Rs9g0\"",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"data\": {\n                \"Pia\": {\n                                \"projectName\": \"Postman\",\n                                \"sponsoringBusinessUnit\": \"Changed\",\n                                \"projectDescription\": \"Test\",\n                                \"isCollected\": true,\n                                \"personalInfo\": \"test\",\n                                \"purpose\": \"Demo1\",\n                                \"individualsInfo\": \"Test\",\n                                \"isDisclosed\": false,\n                                \"disclosedInfo\": null,\n                                \"comments\": [\n                                    {\n                                        \"author\": \"pofortis@outlook.com\",\n                                        \"content\": \"comment\",\n                                        \"date\": \"2022-04-06\"\n                                    }\n                                ]\n                        },\n                \"id\": \"{{newPiaId}}\",\n                \"newComment\": true\n            }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/editPia",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"editPia"
+					],
+					"query": [
+						{
+							"key": "user_email",
+							"value": "pofortis@outlook.com",
+							"disabled": true
+						}
+					]
+				},
+				"description": "`/emailNewPia`"
+			},
+			"response": []
+		},
+		{
+			"name": "comment on pia (unauthorized user) Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// set up delete request for later",
+							"let piaId = pm.collectionVariables.get(\"newPiaId\");",
+							"let deleteBody = {",
+							"    \"id\": piaId",
+							"}",
+							"let deleteRequest = pm.collectionVariables.get(\"deleteRequest\");",
+							"deleteRequest.body.raw = JSON.stringify(deleteBody)",
+							"",
+							"pm.test(\"Test comment pia (unauthorized)\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson).to.be.an(\"object\");",
+							"    pm.expect(responseJson.auth).to.eql(false);",
+							"",
+							"    // delete the pia we made",
+							"    pm.sendRequest(deleteRequest, function (err, response) {",
+							"        console.log(response.json().message);",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// add user token to header",
+							"let token = pm.collectionVariables.get(\"response_token\");",
+							"",
+							"// create a new pia",
+							"let createPiaRequest = pm.collectionVariables.get(\"createPiaRequest\");",
+							"",
+							"pm.sendRequest(createPiaRequest, (err,res) => {",
+							"    if (err) {",
+							"        console.log(err)",
+							"    } else {",
+							"        console.log(res.json().message)",
+							"    }",
+							"})",
+							"",
+							"let postAllPias = pm.collectionVariables.get(\"postAllPias\");",
+							"",
+							"pm.sendRequest(postAllPias, (err,res) => {",
+							"    if (err) {",
+							"        console.log(err)",
+							"    } else {",
+							"        let allPias = res.json().allPia",
+							"        // get the PIA we added",
+							"        let lastPia = allPias[allPias.length - 1];",
+							"        // check that it's a test PIA",
+							"        pm.expect(lastPia.pia.projectName).to.eql(\"Postman\");",
+							"        // save the ID, so we can delete it in the next test",
+							"        pm.collectionVariables.set(\"newPiaId\", lastPia._id);",
+							"        pm.collectionVariables.set(\"newPia\", lastPia);",
+							"    }",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyMjg0OGNkZDc4MjJiYjRhYjliOWY1MyIsImlhdCI6MTY0ODAwOTYzOSwiZXhwIjoxNjQ4MDExNjM5fQ.VyhSZDq_B3G_dxJ1s-k491AVRGL1XqFulpVOd3Rs9g0\"",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"data\": {\n                \"Pia\": {\n                                \"projectName\": \"Postman\",\n                                \"sponsoringBusinessUnit\": \"Changed\",\n                                \"projectDescription\": \"Test\",\n                                \"isCollected\": true,\n                                \"personalInfo\": \"test\",\n                                \"purpose\": \"Demo1\",\n                                \"individualsInfo\": \"Test\",\n                                \"isDisclosed\": false,\n                                \"disclosedInfo\": null,\n                                \"comments\": [\n                                    {\n                                        \"author\": \"pofortis@outlook.com\",\n                                        \"content\": \"comment\",\n                                        \"date\": \"2022-04-06\"\n                                    }\n                                ]\n                        },\n                \"id\": \"{{newPiaId}}\",\n                \"newComment\": true\n            }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/editPia",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"editPia"
+					],
+					"query": [
+						{
+							"key": "user_email",
+							"value": "pofortis@outlook.com",
+							"disabled": true
+						}
+					]
+				},
+				"description": "`/emailNewPia`"
+			},
+			"response": []
+		},
+		{
+			"name": "print pia (authorized user)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// set up delete request for later",
+							"let piaId = pm.collectionVariables.get(\"newPiaId\");",
+							"let deleteBody = {",
+							"    \"id\": piaId",
+							"}",
+							"let deleteRequest = pm.collectionVariables.get(\"deleteRequest\");",
+							"deleteRequest.body.raw = JSON.stringify(deleteBody)",
+							"",
+							"pm.test(\"Test print pia (authorized)\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    let contentType = pm.response.headers.one(\"Content-Type\").value",
+							"    pm.expect(contentType).to.eql(\"application/pdf\")",
+							"    ",
+							"    // delete the pia we made",
+							"    pm.sendRequest(deleteRequest, function (err, response) {",
+							"        console.log(response.json().message);",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// add user token to header",
+							"let token = pm.collectionVariables.get(\"response_token\");",
+							"pm.request.headers.add({key: \"x-access-token\", value: token});",
+							"",
+							"// create a new pia",
+							"let createPiaRequest = pm.collectionVariables.get(\"createPiaRequest\");",
+							"",
+							"pm.sendRequest(createPiaRequest, (err,res) => {",
+							"    if (err) {",
+							"        console.log(err)",
+							"    } else {",
+							"        console.log(res.json().message)",
+							"    }",
+							"})",
+							"",
+							"let postAllPias = pm.collectionVariables.get(\"postAllPias\");",
+							"",
+							"pm.sendRequest(postAllPias, (err,res) => {",
+							"    if (err) {",
+							"        console.log(err)",
+							"    } else {",
+							"        let allPias = res.json().allPia",
+							"        // get the PIA we added",
+							"        let lastPia = allPias[allPias.length - 1];",
+							"        // check that it's a test PIA",
+							"        pm.expect(lastPia.pia.projectName).to.eql(\"Postman\");",
+							"        // save the ID, so we can delete it in the next test",
+							"        pm.collectionVariables.set(\"newPiaId\", lastPia._id);",
+							"        pm.collectionVariables.set(\"newPia\", lastPia);",
+							"        ",
+							"        // set up request body",
+							"        let printRequestBody = {",
+							"            \"Pia\": lastPia",
+							"        }",
+							"        pm.collectionVariables.set(\"printRequestBody\", JSON.stringify(printRequestBody));",
+							"    }",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyMjg0OGNkZDc4MjJiYjRhYjliOWY1MyIsImlhdCI6MTY0ODAwOTYzOSwiZXhwIjoxNjQ4MDExNjM5fQ.VyhSZDq_B3G_dxJ1s-k491AVRGL1XqFulpVOd3Rs9g0\"",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{{printRequestBody}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/printPia",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"printPia"
+					],
+					"query": [
+						{
+							"key": "user_email",
+							"value": "pofortis@outlook.com",
+							"disabled": true
+						}
+					]
+				},
+				"description": "`/emailNewPia`"
+			},
+			"response": []
+		},
+		{
+			"name": "print pia (unauthorized user)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// set up delete request for later",
+							"let piaId = pm.collectionVariables.get(\"newPiaId\");",
+							"let deleteBody = {",
+							"    \"id\": piaId",
+							"}",
+							"let deleteRequest = pm.collectionVariables.get(\"deleteRequest\");",
+							"deleteRequest.body.raw = JSON.stringify(deleteBody)",
+							"",
+							"pm.test(\"Test print pia (unauthorized)\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    pm.response.to.be.withBody;",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.auth).to.eql(false);",
+							"    ",
+							"    // delete the pia we made",
+							"    pm.sendRequest(deleteRequest, function (err, response) {",
+							"        console.log(response.json().message);",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// add user token to header",
+							"let token = pm.collectionVariables.get(\"response_token\");",
+							"",
+							"// create a new pia",
+							"let createPiaRequest = pm.collectionVariables.get(\"createPiaRequest\");",
+							"",
+							"pm.sendRequest(createPiaRequest, (err,res) => {",
+							"    if (err) {",
+							"        console.log(err)",
+							"    } else {",
+							"        console.log(res.json().message)",
+							"    }",
+							"})",
+							"",
+							"let postAllPias = pm.collectionVariables.get(\"postAllPias\");",
+							"",
+							"pm.sendRequest(postAllPias, (err,res) => {",
+							"    if (err) {",
+							"        console.log(err)",
+							"    } else {",
+							"        let allPias = res.json().allPia",
+							"        // get the PIA we added",
+							"        let lastPia = allPias[allPias.length - 1];",
+							"        // check that it's a test PIA",
+							"        pm.expect(lastPia.pia.projectName).to.eql(\"Postman\");",
+							"        // save the ID, so we can delete it in the next test",
+							"        pm.collectionVariables.set(\"newPiaId\", lastPia._id);",
+							"        pm.collectionVariables.set(\"newPia\", lastPia);",
+							"        ",
+							"        // set up request body",
+							"        let printRequestBody = {",
+							"            \"Pia\": lastPia",
+							"        }",
+							"        pm.collectionVariables.set(\"printRequestBody\", JSON.stringify(printRequestBody));",
+							"    }",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyMjg0OGNkZDc4MjJiYjRhYjliOWY1MyIsImlhdCI6MTY0ODAwOTYzOSwiZXhwIjoxNjQ4MDExNjM5fQ.VyhSZDq_B3G_dxJ1s-k491AVRGL1XqFulpVOd3Rs9g0\"",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{{printRequestBody}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/printPia",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"printPia"
+					],
+					"query": [
+						{
+							"key": "user_email",
+							"value": "pofortis@outlook.com",
+							"disabled": true
+						}
+					]
+				},
+				"description": "`/emailNewPia`"
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "piaCount",
+			"value": ""
+		},
+		{
+			"key": "postAllPias",
+			"value": ""
+		},
+		{
+			"key": "response_token",
+			"value": ""
+		},
+		{
+			"key": "newPiaId",
+			"value": ""
+		},
+		{
+			"key": "newPia",
+			"value": ""
+		},
+		{
+			"key": "createPiaRequest",
+			"value": ""
+		},
+		{
+			"key": "deleteRequest",
+			"value": ""
+		},
+		{
+			"key": "printRequestBody",
+			"value": ""
+		},
+		{
+			"key": "generalUserLogin",
+			"value": ""
+		}
+	]
+}

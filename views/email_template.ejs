@@ -15,6 +15,13 @@
                 <td style="padding: 30px 30px 30px 60px;">
                     <p>Hi <%= recipient %>,</p>
                     <p><%= event_msg %></p>
+                    <% if (!deleted){%>
+                        <div style="text-align: center;">
+                            <a href="<%=pia_url%>" style="color: #173a64">
+                                <button style="background-color: #ffc82c; padding: 10px;">Click to view</button>
+                            </a>
+                        </div>
+                    <%}%>
 
                 </td> 
             </tr>
