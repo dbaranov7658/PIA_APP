@@ -188,6 +188,8 @@ class PTable extends React.Component<Props, State> {
                     this.setState({loadingDocument: false})
             })
             } catch(err) {
+                message.destroy();
+                message.error("Download failed")
                 console.log(err);
                 this.setState({loadingDocument: false})
             }
