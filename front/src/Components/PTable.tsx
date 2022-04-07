@@ -184,8 +184,8 @@ class PTable extends React.Component<Props, State> {
                     a.click();    
                     a.remove();
                     message.destroy();
-                    message.success('PIA downloaded', 2);
                     this.setState({loadingDocument: false})
+                    message.success('PIA downloaded', 2);
             })
             } catch(err) {
                 message.destroy();
