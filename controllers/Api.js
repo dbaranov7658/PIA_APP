@@ -369,10 +369,10 @@ exports.editPia = (req, res, ) => {
         if (decoded.id) {
              // verify that user has correct permissions
              User.findById(decoded.id, (error, result) => {
-                if (result === null) {
+                if (result === null || error) {
                     res.json({
                         isSuccess: false,
-                        error: error,
+                        error: error ? error : {},
                         message: "Can not get user from db",
                     })
                 } else if (!result.isOfficer && newStatus === 'APPROVED' || !result.isOfficer && newStatus === 'REJECTED') {
