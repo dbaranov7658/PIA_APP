@@ -388,7 +388,8 @@ exports.editPia = (req, res, ) => {
                         updatedObject.isEdit = isEdit
                         console.log(`is edit: ${updatedObject.isEdit}`)
                         existingPia.findByIdAndUpdate(updatedId, updatedObject, (err, updatedPia) => {
-                            if (err || updatedPia === null) {
+
+                            if (err || updatedPia === null ) {
                                 res.json({
                                     isSuccess: false,
                                     error: err,
