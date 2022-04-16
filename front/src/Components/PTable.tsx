@@ -154,7 +154,6 @@ class PTable extends React.Component<Props, State> {
                             }
                         </div>
                     );
-
                 },
             },
         ];
