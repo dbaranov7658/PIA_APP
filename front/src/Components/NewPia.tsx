@@ -38,7 +38,7 @@ interface State{
 
 
 export default class NewPia extends React.Component<Props, State>{
-    formRef = React.createRef<FormInstance>();
+        formRef = React.createRef<FormInstance>();
     constructor(props: any){
         super(props);
         this.state = {
