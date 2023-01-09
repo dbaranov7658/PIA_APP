@@ -21,7 +21,7 @@ app.use('/', require('./routes/allRoutes'))
 app.get('/*', async(req, res) => {
     res.sendFile(path.join(reactBuild, 'index.html'))
 })
-
+mongoose.set("strictQuery", false);
 mongoose.connect(process.env.DB_URI, {useNewUrlParser: true, useUnifiedTopology: true}).then((result) => {
     console.log('connected to db')
     app.listen(PORT, () => {
